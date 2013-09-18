@@ -1,7 +1,0 @@
-WELL, IS IT?
-<<<<<<< HEAD
-
-TROLOLOLOL
-=======
-NO GO HOME
->>>>>>> origin/testing
