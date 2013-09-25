@@ -29,6 +29,7 @@
 #pragma once
 
 #include <list>
+#include "TileMap.h"
 
 class Surface;
 class GameObject;
@@ -89,6 +90,9 @@ private:
 	clan::Canvas canvas;
 
 	bool quit;
+
+	///Tile stuff
+	TileMap tileMap;
 public:
 	clan::BlendState blendstate_cl_blend_zero_cl_blend_one_minus_src_alpha;
 	clan::BlendState blendstate_cl_blend_src_alpha_cl_blend_one_minus_src_alpha;

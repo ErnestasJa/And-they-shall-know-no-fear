@@ -31,6 +31,8 @@
 #include "tankvehicle.h"
 #include "building.h"
 
+#include "TileChunk.h"
+
 World::World(clan::DisplayWindow &display_window) : window(display_window), quit(false)
 {
 	clan::Slot slot_quit = window.sig_window_close().connect(this, &World::on_window_close);
@@ -90,6 +92,15 @@ void World::initLevel()
 	addObject(helipad);
 	addTank(tank1);
 	addTank(tank2);
+
+	Tile t;
+	tileMap = TileMap(canvas,t);
+
+	tileMap.add_chunk(Vec2<int32_t>(0,0));
+
+	Sprite s = Sprite::resource(canvas,"level_gfx",resources);
+
+	tileMap.add_sprite(s,0);
 }
 
 void World::addObject(GameObject *object)
@@ -295,6 +306,9 @@ void World::draw()
 				   clan::Colorf(0.0f, 1.0f, 0.0f, (100.0f * s)/256.0f));
 
 	}
+
+	tileMap.render(Vec2<int32_t>(0,0));
+
 
 	canvas.flush();
 }
