@@ -11,6 +11,8 @@ class TileMap_Impl
     {
         m_canvas = c;
         m_unique_id = 0;
+		m_font = Font(c,"Helvetica",8);
+		m_default_tile = default_tile;
     }
 
     bool add_sprite(Sprite spr, uint8_t id)
@@ -75,33 +77,58 @@ class TileMap_Impl
         return m_default_tile;
     }
 
+    Canvas & get_canvas()
+    {
+        return m_canvas;
+    }
+
     void render(const Vec2<int32_t> & pos)
     {
-        int x2 = pos.x + m_canvas.get_width();
-        int y2 = pos.y + m_canvas.get_height();
+        int w = m_canvas.get_width();
+        int h = m_canvas.get_height();
 
         int rx = (pos.x-CHUNK_SIZE+1)/CHUNK_SIZE;
         int ry = (pos.y-CHUNK_SIZE+1)/CHUNK_SIZE;
-        int rx2 = (x2+CHUNK_SIZE+1)/CHUNK_SIZE;
-        int ry2 = (y2+CHUNK_SIZE+1)/CHUNK_SIZE;
+        int rx2 = (pos.x+w+CHUNK_SIZE+1)/CHUNK_SIZE;
+        int ry2 = (pos.y+h+CHUNK_SIZE+1)/CHUNK_SIZE;
         TileChunk c;
-        for(int i = ry; i < ry2; i++)
-        for(int j = rx; j < rx2; j++)
-        {
-            c = get_chunk(Vec2<int32_t>(j,i));
-            if(!c.is_null())
-            {
-                c.draw_chunk(m_canvas,Vec2<int32_t>(j*CHUNK_SIZE,i*CHUNK_SIZE)-pos);
-            }
-            //else
 
-        }
+		std::string s = "x1: ";
+		s+=StringHelp::int_to_text(rx);
+
+		s+= " y1: ";
+		s+=StringHelp::int_to_text(ry);
+		
+		s+= "\nx2: ";
+		s+=StringHelp::int_to_text(rx2);
+		
+		s+= " y2: ";
+		s+=StringHelp::int_to_text(ry2);
+
+        c = get_chunk(Vec2<int32_t>(0,0));
+        
+		for(int y = ry; y < ry2; y++)
+		for(int x = ry; x < rx2; x++)
+		{
+			c = get_chunk(Vec2<int32_t>(x,y));
+
+			if(!c.is_null())
+			{
+				if(!c.is_batched())
+					c.batch();
+				c.draw_chunk(m_canvas,Vec2<int32_t>(x*CHUNK_SIZE,y*CHUNK_SIZE)-pos);
+			}
+		}
+
+		m_font.draw_text(m_canvas,20,20,s,Colorf::black);
     }
 
     protected:
     Canvas      m_canvas;
     Tile        m_default_tile;
     uint32_t    m_unique_id;
+
+	Font		m_font;
 
     std::map<Vec2<int32_t>, TileChunk>  m_chunks;
     std::map<uint8_t, Sprite>           m_sprites;
@@ -155,6 +182,10 @@ TileChunk TileMap::get_chunk(const Vec2<int32_t> & pos)
 Tile TileMap::get_default_tile()
 {
     return impl->get_default_tile();
+}
+Canvas & TileMap::get_canvas()
+{
+	return impl->get_canvas();
 }
 
 void TileMap::render(const Vec2<int32_t> & pos)

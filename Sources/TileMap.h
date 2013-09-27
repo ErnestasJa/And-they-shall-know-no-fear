@@ -27,6 +27,7 @@ class TileMap
     TileChunk get_chunk(const Vec2<int32_t> & pos);
 
     Tile get_default_tile();
+	Canvas & get_canvas();
 
 
     void render(const Vec2<int32_t> & pos);

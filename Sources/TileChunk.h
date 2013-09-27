@@ -3,10 +3,10 @@
 
 #include "TileMap.h"
 
-#define TILE_SIZE 32
-#define TILE_COUNT 16
-#define CHUNK_SIZE TILE_SIZE * TILE_COUNT
-#define LAYER_SIZE CHUNK_SIZE * CHUNK_SIZE
+static const int32_t TILE_SIZE = 32;
+static const int32_t  TILE_COUNT = 16;
+static const int32_t CHUNK_SIZE = TILE_SIZE * TILE_COUNT;
+static const int32_t LAYER_SIZE = CHUNK_SIZE * CHUNK_SIZE;
 
 enum TILE_TYPE
 {
@@ -48,6 +48,10 @@ class TileChunk
         void throw_if_null() { if (!impl) throw Exception("TileChunk is null"); }
 
         void draw_chunk(Canvas & canvas, const Vec2<int32_t> & pos);
+
+		bool is_batched();
+		void set_batched(bool is_batched); // to force update
+		void batch();
 
         uint8_t get_tile_type(const Vec2<int32_t> & pos);
         uint32_t get_id();
