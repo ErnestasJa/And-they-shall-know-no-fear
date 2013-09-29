@@ -32,8 +32,10 @@ struct Tile
 struct TileLayer
 {
     Tile tile[LAYER_SIZE];
+	Image batched_layer;
 };
 
+/**< add physical layer for chunk */
 class TileChunk_Impl;
 class TileChunk
 {

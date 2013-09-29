@@ -29,7 +29,6 @@ class TileMap
     Tile get_default_tile();
 	Canvas & get_canvas();
 
-
     void render(const Vec2<int32_t> & pos);
 
     protected:

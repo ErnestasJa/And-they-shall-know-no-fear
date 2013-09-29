@@ -6,7 +6,10 @@
 #include <ClanLib/sound.h>
 #include <ClanLib/swrender.h>
 #include <ClanLib/gl.h>
+#include <ClanLib/gui.h>
 #include <stdint.h>
+#include <stack>
+#include <vector>
 #include <cmath>
 
 using namespace clan;

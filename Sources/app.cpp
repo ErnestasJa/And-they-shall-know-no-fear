@@ -1,50 +1,71 @@
-/*
-**  ClanLib SDK
-**  Copyright (c) 1997-2013 The ClanLib Team
-**
-**  This software is provided 'as-is', without any express or implied
-**  warranty.  In no event will the authors be held liable for any damages
-**  arising from the use of this software.
-**
-**  Permission is granted to anyone to use this software for any purpose,
-**  including commercial applications, and to alter it and redistribute it
-**  freely, subject to the following restrictions:
-**
-**  1. The origin of this software must not be misrepresented; you must not
-**     claim that you wrote the original software. If you use this software
-**     in a product, an acknowledgment in the product documentation would be
-**     appreciated but is not required.
-**  2. Altered source versions must be plainly marked as such, and must not be
-**     misrepresented as being the original software.
-**  3. This notice may not be removed or altered from any source distribution.
-**
-**  Note: Some of the libraries ClanLib may link to may have additional
-**  requirements or restrictions.
-**
-**  File Author(s):
-**
-**    
-*/
 #include "precomp.h"
 
 #include "app.h"
 #include "world.h"
+#include "menu.h"
 
 int App::main(const std::vector<std::string> &args)
 {
-	// Create a window
-	clan::DisplayWindowDescription desc;
-	desc.set_title("ClanLib RTS Demo");
-	desc.set_size(clan::Size(1024, 768), true);
-	clan::DisplayWindow window(desc);
+	m_quit = false;
 
+	clan::SetupCore setup_core;
+	clan::SetupDisplay setup_display;
+	clan::SetupGL setup_gl;
+	clan::SetupSWRender setup_swrender;
+	clan::SetupGUI setup_gui;
+
+	clan::SetupSound setup_sound;
 	clan::SoundOutput output(44100);
 
-	// Create world
-	World world(window);
+	clan::DisplayWindowDescription desc;
+	desc.set_title("Demo");
+	desc.set_size(clan::Size(1024, 720), true);
+	clan::DisplayWindow window(desc);
 
-	// Run the main loop
-	world.run();
+	clan::Slot slot_quit = window.sig_window_close().connect(this, &App::on_window_close);
+
+	State * start = new Menu(this,window);
+	if(!start->init())
+	{
+		delete start;
+	}
+	else
+		m_states.push(start);
+	
+
+	///run
+
+	while(m_states.size()>0)
+	{
+		if(m_states.top()->is_paused())
+			m_states.top()->resume();
+
+		if(!m_states.top()->run())
+		{
+			State * s = m_states.top();
+			m_states.pop();
+			s->exit();
+			delete s;
+		}
+	}
 
 	return 0;
 }
+
+void App::on_window_close()
+{
+	m_quit = true;
+}
+
+std::stack<State*> & App::get_states()
+{
+	return m_states;
+}
+
+int main_func(const std::vector<std::string> & args)
+{
+	App app;
+	return app.main(args);
+}
+
+clan::Application app(&main_func);
