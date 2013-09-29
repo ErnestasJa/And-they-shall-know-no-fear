@@ -48,7 +48,7 @@ class TileChunk
     public:
         /**< create null instance */
         TileChunk();
-        TileChunk(TileMap & tmap, uint32_t id);
+        TileChunk(TileMap & tmap);
 
         virtual ~TileChunk(){}
 
@@ -62,7 +62,6 @@ class TileChunk
 		void batch();
 
         Tile & get_tile(const vec2 & pos, int32_t layer);
-        uint32_t get_id();
 
     protected:
         std::shared_ptr<TileChunk_Impl> impl;

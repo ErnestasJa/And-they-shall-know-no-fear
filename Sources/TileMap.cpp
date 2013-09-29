@@ -10,7 +10,6 @@ class TileMap_Impl
     TileMap_Impl(Canvas c)
     {
         m_canvas = c;
-        m_unique_id = 0;
     }
 
     bool add_sprite(Sprite spr, uint8_t id)
@@ -48,9 +47,8 @@ class TileMap_Impl
     {
         if(m_chunks.find(pos)==m_chunks.end())
         {
-            TileChunk c(m,m_unique_id);
+            TileChunk c(m);
             m_chunks[pos]=c;
-            m_unique_id++;
             std::cout << "Chunk added." << std::endl;
             return c;
         }
@@ -121,7 +119,6 @@ class TileMap_Impl
 
     protected:
     Canvas      m_canvas;
-    uint32_t    m_unique_id;
 
 	Font		m_font;
 

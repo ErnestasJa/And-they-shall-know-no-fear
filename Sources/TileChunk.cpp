@@ -5,10 +5,9 @@
 class TileChunk_Impl
 {
     public:
-        TileChunk_Impl(TileMap & tmap, uint32_t id)
+        TileChunk_Impl(TileMap & tmap)
 		{
 			m_tile_map = tmap; 
-			m_id = id;
 			m_batched = false;
 		}
 
@@ -83,13 +82,7 @@ class TileChunk_Impl
 			return m_layers[layer].tile[pos.y*TILE_COUNT + pos.x];
         }
 
-        uint32_t get_id()
-        {
-            return m_id;
-        }
-
     protected:
-        uint32_t    m_id;
         TileLayer   m_layers[LAYER_COUNT];
         TileMap		m_tile_map;
 		
@@ -99,7 +92,7 @@ class TileChunk_Impl
 };
 
 TileChunk::TileChunk(){}
-TileChunk::TileChunk(TileMap & tmap, uint32_t id){impl=std::shared_ptr<TileChunk_Impl>(new TileChunk_Impl(tmap,id));}
+TileChunk::TileChunk(TileMap & tmap){impl=std::shared_ptr<TileChunk_Impl>(new TileChunk_Impl(tmap));}
 
 void TileChunk::draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer)
 {
@@ -109,11 +102,6 @@ void TileChunk::draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer)
 Tile & TileChunk::get_tile(const vec2 & pos, int32_t layer)
 {
     return impl->get_tile(pos,layer);
-}
-
-uint32_t TileChunk::get_id()
-{
-    return impl->get_id();
 }
 
 bool TileChunk::is_batched()
