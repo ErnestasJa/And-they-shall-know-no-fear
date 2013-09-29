@@ -42,9 +42,15 @@ World::~World()
 
 void World::init_level()
 {
-	m_tile_map = TileMap(m_canvas,Tile());
+	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(Sprite::resource(m_canvas,"level_gfx",m_resources),0);
-	m_tile_map.add_chunk(Vec2<int32_t>(0,0));
+	TileChunk c = m_tile_map.add_chunk(vec2(0,0));
+
+	c.get_tile(vec2(0,0),0).type=ETT_NORMAL;
+	c.get_tile(vec2(0,0),0).sprite_frame=113;
+
+	c.get_tile(vec2(0,0),1).type=ETT_NORMAL;
+	c.get_tile(vec2(0,0),1).sprite_frame=117;
 }
 
 bool World::init()

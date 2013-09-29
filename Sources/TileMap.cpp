@@ -7,12 +7,10 @@ class TileMap_Impl
 {
     public:
 
-    TileMap_Impl(Canvas c, Tile default_tile)
+    TileMap_Impl(Canvas c)
     {
         m_canvas = c;
         m_unique_id = 0;
-		m_font = Font(c,"Helvetica",8);
-		m_default_tile = default_tile;
     }
 
     bool add_sprite(Sprite spr, uint8_t id)
@@ -40,13 +38,13 @@ class TileMap_Impl
         m_sprites.erase(id);
     }
 
-    bool is_chunk_visible(const Vec2<int32_t> & chunk_pos, const Rect & render_rect)
+    bool is_chunk_visible(const vec2 & chunk_pos, const Rect & render_rect)
     {
         Rect chunk_rect(chunk_pos.x,chunk_pos.y,Sizex<int32_t>(CHUNK_SIZE,CHUNK_SIZE));
         return chunk_rect.is_overlapped(render_rect);
     }
 
-    TileChunk add_chunk(TileMap m, const Vec2<int32_t> & pos )
+    TileChunk add_chunk(TileMap m, const vec2 & pos )
     {
         if(m_chunks.find(pos)==m_chunks.end())
         {
@@ -61,7 +59,7 @@ class TileMap_Impl
     }
 
 
-    TileChunk get_chunk(const Vec2<int32_t> & pos)
+    TileChunk get_chunk(const vec2 & pos)
     {
         auto r = m_chunks.find(pos);
         if(r!=m_chunks.end())
@@ -72,17 +70,13 @@ class TileMap_Impl
         return TileChunk();
     }
 
-    Tile get_default_tile()
-    {
-        return m_default_tile;
-    }
 
     Canvas & get_canvas()
     {
         return m_canvas;
     }
 
-    void render(const Vec2<int32_t> & pos)
+    void render(const vec2 & pos)
     {
         int w = m_canvas.get_width();
         int h = m_canvas.get_height();
@@ -105,18 +99,20 @@ class TileMap_Impl
 		s+= " y2: ";
 		s+=StringHelp::int_to_text(ry2);
 
-        c = get_chunk(Vec2<int32_t>(0,0));
+        c = get_chunk(vec2(0,0));
         
 		for(int y = ry; y < ry2; y++)
 		for(int x = ry; x < rx2; x++)
 		{
-			c = get_chunk(Vec2<int32_t>(x,y));
+			c = get_chunk(vec2(x,y));
 
 			if(!c.is_null())
 			{
 				if(!c.is_batched())
 					c.batch();
-				c.draw_chunk(m_canvas,Vec2<int32_t>(x*CHUNK_SIZE,y*CHUNK_SIZE)-pos);
+
+				for(int32_t i = 0; i < LAYER_COUNT; i++)
+					c.draw_chunk(m_canvas,vec2(x*CHUNK_SIZE,y*CHUNK_SIZE)-pos,i);
 			}
 		}
 
@@ -125,12 +121,11 @@ class TileMap_Impl
 
     protected:
     Canvas      m_canvas;
-    Tile        m_default_tile;
     uint32_t    m_unique_id;
 
 	Font		m_font;
 
-    std::map<Vec2<int32_t>, TileChunk>  m_chunks;
+    std::map<vec2, TileChunk>  m_chunks;
     std::map<uint8_t, Sprite>           m_sprites;
 };
 
@@ -139,9 +134,9 @@ TileMap::TileMap()
 
 }
 
-TileMap::TileMap(Canvas & c, Tile default_tile)
+TileMap::TileMap(Canvas & c)
 {
-    impl=std::shared_ptr<TileMap_Impl>(new TileMap_Impl(c, default_tile));
+    impl=std::shared_ptr<TileMap_Impl>(new TileMap_Impl(c));
 }
 
 TileMap::~TileMap(){}
@@ -163,32 +158,28 @@ void TileMap::remove_sprite(uint8_t id)
     impl->remove_sprite(id);
 }
 
-bool TileMap::is_chunk_visible(const Vec2<int32_t> & chunk_pos, const Rect & render_rect)
+bool TileMap::is_chunk_visible(const vec2 & chunk_pos, const Rect & render_rect)
 {
     return impl->is_chunk_visible(chunk_pos,render_rect);
 }
 
-TileChunk TileMap::add_chunk( const Vec2<int32_t> & pos )
+TileChunk TileMap::add_chunk( const vec2 & pos )
 {
     return impl->add_chunk(*this,pos);
 }
 
 
-TileChunk TileMap::get_chunk(const Vec2<int32_t> & pos)
+TileChunk TileMap::get_chunk(const vec2 & pos)
 {
     return impl->get_chunk(pos);
 }
 
-Tile TileMap::get_default_tile()
-{
-    return impl->get_default_tile();
-}
 Canvas & TileMap::get_canvas()
 {
 	return impl->get_canvas();
 }
 
-void TileMap::render(const Vec2<int32_t> & pos)
+void TileMap::render(const vec2 & pos)
 {
     impl->render(pos);
 }

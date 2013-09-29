@@ -34,7 +34,7 @@ protected:
 	clan::GameTime			m_game_time;
 
 	///Kameros pozicija
-	Vec2<int32_t> m_pos;
+	vec2 m_pos;
 
 	clan::BlendState blendstate_cl_blend_zero_cl_blend_one_minus_src_alpha;
 	clan::BlendState blendstate_cl_blend_src_alpha_cl_blend_one_minus_src_alpha;

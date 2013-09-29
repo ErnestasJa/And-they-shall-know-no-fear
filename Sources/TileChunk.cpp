@@ -5,11 +5,13 @@
 class TileChunk_Impl
 {
     public:
-        TileChunk_Impl(TileMap & tmap, uint32_t id){
+        TileChunk_Impl(TileMap & tmap, uint32_t id)
+		{
 			m_tile_map = tmap; 
 			m_id = id;
 			m_batched = false;
 		}
+
         virtual ~TileChunk_Impl(){};
 
 		bool is_batched()
@@ -25,34 +27,40 @@ class TileChunk_Impl
 		void batch()
 		{
 			Canvas & c = m_tile_map.get_canvas();
-			Texture2D m_tex = Texture2D(c,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT);
+			for(int32_t i = 0; i < LAYER_COUNT; i++)
+			{
+				Texture2D m_tex = Texture2D(c,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT);
 
-			if(m_tex.is_null())
-				throw Exception("texture is null");
+				if(m_tex.is_null())
+					throw Exception("texture is null");
 
-			m_fb = FrameBuffer(c);
-			m_fb.attach_color(0,m_tex);
+				m_fb = FrameBuffer(c);
+				m_fb.attach_color(0,m_tex);
 
 
-			Canvas c2(c,m_fb);
-			draw_for_batch(c2,Vec2<int32_t>(0,0));
-			c2.flush();
-			m_fb.detach_color(0);
+				Canvas c2(c,m_fb);
+				draw_for_batch(c2,i);
+				c2.flush();
+				m_fb.detach_color(0);
 			
 
-			m_image = Image(m_tex,Rect(0,0,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT));
+				m_layers[i].batched_layer = Image(m_tex,Rect(0,0,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT));
+			}
 			m_batched = true;
 		}
 
-        /**< argument pos should be relative to screen */
-        void draw_for_batch(Canvas & canvas, const Vec2<int32_t> & pos)
+        void draw_for_batch(Canvas & canvas, int32_t layer)
         {
             Sprite s;
             int32_t sid = -1;
+
             for(int32_t i = 0; i < TILE_COUNT; i++)
             for(int32_t j = 0; j < TILE_COUNT; j++)
             {
-                const Tile & t = m_layer.tile[i*TILE_COUNT + j];
+                const Tile & t = m_layers[layer].tile[i*TILE_COUNT + j];
+
+				if(t.type==ETT_NO_TILE)
+					continue;
 
                 if(sid!=t.sprite_ID)
                 {
@@ -61,23 +69,18 @@ class TileChunk_Impl
                 }
 
                 s.set_frame(t.sprite_frame);
-                s.draw(canvas,pos.x+j*TILE_SIZE,pos.y+i*TILE_SIZE);
+                s.draw(canvas,j*TILE_SIZE,i*TILE_SIZE);
             }
         }
 
-		void draw_chunk(Canvas & canvas, const Vec2<int32_t> & pos)
+		void draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer)
         {
-			m_image.draw(canvas,pos.x,pos.y);
+			m_layers[layer].batched_layer.draw(canvas,pos.x,pos.y);
         }
 
-        uint8_t get_tile_type(const Vec2<int32_t> & pos)
+        Tile & get_tile(const vec2 & pos, int32_t layer)
         {
-            if(pos.x>=TILE_COUNT || pos.y>=TILE_COUNT)
-            {
-                return ETT_NO_TILE;
-            }
-
-            return m_layer.tile[pos.y*TILE_COUNT + pos.x].type;
+			return m_layers[layer].tile[pos.y*TILE_COUNT + pos.x];
         }
 
         uint32_t get_id()
@@ -87,11 +90,10 @@ class TileChunk_Impl
 
     protected:
         uint32_t    m_id;
-        TileLayer   m_layer;
+        TileLayer   m_layers[LAYER_COUNT];
         TileMap		m_tile_map;
 		
 		///---------
-		Image		m_image;
 		FrameBuffer m_fb;
 		bool m_batched;
 };
@@ -99,14 +101,14 @@ class TileChunk_Impl
 TileChunk::TileChunk(){}
 TileChunk::TileChunk(TileMap & tmap, uint32_t id){impl=std::shared_ptr<TileChunk_Impl>(new TileChunk_Impl(tmap,id));}
 
-void TileChunk::draw_chunk(Canvas & canvas, const Vec2<int32_t> & pos)
+void TileChunk::draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer)
 {
-    impl->draw_chunk(canvas,pos);
+    impl->draw_chunk(canvas,pos,layer);
 }
 
-uint8_t TileChunk::get_tile_type(const Vec2<int32_t> & pos)
+Tile & TileChunk::get_tile(const vec2 & pos, int32_t layer)
 {
-    return impl->get_tile_type(pos);
+    return impl->get_tile(pos,layer);
 }
 
 uint32_t TileChunk::get_id()

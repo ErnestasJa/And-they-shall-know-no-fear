@@ -13,3 +13,4 @@
 #include <cmath>
 
 using namespace clan;
+typedef Vec2<int32_t> vec2;

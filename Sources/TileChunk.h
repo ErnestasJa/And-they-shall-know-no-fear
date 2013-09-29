@@ -8,9 +8,15 @@ static const int32_t  TILE_COUNT = 16;
 static const int32_t CHUNK_SIZE = TILE_SIZE * TILE_COUNT;
 static const int32_t LAYER_SIZE = CHUNK_SIZE * CHUNK_SIZE;
 
+
+static const int32_t GROUND_LAYER_COUNT = 2;
+static const int32_t OBJECT_LAYER_COUNT = 1;
+static const int32_t LAYER_COUNT = GROUND_LAYER_COUNT+OBJECT_LAYER_COUNT;
+
 enum TILE_TYPE
 {
-    ETT_NO_TILE = 0,
+	ETT_INVALID = 0,
+    ETT_NO_TILE,
     ETT_NORMAL,
     ETT_WALL,
 };
@@ -49,13 +55,13 @@ class TileChunk
         bool is_null() const { return !impl; }
         void throw_if_null() { if (!impl) throw Exception("TileChunk is null"); }
 
-        void draw_chunk(Canvas & canvas, const Vec2<int32_t> & pos);
+        void draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer);
 
 		bool is_batched();
 		void set_batched(bool is_batched); // to force update
 		void batch();
 
-        uint8_t get_tile_type(const Vec2<int32_t> & pos);
+        Tile & get_tile(const vec2 & pos, int32_t layer);
         uint32_t get_id();
 
     protected:
