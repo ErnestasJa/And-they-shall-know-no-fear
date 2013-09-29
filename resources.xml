@@ -7,7 +7,7 @@
 
 	<sprite name="level_gfx">
 		<image file="Gfx\level\base_out_atlas.png">
-		<grid pos="0,0" size="32,32" array="32,32" />
+		<grid pos="0,0" size="32,32" array="32,32"/>
 		</image>
 	</sprite>
 	

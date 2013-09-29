@@ -3,11 +3,11 @@
 
 #include "TileMap.h"
 
-static const int32_t TILE_SIZE = 32;
-static const int32_t  TILE_COUNT = 16;
-static const int32_t CHUNK_SIZE = TILE_SIZE * TILE_COUNT;
-static const int32_t LAYER_SIZE = CHUNK_SIZE * CHUNK_SIZE;
 
+static const int32_t TILE_SIZE = 32; /// tile dydis pixeliais (32x32)
+static const int32_t TILE_COUNT = 16;/// tile kiekis vienoje bloko eileje
+static const int32_t TILE_COUNT_IN_CHUNK = TILE_COUNT * TILE_COUNT;
+static const int32_t CHUNK_EDGE_LENGTH_PIXELS = TILE_SIZE * TILE_COUNT;
 
 static const int32_t GROUND_LAYER_COUNT = 2;
 static const int32_t OBJECT_LAYER_COUNT = 1;
@@ -25,7 +25,7 @@ struct Tile
 {
     uint8_t type;
     uint8_t sprite_ID;
-    uint8_t sprite_frame;
+    uint16_t sprite_frame;
 
     Tile()
     {
@@ -37,7 +37,7 @@ struct Tile
 
 struct TileLayer
 {
-    Tile tile[LAYER_SIZE];
+    Tile tile[TILE_COUNT_IN_CHUNK];
 	Image batched_layer;
 };
 

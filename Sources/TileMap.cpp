@@ -40,7 +40,7 @@ class TileMap_Impl
 
     bool is_chunk_visible(const vec2 & chunk_pos, const Rect & render_rect)
     {
-        Rect chunk_rect(chunk_pos.x,chunk_pos.y,Sizex<int32_t>(CHUNK_SIZE,CHUNK_SIZE));
+        Rect chunk_rect(chunk_pos.x,chunk_pos.y,Sizex<int32_t>(CHUNK_EDGE_LENGTH_PIXELS,CHUNK_EDGE_LENGTH_PIXELS));
         return chunk_rect.is_overlapped(render_rect);
     }
 
@@ -81,10 +81,10 @@ class TileMap_Impl
         int w = m_canvas.get_width();
         int h = m_canvas.get_height();
 
-        int rx = (pos.x-CHUNK_SIZE+1)/CHUNK_SIZE;
-        int ry = (pos.y-CHUNK_SIZE+1)/CHUNK_SIZE;
-        int rx2 = (pos.x+w+CHUNK_SIZE+1)/CHUNK_SIZE;
-        int ry2 = (pos.y+h+CHUNK_SIZE+1)/CHUNK_SIZE;
+        int rx = (pos.x-CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
+        int ry = (pos.y-CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
+        int rx2 = (pos.x+w+CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
+        int ry2 = (pos.y+h+CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
         TileChunk c;
 
 		std::string s = "x1: ";
@@ -112,11 +112,11 @@ class TileMap_Impl
 					c.batch();
 
 				for(int32_t i = 0; i < LAYER_COUNT; i++)
-					c.draw_chunk(m_canvas,vec2(x*CHUNK_SIZE,y*CHUNK_SIZE)-pos,i);
+					c.draw_chunk(m_canvas,vec2(x*CHUNK_EDGE_LENGTH_PIXELS,y*CHUNK_EDGE_LENGTH_PIXELS)-pos,i);
 			}
 		}
 
-		m_font.draw_text(m_canvas,20,20,s,Colorf::black);
+		m_font.draw_text(m_canvas,20,20,s,Colorf::white);
     }
 
     protected:
