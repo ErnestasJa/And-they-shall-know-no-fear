@@ -22,7 +22,7 @@ protected:
 	void on_key_up(const InputEvent & e);
 
 	///game specific funcs
-
+	void init_level();
 
 protected:
 	bool m_run;
@@ -39,4 +39,7 @@ protected:
 	clan::BlendState blendstate_cl_blend_zero_cl_blend_one_minus_src_alpha;
 	clan::BlendState blendstate_cl_blend_src_alpha_cl_blend_one_minus_src_alpha;
 	clan::BlendState blendstate_default;
+
+	///game
+	TileMap m_tile_map;
 };

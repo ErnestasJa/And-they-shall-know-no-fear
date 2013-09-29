@@ -40,6 +40,13 @@ World::~World()
 
 }
 
+void World::init_level()
+{
+	m_tile_map = TileMap(m_canvas,Tile());
+	m_tile_map.add_sprite(Sprite::resource(m_canvas,"level_gfx",m_resources),0);
+	m_tile_map.add_chunk(Vec2<int32_t>(0,0));
+}
+
 bool World::init()
 {
 	m_canvas = clan::Canvas(m_window);
@@ -56,6 +63,10 @@ bool World::init()
 	m_run = true;
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &World::on_key_up);
+
+	///load level
+	init_level();
+
 	return true;
 }
 
@@ -67,6 +78,7 @@ bool World::run()
 		m_game_time.update();
 		m_canvas.clear();
 
+		m_tile_map.render(m_pos);
 
 		m_window.flip(1);
 		clan::KeepAlive::process();
