@@ -36,7 +36,7 @@ bool editor::init()
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_key_up);
 
-	///load level
+	// load level
 	init_level();
 
 	return true;
@@ -67,7 +67,6 @@ bool editor::pause()
 	m_key_up.disable();
 	return true;
 }
-
 bool editor::resume()
 {
 	State::resume();
@@ -75,7 +74,6 @@ bool editor::resume()
 	m_key_up.enable();
 	return true;
 }
-
 bool editor::exit()
 {
 	m_key_up.destroy();
