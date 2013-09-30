@@ -149,6 +149,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Sources\editor.cpp" />
     <ClCompile Include="Sources\menu.cpp" />
     <ClCompile Include="Sources\precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
+    <ClInclude Include="Sources\editor.h" />
     <ClInclude Include="Sources\gameobject.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\precomp.h" />

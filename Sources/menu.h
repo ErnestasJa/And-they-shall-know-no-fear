@@ -2,6 +2,7 @@
 
 #include "state.h"
 #include "world.h"
+#include "editor.h"
 #include "app.h"
 class Menu: public State
 {
@@ -16,7 +17,7 @@ protected:
 	clan::GUIWindowManagerDirect m_window_manager;
 
 	//gui
-	clan::PushButton * button,*button2;
+	clan::PushButton * button_world, *button_editor;
 	clan::Label * l, *l2;
 	GUIComponent * c;
 
@@ -47,10 +48,15 @@ public:
 		c = new GUIComponent(&m_gui_manager, GUITopLevelDescription(Rect(0,0,1024,720),true),"rootx");
 		c->set_constant_repaint(true);
 
-		button = new PushButton(c);
-		button->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
-		button->func_clicked().set(this, &Menu::on_button_clicked, button);
-		button->set_text("Button");
+		button_world = new PushButton(c);
+		button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
+		button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
+		button_world->set_text("World");
+
+		button_editor = new PushButton(c);
+		button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
+		button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
+		button_editor->set_text("Editor");
 
 
 		///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
@@ -61,12 +67,33 @@ public:
 
 	void on_button_clicked(clan::PushButton *button)
 	{
-		State * s = new World(m_window);
-
-		if(s->init())
+		if(button==button_editor)
 		{
-			m_app->get_states().push(s);
-			pause();
+			State * s = new editor(m_window);
+			if(s->init())
+			{
+				m_app->get_states().push(s);
+				pause();
+			}
+			else
+			{
+				s->exit();
+				delete s;
+			}
+		}
+		else if(button==button)
+		{
+			State * s = new World(m_window);
+			if(s->init())
+			{
+				m_app->get_states().push(s);
+				pause();
+			}
+			else
+			{
+				s->exit();
+				delete s;
+			}
 		}
 	}
 
