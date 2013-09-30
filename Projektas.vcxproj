@@ -173,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />
+    <None Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

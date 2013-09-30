@@ -16,10 +16,9 @@ protected:
 	clan::GUIWindowManagerDirect m_window_manager;
 
 	//gui
-	clan::PushButton * button,* button2;
+	clan::PushButton * button,*button2;
 	clan::Label * l, *l2;
 	GUIComponent * c;
-	clan::Font fps_font;
 
 	bool m_run;
 	
@@ -37,8 +36,6 @@ public:
 	
 	bool init()
 	{
-		fps_font = clan::Font(m_canvas, "Tahoma", 20);
-		clan::OpenGLTarget::set_current();
 		clan::XMLResourceDocument res("menu.xml");
 		m_resources = clan::XMLResourceManager::create(res);
 		m_background = clan::Image::resource(m_canvas,"background",m_resources);
