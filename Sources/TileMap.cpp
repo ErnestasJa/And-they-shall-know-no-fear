@@ -68,6 +68,10 @@ class TileMap_Impl
         return TileChunk();
     }
 
+	void erase_chunk( const vec2 & pos )
+	{
+		m_chunks.erase(pos);
+	}
 
     Canvas & get_canvas()
     {
@@ -169,6 +173,11 @@ TileChunk TileMap::add_chunk( const vec2 & pos )
 TileChunk TileMap::get_chunk(const vec2 & pos)
 {
     return impl->get_chunk(pos);
+}
+
+void TileMap::erase_chunk(const vec2 & pos)
+{
+    return impl->erase_chunk(pos);
 }
 
 Canvas & TileMap::get_canvas()

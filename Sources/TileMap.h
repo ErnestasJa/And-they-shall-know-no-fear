@@ -23,6 +23,7 @@ class TileMap
     bool is_chunk_visible(const vec2 & chunk_pos, const Rect & render_rect);
     TileChunk add_chunk( const vec2 & pos );
     TileChunk get_chunk( const vec2 & pos );
+	void erase_chunk( const vec2 & pos );
 
 	Canvas & get_canvas();
 
