@@ -80,7 +80,6 @@ public:
 			m_background.draw(m_canvas,Rect(0,0,1024,720));
 			m_gui_manager.process_messages(0);
 			m_gui_manager.render_windows();
-			fps_font.draw_text(m_canvas, 24, m_canvas.get_height() - 48, "Rendering GUI, Directly onto the display window. Some demo windows disabled to improve FPS (in gui_direct.cpp)",Colorf::black);
 
 			m_window_manager.get_canvas(NULL).flush(); 
 			m_window.flip(0);
