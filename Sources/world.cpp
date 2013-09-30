@@ -30,13 +30,6 @@ bool World::init()
 {
 	m_canvas = clan::Canvas(m_window);
 
-	clan::BlendStateDescription blend_desc;
-	blendstate_default = clan::BlendState(m_canvas, blend_desc);
-	blend_desc.set_blend_function(clan::blend_zero, clan::blend_one_minus_src_alpha, clan::blend_zero, clan::blend_one_minus_src_alpha);
-	blendstate_cl_blend_zero_cl_blend_one_minus_src_alpha = clan::BlendState(m_canvas, blend_desc);
-	blend_desc.set_blend_function(clan::blend_src_alpha, clan::blend_one_minus_src_alpha, clan::blend_src_alpha, clan::blend_one_minus_src_alpha);
-	blendstate_cl_blend_src_alpha_cl_blend_one_minus_src_alpha = clan::BlendState(m_canvas, blend_desc);
-
 	// Setup resources
 	m_resources =   clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
 	m_run = true;
