@@ -16,10 +16,9 @@ protected:
 	clan::GUIWindowManagerDirect m_window_manager;
 
 	//gui
-	clan::PushButton * button,* button2;
+	clan::PushButton * button,*button2;
 	clan::Label * l, *l2;
 	GUIComponent * c;
-	clan::Font fps_font;
 
 	bool m_run;
 	
@@ -37,8 +36,6 @@ public:
 	
 	bool init()
 	{
-		fps_font = clan::Font(m_canvas, "Tahoma", 20);
-		clan::OpenGLTarget::set_current();
 		clan::XMLResourceDocument res("menu.xml");
 		m_resources = clan::XMLResourceManager::create(res);
 		m_background = clan::Image::resource(m_canvas,"background",m_resources);
@@ -80,7 +77,6 @@ public:
 			m_background.draw(m_canvas,Rect(0,0,1024,720));
 			m_gui_manager.process_messages(0);
 			m_gui_manager.render_windows();
-			fps_font.draw_text(m_canvas, 24, m_canvas.get_height() - 48, "Rendering GUI, Directly onto the display window. Some demo windows disabled to improve FPS (in gui_direct.cpp)",Colorf::black);
 
 			m_window_manager.get_canvas(NULL).flush(); 
 			m_window.flip(0);

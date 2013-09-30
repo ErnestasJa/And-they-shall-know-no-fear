@@ -36,10 +36,6 @@ protected:
 	///Kameros pozicija
 	vec2 m_pos;
 
-	clan::BlendState blendstate_cl_blend_zero_cl_blend_one_minus_src_alpha;
-	clan::BlendState blendstate_cl_blend_src_alpha_cl_blend_one_minus_src_alpha;
-	clan::BlendState blendstate_default;
-
 	///game
 	TileMap m_tile_map;
 };
