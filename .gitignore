@@ -2,6 +2,7 @@
 *.suo
 *.user
 *.opensdf
+*.orig
 Debug/
 Release/
 ipch/
