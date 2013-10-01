@@ -90,17 +90,17 @@ void editor::on_input(const clan::InputEvent & e)
 	else if (e.id == clan::mouse_left)
 	{
 
-		/*vec2 pos=e.mouse_pos;
+		clan::vec2 pos=e.mouse_pos;
 		if (pos.x<32 && pos.y<32)
 		{
-			Console::write_line("pic");
+			clan::Console::write_line("pic");
 		}	
 		else
 		{
-			Console::write_line("nopic");
+			clan::Console::write_line("nopic");
 		}
 		
-		Console::wait_for_key();*/
+		clan::Console::wait_for_key();
 		
 
 		//m_run = false;
