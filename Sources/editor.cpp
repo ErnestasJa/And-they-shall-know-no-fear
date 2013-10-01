@@ -16,14 +16,14 @@ editor::~editor()
 void editor::init_level()
 {
 	m_tile_map = TileMap(m_canvas);
-	m_tile_map.add_sprite(Sprite::resource(m_canvas,"level_gfx",m_resources),0);
-	TileChunk c = m_tile_map.add_chunk(vec2(0,0));
+	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
+	TileChunk c = m_tile_map.add_chunk(clan::vec2(0,0));
 
-	c.get_tile(vec2(0,0),0).type=ETT_NORMAL;
-	c.get_tile(vec2(0,0),0).sprite_frame=113;
+	c.get_tile(clan::vec2(0,0),0).type=ETT_NORMAL;
+	c.get_tile(clan::vec2(0,0),0).sprite_frame=113;
 
-	c.get_tile(vec2(0,0),1).type=ETT_NORMAL;
-	c.get_tile(vec2(0,0),1).sprite_frame=117;
+	c.get_tile(clan::vec2(0,0),1).type=ETT_NORMAL;
+	c.get_tile(clan::vec2(0,0),1).sprite_frame=117;
 }
 
 bool editor::init()
@@ -82,7 +82,7 @@ bool editor::exit()
 	return true;
 }
 
-void editor::on_key_up(const InputEvent & e)
+void editor::on_key_up(const clan::InputEvent & e)
 {
 	if(e.id == clan::keycode_w)
 		m_run = false;

@@ -18,15 +18,15 @@ bool Menu::init()
 
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
-	c = new GUIComponent(&m_gui_manager, GUITopLevelDescription(Rect(0,0,1024,720),true),"rootx");
+	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	c->set_constant_repaint(true);
 
-	button_world = new PushButton(c);
+	button_world = new clan::PushButton(c);
 	button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
 	button_world->set_text("World");
 
-	button_editor = new PushButton(c);
+	button_editor = new clan::PushButton(c);
 	button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
 	button_editor->set_text("Editor");
@@ -41,7 +41,7 @@ bool Menu::run()
 {
 	if(m_run)
 	{
-		m_background.draw(m_canvas,Rect(0,0,1024,720));
+		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 		m_gui_manager.process_messages(0);
 		m_gui_manager.render_windows();
 
@@ -75,7 +75,7 @@ bool Menu::exit()
 	return true;
 }
 
-void Menu::on_key_up(const InputEvent & e)
+void Menu::on_key_up(const clan::InputEvent & e)
 {
 	if(e.id == clan::keycode_q)
 		m_run = false;

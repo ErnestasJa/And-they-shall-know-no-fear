@@ -25,32 +25,32 @@ class TileChunk_Impl
 
 		void batch()
 		{
-			Canvas & c = m_tile_map.get_canvas();
+			clan::Canvas & c = m_tile_map.get_canvas();
 			for(int32_t i = 0; i < LAYER_COUNT; i++)
 			{
-				Texture2D m_tex = Texture2D(c,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT);
+				clan::Texture2D m_tex = clan::Texture2D(c,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT);
 
 				if(m_tex.is_null())
-					throw Exception("texture is null");
+					throw clan::Exception("texture is null");
 
-				m_fb = FrameBuffer(c);
+				m_fb = clan::FrameBuffer(c);
 				m_fb.attach_color(0,m_tex);
 
 
-				Canvas c2(c,m_fb);
+				clan::Canvas c2(c,m_fb);
 				draw_for_batch(c2,i);
 				c2.flush();
 				m_fb.detach_color(0);
 			
 
-				m_layers[i].batched_layer = Image(m_tex,Rect(0,0,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT));
+				m_layers[i].batched_layer = clan::Image(m_tex,clan::Rect(0,0,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT));
 			}
 			m_batched = true;
 		}
 
-        void draw_for_batch(Canvas & canvas, int32_t layer)
+        void draw_for_batch(clan::Canvas & canvas, int32_t layer)
         {
-            Sprite s;
+            clan::Sprite s;
             int32_t sid = -1;
 
             for(int32_t i = 0; i < TILE_COUNT; i++)
@@ -72,12 +72,12 @@ class TileChunk_Impl
             }
         }
 
-		void draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer)
+		void draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer)
         {
 			m_layers[layer].batched_layer.draw(canvas,pos.x,pos.y);
         }
 
-        Tile & get_tile(const vec2 & pos, int32_t layer)
+        Tile & get_tile(const clan::vec2 & pos, int32_t layer)
         {
 			return m_layers[layer].tile[pos.y*TILE_COUNT + pos.x];
         }
@@ -87,19 +87,19 @@ class TileChunk_Impl
         TileMap		m_tile_map;
 		
 		///---------
-		FrameBuffer m_fb;
+		clan::FrameBuffer m_fb;
 		bool m_batched;
 };
 
 TileChunk::TileChunk(){}
 TileChunk::TileChunk(TileMap & tmap){impl=std::shared_ptr<TileChunk_Impl>(new TileChunk_Impl(tmap));}
 
-void TileChunk::draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer)
+void TileChunk::draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer)
 {
     impl->draw_chunk(canvas,pos,layer);
 }
 
-Tile & TileChunk::get_tile(const vec2 & pos, int32_t layer)
+Tile & TileChunk::get_tile(const clan::vec2 & pos, int32_t layer)
 {
     return impl->get_tile(pos,layer);
 }

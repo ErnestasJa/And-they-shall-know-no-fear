@@ -20,7 +20,7 @@ protected:
 	//gui
 	clan::PushButton * button_world, *button_editor;
 	clan::Label * l, *l2;
-	GUIComponent * c;
+	clan::GUIComponent * c;
 
 	bool m_run;
 	clan::Slot m_key_up;
@@ -34,6 +34,6 @@ public:
 	bool resume();
 	bool exit();
 
-	void on_key_up(const InputEvent & e);
+	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
 };

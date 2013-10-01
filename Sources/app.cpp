@@ -13,7 +13,6 @@ int App::main(const std::vector<std::string> &args)
 	clan::SetupGL setup_gl;
 	clan::SetupSWRender setup_swrender;
 	clan::SetupGUI setup_gui;
-
 	clan::SetupSound setup_sound;
 	clan::SoundOutput output(44100);
 
@@ -21,6 +20,9 @@ int App::main(const std::vector<std::string> &args)
 	desc.set_title("Demo");
 	desc.set_size(clan::Size(1024, 720), true);
 	clan::DisplayWindow window(desc);
+
+	clan::ConsoleWindow console_window("Console");
+	clan::Console::write_line("Hello World!");
 
 	clan::Slot slot_quit = window.sig_window_close().connect(this, &App::on_window_close);
 

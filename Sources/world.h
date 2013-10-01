@@ -19,7 +19,7 @@ public:
 
 protected:
 	///event funcs
-	void on_key_up(const InputEvent & e);
+	void on_key_up(const clan::InputEvent & e);
 
 	///game specific funcs
 	void init_level();
@@ -34,7 +34,7 @@ protected:
 	clan::GameTime			m_game_time;
 
 	///Kameros pozicija
-	vec2 m_pos;
+	clan::vec2 m_pos;
 
 	///game
 	TileMap m_tile_map;

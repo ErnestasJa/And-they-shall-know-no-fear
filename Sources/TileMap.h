@@ -9,25 +9,25 @@ class TileMap
     public:
 
     TileMap();
-    TileMap(Canvas & c);
+    TileMap(clan::Canvas & c);
     virtual ~TileMap();
 
 
     bool is_null() const { return !impl; }
-    void throw_if_null() { if (!impl) throw Exception("TileMap is null"); }
+    void throw_if_null() { if (!impl) throw clan::Exception("TileMap is null"); }
 
-    bool add_sprite(Sprite spr, uint8_t id);
-    Sprite get_sprite(uint8_t id);
-    void remove_sprite(uint8_t id);
+    bool	add_sprite(clan::Sprite spr, uint8_t id);
+    clan::Sprite	get_sprite(uint8_t id);
+    void	remove_sprite(uint8_t id);
 
-    bool is_chunk_visible(const vec2 & chunk_pos, const Rect & render_rect);
-    TileChunk add_chunk( const vec2 & pos );
-    TileChunk get_chunk( const vec2 & pos );
-	void erase_chunk( const vec2 & pos );
+    bool		is_chunk_visible(const clan::vec2 & chunk_pos, const clan::Rect & render_rect);
+    TileChunk	add_chunk( const clan::vec2 & pos );
+    TileChunk	get_chunk( const clan::vec2 & pos );
+	void		erase_chunk( const clan::vec2 & pos );
 
-	Canvas & get_canvas();
+	clan::Canvas & get_canvas();
 
-    void render(const vec2 & pos);
+    void render(const clan::vec2 & pos);
 
     protected:
     std::shared_ptr<TileMap_Impl> impl;

@@ -38,7 +38,7 @@ struct Tile
 struct TileLayer
 {
     Tile tile[TILE_COUNT_IN_CHUNK];
-	Image batched_layer;
+	clan::Image batched_layer;
 };
 
 /**< add physical layer for chunk */
@@ -53,15 +53,15 @@ class TileChunk
         virtual ~TileChunk(){}
 
         bool is_null() const { return !impl; }
-        void throw_if_null() { if (!impl) throw Exception("TileChunk is null"); }
+        void throw_if_null() { if (!impl) throw clan::Exception("TileChunk is null"); }
 
-        void draw_chunk(Canvas & canvas, const vec2 & pos, int32_t layer);
+        void draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer);
 
 		bool is_batched();
 		void set_batched(bool is_batched); // to force update
 		void batch();
 
-        Tile & get_tile(const vec2 & pos, int32_t layer);
+        Tile & get_tile(const clan::vec2 & pos, int32_t layer);
 
     protected:
         std::shared_ptr<TileChunk_Impl> impl;

@@ -165,7 +165,6 @@
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
     <ClInclude Include="Sources\editor.h" />
-    <ClInclude Include="Sources\gameobject.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\precomp.h" />
     <ClInclude Include="Sources\state.h" />
