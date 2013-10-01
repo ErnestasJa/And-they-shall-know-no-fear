@@ -157,6 +157,7 @@
     </ClCompile>
     <ClCompile Include="Sources\TileChunk.cpp" />
     <ClCompile Include="Sources\TileMap.cpp" />
+    <ClCompile Include="Sources\utility.cpp" />
     <ClCompile Include="Sources\world.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -170,6 +171,7 @@
     <ClInclude Include="Sources\state.h" />
     <ClInclude Include="Sources\TileChunk.h" />
     <ClInclude Include="Sources\TileMap.h" />
+    <ClInclude Include="Sources\utility.h" />
     <ClInclude Include="Sources\world.h" />
   </ItemGroup>
   <ItemGroup>

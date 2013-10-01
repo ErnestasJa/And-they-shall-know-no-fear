@@ -34,9 +34,10 @@ bool editor::init()
 	m_resources =   clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
 	m_run = true;
 	
-	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_key_up);
+	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_input);
+	m_mouse_click = m_window.get_ic().get_mouse().sig_key_up().connect(this, &editor::on_input);
 
-	///load level
+	// load level
 	init_level();
 
 	return true;
@@ -59,7 +60,6 @@ bool editor::run()
 	return m_run;
 }
 
-
 bool editor::pause()
 {
 	State::pause();
@@ -67,7 +67,6 @@ bool editor::pause()
 	m_key_up.disable();
 	return true;
 }
-
 bool editor::resume()
 {
 	State::resume();
@@ -75,17 +74,38 @@ bool editor::resume()
 	m_key_up.enable();
 	return true;
 }
-
 bool editor::exit()
 {
 	m_key_up.destroy();
 	return true;
 }
 
+<<<<<<< HEAD
 void editor::on_key_up(const clan::InputEvent & e)
+=======
+void editor::on_input(const InputEvent & e)
+>>>>>>> origin/tile_editor
 {
 	if(e.id == clan::keycode_w)
 		m_run = false;
 	else if (e.id == clan::keycode_e)
 		m_run = false;
+	else if (e.id == clan::mouse_left)
+	{
+
+		/*vec2 pos=e.mouse_pos;
+		if (pos.x<32 && pos.y<32)
+		{
+			Console::write_line("pic");
+		}	
+		else
+		{
+			Console::write_line("nopic");
+		}
+		
+		Console::wait_for_key();*/
+		
+
+		//m_run = false;
+	}
 }
