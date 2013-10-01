@@ -83,26 +83,34 @@ bool editor::exit()
 
 void editor::on_input(const clan::InputEvent & e)
 {
-	if(e.id == clan::keycode_w)
-		m_run = false;
-	else if (e.id == clan::keycode_e)
-		m_run = false;
-	else if (e.id == clan::mouse_left)
+	switch(e.device.get_type())
 	{
-
-		/*vec2 pos=e.mouse_pos;
-		if (pos.x<32 && pos.y<32)
+		case clan::InputDevice::Type::keyboard:
 		{
-			Console::write_line("pic");
-		}	
-		else
-		{
-			Console::write_line("nopic");
+			if(e.id == clan::keycode_w)
+				m_run = false;
+			else if (e.id == clan::keycode_e)
+				m_run = false;
+			break;
 		}
-		
-		Console::wait_for_key();*/
-		
+		case clan::InputDevice::Type::pointer:
+		{
+			if (e.id == clan::mouse_left)
+			{
 
-		//m_run = false;
+				clan::vec2 pos=e.mouse_pos;
+				if (pos.x<32 && pos.y<32)
+				{
+					clan::Console::write_line("pic");
+				}	
+				else
+				{
+					clan::Console::write_line("nopic");
+				}
+
+				m_run = false;
+			}
+			break;
+		}
 	}
 }
