@@ -18,11 +18,7 @@ public:
 
 protected:
 	///event funcs
-<<<<<<< HEAD
-	void on_key_up(const clan::InputEvent & e);
-=======
-	void on_input(const InputEvent & e);
->>>>>>> origin/tile_editor
+	void on_input(const clan::InputEvent & e);
 
 	///game specific funcs
 	void init_level();

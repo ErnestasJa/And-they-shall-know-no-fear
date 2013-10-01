@@ -80,11 +80,8 @@ bool editor::exit()
 	return true;
 }
 
-<<<<<<< HEAD
-void editor::on_key_up(const clan::InputEvent & e)
-=======
-void editor::on_input(const InputEvent & e)
->>>>>>> origin/tile_editor
+
+void editor::on_input(const clan::InputEvent & e)
 {
 	if(e.id == clan::keycode_w)
 		m_run = false;
