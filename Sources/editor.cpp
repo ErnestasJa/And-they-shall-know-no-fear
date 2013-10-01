@@ -34,7 +34,8 @@ bool editor::init()
 	m_resources =   clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
 	m_run = true;
 	
-	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_key_up);
+	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_input);
+	m_mouse_click = m_window.get_ic().get_mouse().sig_key_up().connect(this, &editor::on_input);
 
 	// load level
 	init_level();
@@ -59,7 +60,6 @@ bool editor::run()
 	return m_run;
 }
 
-
 bool editor::pause()
 {
 	State::pause();
@@ -80,10 +80,15 @@ bool editor::exit()
 	return true;
 }
 
-void editor::on_key_up(const InputEvent & e)
+void editor::on_input(const InputEvent & e)
 {
 	if(e.id == clan::keycode_w)
 		m_run = false;
 	else if (e.id == clan::keycode_e)
 		m_run = false;
+	else if (e.id == clan::mouse_left)
+	{
+		//e.mouse_pos();
+		m_run = false;
+	}
 }

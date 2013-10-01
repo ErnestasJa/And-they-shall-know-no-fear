@@ -19,7 +19,8 @@ public:
 
 protected:
 	///event funcs
-	void on_key_up(const InputEvent & e);
+	void on_input(const InputEvent & e);
+
 
 	///game specific funcs
 	void init_level();
@@ -27,6 +28,7 @@ protected:
 protected:
 	bool m_run;
 	clan::Slot m_key_up;
+	clan::Slot m_mouse_click;
 
 	clan::ResourceManager	m_resources;
 	clan::DisplayWindow		m_window;
