@@ -21,6 +21,7 @@ int App::main(const std::vector<std::string> &args)
 	desc.set_title("Demo");
 	desc.set_size(clan::Size(1024, 720), true);
 	clan::DisplayWindow window(desc);
+	ConsoleWindow console_window("Console");
 
 	clan::Slot slot_quit = window.sig_window_close().connect(this, &App::on_window_close);
 

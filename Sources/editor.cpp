@@ -88,7 +88,20 @@ void editor::on_input(const InputEvent & e)
 		m_run = false;
 	else if (e.id == clan::mouse_left)
 	{
-		//e.mouse_pos();
-		m_run = false;
+
+		/*vec2 pos=e.mouse_pos;
+		if (pos.x<32 && pos.y<32)
+		{
+			Console::write_line("pic");
+		}	
+		else
+		{
+			Console::write_line("nopic");
+		}
+		
+		Console::wait_for_key();*/
+		
+
+		//m_run = false;
 	}
 }

@@ -36,13 +36,11 @@ class TileChunk_Impl
 				m_fb = FrameBuffer(c);
 				m_fb.attach_color(0,m_tex);
 
-
 				Canvas c2(c,m_fb);
 				draw_for_batch(c2,i);
 				c2.flush();
 				m_fb.detach_color(0);
 			
-
 				m_layers[i].batched_layer = Image(m_tex,Rect(0,0,TILE_SIZE*TILE_COUNT,TILE_SIZE*TILE_COUNT));
 			}
 			m_batched = true;

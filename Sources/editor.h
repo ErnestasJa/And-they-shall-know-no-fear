@@ -21,7 +21,6 @@ protected:
 	///event funcs
 	void on_input(const InputEvent & e);
 
-
 	///game specific funcs
 	void init_level();
 

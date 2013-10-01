@@ -1,5 +1,7 @@
 
-vec2 pixels_to_cunk (const vec2 pixel_pos)
+vec2 pixel_to_cunk_pos (const vec2 pixel_pos, const vec2 offset)
 {
-	return pixel_pos;
+	vec2 ats=pixel_pos;
+
+	return ats;
 }
