@@ -6,6 +6,7 @@ protected:
 	bool m_is_paused;
 public:
 	State(){m_is_paused = false;}
+	virtual ~State(){};
 
 	virtual bool init()=0;
 	virtual bool run()=0;
