@@ -16,7 +16,6 @@ bool Menu::init()
 	m_background = clan::Image::resource(m_canvas,"background",m_resources);
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
 
-
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	c = new GUIComponent(&m_gui_manager, GUITopLevelDescription(Rect(0,0,1024,720),true),"rootx");
@@ -31,7 +30,6 @@ bool Menu::init()
 	button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
 	button_editor->set_text("Editor");
-
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
