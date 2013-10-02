@@ -1,5 +1,5 @@
 #include "precomp.h"
-
+#include "utility.h"
 #include "editor.h"
 #include "TileChunk.h"
 
@@ -98,15 +98,9 @@ void editor::on_input(const clan::InputEvent & e)
 			if (e.id == clan::mouse_left)
 			{
 
-				clan::vec2 pos=e.mouse_pos;
-				if (pos.x<32 && pos.y<32)
-				{
-					clan::Console::write_line("pic");
-				}	
-				else
-				{
-					clan::Console::write_line("nopic");
-				}
+				clan::vec2 pos=pixel_to_cunk_pos(e.mouse_pos);
+				
+				clan::Console::write_line("x:",pos.x,"y:",pos.y);
 
 			}
 			break;
