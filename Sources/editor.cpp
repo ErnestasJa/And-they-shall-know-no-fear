@@ -97,7 +97,6 @@ void editor::on_input(const clan::InputEvent & e)
 		{
 			if (e.id == clan::mouse_left)
 			{
-
 				clan::vec2 pos=e.mouse_pos;
 				if (pos.x<32 && pos.y<32)
 				{
@@ -107,8 +106,6 @@ void editor::on_input(const clan::InputEvent & e)
 				{
 					clan::Console::write_line("nopic");
 				}
-
-				m_run = false;
 			}
 			break;
 		}
