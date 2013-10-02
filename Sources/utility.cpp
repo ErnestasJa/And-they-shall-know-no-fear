@@ -1,6 +1,5 @@
 #include "precomp.h"
 #include "utility.h"
-#include "math.h"
 
 clan::vec2 pixel_to_chunk_pos (const clan::vec2 & pos)
 {
