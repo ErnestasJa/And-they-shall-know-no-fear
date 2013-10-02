@@ -1,5 +1,4 @@
 #include "precomp.h"
-#include "utility.h"
 #include "editor.h"
 #include "TileChunk.h"
 
@@ -98,9 +97,10 @@ void editor::on_input(const clan::InputEvent & e)
 			if (e.id == clan::mouse_left)
 			{
 
-				clan::vec2 pos=pixel_to_cunk_pos(e.mouse_pos);
+				clan::vec2 pos=pixel_to_chunk_pos(e.mouse_pos);
 				
-				clan::Console::write_line("x:",pos.x,"y:",pos.y);
+				clan::Console::write_line("x:%1 y:%2",pos.x,pos.y);
+				clan::Console::write_line("mx:%1 my:%2",e.mouse_pos.x,e.mouse_pos.y);
 
 			}
 			break;

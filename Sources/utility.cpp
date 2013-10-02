@@ -1,12 +1,18 @@
 #include "precomp.h"
 #include "utility.h"
 
-clan::vec2 pixel_to_cunk_pos (const clan::vec2 pixel_pos)
+clan::vec2 pixel_to_chunk_pos (const clan::vec2 & world_pos_in_pixels)
 {
-	clan::vec2 ats;
+	clan::vec2 ats=world_pos_in_pixels;
 
-	ats.x = (pixel_pos.x % CHUNK_EDGE_LENGTH_PIXELS)*CHUNK_EDGE_LENGTH_PIXELS;
-	ats.y = (pixel_pos.y % CHUNK_EDGE_LENGTH_PIXELS)*CHUNK_EDGE_LENGTH_PIXELS;
+	if(ats.x<0)
+		ats.x-=CHUNK_EDGE_LENGTH_PIXELS;
+
+	if(ats.y<0)
+		ats.y-=CHUNK_EDGE_LENGTH_PIXELS;
+
+	ats.x /= CHUNK_EDGE_LENGTH_PIXELS;
+	ats.y /= CHUNK_EDGE_LENGTH_PIXELS;
 
 	return ats;
 }
