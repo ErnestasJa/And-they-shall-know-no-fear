@@ -55,7 +55,7 @@ class TileChunk
         bool is_null() const { return !impl; }
         void throw_if_null() { if (!impl) throw clan::Exception("TileChunk is null"); }
 
-        void draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer);
+        void draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer, bool draw_batched=true);
 
 		bool is_batched();
 		void set_batched(bool is_batched); // to force update
