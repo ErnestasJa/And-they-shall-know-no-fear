@@ -57,6 +57,8 @@ bool Menu::pause()
 {
 	State::pause();
 
+	c->set_enabled(false);
+
 	m_key_up.disable();
 	return true;
 }
@@ -64,6 +66,8 @@ bool Menu::pause()
 bool Menu::resume()
 {
 	State::resume();
+
+	c->set_enabled(true);
 
 	m_key_up.enable();
 	return true;
