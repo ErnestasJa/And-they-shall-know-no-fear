@@ -24,6 +24,10 @@ void editor::init_level()
 
 	c.get_tile(clan::vec2(15,15),1).type=ETT_NORMAL;
 	c.get_tile(clan::vec2(15,15),1).sprite_frame=117;
+
+	c = m_tile_map.add_chunk(clan::vec2(1,0));
+	c.get_tile(clan::vec2(8,8),1).type=ETT_NORMAL;
+	c.get_tile(clan::vec2(8,8),1).sprite_frame=200;
 }
 
 bool editor::init()
@@ -99,7 +103,9 @@ void editor::on_input(const clan::InputEvent & e)
 			{
 				clan::vec2 click_pos=e.mouse_pos;
 				clan::vec2 chunk_pos=pixel_to_chunk_pos(click_pos+m_pos);
-				clan::Console::write_line("x:%1 y:%2",chunk_pos.x, chunk_pos.y); //DEBUG
+				clan::vec2 tile_pos=pixel_to_tile_pos(click_pos+m_pos);
+				clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
+				
 			}
 			break;
 		}
