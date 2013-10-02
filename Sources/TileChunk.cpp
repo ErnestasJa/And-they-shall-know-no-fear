@@ -48,7 +48,7 @@ class TileChunk_Impl
 			m_batched = true;
 		}
 
-        void draw_for_batch(clan::Canvas & canvas, int32_t layer)
+        void draw_for_batch(clan::Canvas & canvas, int32_t layer, const clan::vec2 & pos=clan::vec2(0,0))
         {
             clan::Sprite s;
             int32_t sid = -1;
@@ -68,13 +68,16 @@ class TileChunk_Impl
                 }
 
                 s.set_frame(t.sprite_frame);
-                s.draw(canvas,j*TILE_SIZE,i*TILE_SIZE);
+                s.draw(canvas,pos.x+(j*TILE_SIZE),pos.y+(i*TILE_SIZE));
             }
         }
 
-		void draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer)
+		void draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer, bool draw_batched=true)
         {
-			m_layers[layer].batched_layer.draw(canvas,pos.x,pos.y);
+			if(draw_batched)
+				m_layers[layer].batched_layer.draw(canvas,pos.x,pos.y);
+			else
+				draw_for_batch(canvas,layer,pos);
         }
 
         Tile & get_tile(const clan::vec2 & pos, int32_t layer)
@@ -94,9 +97,9 @@ class TileChunk_Impl
 TileChunk::TileChunk(){}
 TileChunk::TileChunk(TileMap & tmap){impl=std::shared_ptr<TileChunk_Impl>(new TileChunk_Impl(tmap));}
 
-void TileChunk::draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer)
+void TileChunk::draw_chunk(clan::Canvas & canvas, const clan::vec2 & pos, int32_t layer, bool draw_batched)
 {
-    impl->draw_chunk(canvas,pos,layer);
+    impl->draw_chunk(canvas,pos,layer,draw_batched);
 }
 
 Tile & TileChunk::get_tile(const clan::vec2 & pos, int32_t layer)
