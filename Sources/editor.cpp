@@ -98,13 +98,8 @@ void editor::on_input(const clan::InputEvent & e)
 			if (e.id == clan::mouse_left)
 			{
 				clan::vec2 click_pos=e.mouse_pos;
-				m_pos.x=-100; m_pos.y=-100;
 				clan::vec2 chunk_pos=pixel_to_chunk_pos(click_pos+m_pos);
-				std::string da = clan::StringHelp::int_to_text(chunk_pos.x);  //DEBUG
-				std::string db = clan::StringHelp::int_to_text(chunk_pos.y);  //DEBUG
-				
-				clan::Console::write_line(da+" "+db+" - "+clan::StringHelp::int_to_text(click_pos.x)+" "+clan::StringHelp::int_to_text(click_pos.y)); //DEBUG
-
+				clan::Console::write_line("x:%1 y:%2",chunk_pos.x, chunk_pos.y); //DEBUG
 			}
 			break;
 		}
