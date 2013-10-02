@@ -53,7 +53,7 @@ class TileChunk
 		void batch();
 
         Tile & get_tile(const clan::vec2 & pos, int32_t layer);
-
+		TileLayer & get_tile_layer(int32_t layer);
     protected:
         std::shared_ptr<TileChunk_Impl> impl;
 };
