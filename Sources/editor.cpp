@@ -85,7 +85,7 @@ void editor::on_input(const clan::InputEvent & e)
 {
 	switch(e.device.get_type())
 	{
-		case clan::InputDevice::Type::keyboard:
+		case clan::InputDevice::keyboard:
 		{
 			if(e.id == clan::keycode_w)
 				m_run = false;
@@ -93,10 +93,11 @@ void editor::on_input(const clan::InputEvent & e)
 				m_run = false;
 			break;
 		}
-		case clan::InputDevice::Type::pointer:
+		case clan::InputDevice::pointer:
 		{
 			if (e.id == clan::mouse_left)
 			{
+
 				clan::vec2 pos=e.mouse_pos;
 				if (pos.x<32 && pos.y<32)
 				{
@@ -106,6 +107,7 @@ void editor::on_input(const clan::InputEvent & e)
 				{
 					clan::Console::write_line("nopic");
 				}
+
 			}
 			break;
 		}
