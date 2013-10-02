@@ -99,7 +99,7 @@ void editor::on_input(const clan::InputEvent & e)
 			{
 				clan::vec2 click_pos=e.mouse_pos;
 				m_pos.x=-100; m_pos.y=-100;
-				clan::vec2 chunk_pos=pixel_to_cunk_pos(click_pos+m_pos);
+				clan::vec2 chunk_pos=pixel_to_chunk_pos(click_pos+m_pos);
 				std::string da = clan::StringHelp::int_to_text(chunk_pos.x);  //DEBUG
 				std::string db = clan::StringHelp::int_to_text(chunk_pos.y);  //DEBUG
 				
