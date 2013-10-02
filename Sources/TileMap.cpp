@@ -113,7 +113,7 @@ class TileMap_Impl
 					c.batch();
 
 				for(int32_t i = 0; i < LAYER_COUNT; i++)
-					c.draw_chunk(m_canvas,clan::vec2(x*CHUNK_EDGE_LENGTH_PIXELS,y*CHUNK_EDGE_LENGTH_PIXELS)-pos,i);
+					c.draw_chunk(m_canvas,clan::vec2(x*CHUNK_EDGE_LENGTH_PIXELS,y*CHUNK_EDGE_LENGTH_PIXELS)-pos,i,false);
 			}
 		}
 

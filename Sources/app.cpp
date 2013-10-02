@@ -22,7 +22,7 @@ int App::main(const std::vector<std::string> &args)
 	clan::DisplayWindow window(desc);
 
 	clan::ConsoleWindow console_window("Console");
-	clan::Console::write_line("Hello World!");
+
 
 	clan::Slot slot_quit = window.sig_window_close().connect(this, &App::on_window_close);
 

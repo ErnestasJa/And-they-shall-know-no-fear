@@ -22,8 +22,8 @@ void World::init_level()
 	c.get_tile(clan::vec2(0,0),0).type=ETT_NORMAL;
 	c.get_tile(clan::vec2(0,0),0).sprite_frame=113;
 
-	c.get_tile(clan::vec2(0,0),1).type=ETT_NORMAL;
-	c.get_tile(clan::vec2(0,0),1).sprite_frame=117;
+	c.get_tile(clan::vec2(5,0),1).type=ETT_NORMAL;
+	c.get_tile(clan::vec2(5,0),1).sprite_frame=117;
 }
 
 bool World::init()
