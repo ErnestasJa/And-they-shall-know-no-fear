@@ -3,6 +3,7 @@
 #include "TileMap.h"
 #include "TileChunk.h"
 
+
 class TileMap_Impl
 {
     public:
@@ -49,7 +50,6 @@ class TileMap_Impl
         {
             TileChunk c(m);
             m_chunks[pos]=c;
-            std::cout << "Chunk added." << std::endl;
             return c;
         }
         else
@@ -83,28 +83,17 @@ class TileMap_Impl
         int w = m_canvas.get_width();
         int h = m_canvas.get_height();
 
-        int rx = (pos.x-CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
-        int ry = (pos.y-CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
-        int rx2 = (pos.x+w+CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
-        int ry2 = (pos.y+h+CHUNK_EDGE_LENGTH_PIXELS+1)/CHUNK_EDGE_LENGTH_PIXELS;
+		clan::vec2 tl, br;
+		tl = pos;
+		br=pos+clan::vec2(w,h);
+
+		tl=pixel_to_chunk_pos(tl);
+		br=pixel_to_chunk_pos(br);
+
         TileChunk c;
-
-		std::string s = "x1: ";
-		s+=clan::StringHelp::int_to_text(rx);
-
-		s+= " y1: ";
-		s+=clan::StringHelp::int_to_text(ry);
-		
-		s+= "\nx2: ";
-		s+=clan::StringHelp::int_to_text(rx2);
-		
-		s+= " y2: ";
-		s+=clan::StringHelp::int_to_text(ry2);
-
-        c = get_chunk(clan::vec2(0,0));
         
-		for(int y = ry; y < ry2; y++)
-		for(int x = ry; x < rx2; x++)
+		for(int y = tl.y; y < br.y; y++)
+		for(int x = tl.x; x < br.x; x++)
 		{
 			c = get_chunk(clan::vec2(x,y));
 
@@ -118,16 +107,12 @@ class TileMap_Impl
 			}
 		}
 
-		m_font.draw_text(m_canvas,20,20,s,clan::Colorf::white);
     }
 
     protected:
-    clan::Canvas      m_canvas;
-
-	clan::Font		m_font;
-
-    std::map<clan::vec2, TileChunk>  m_chunks;
-    std::map<uint8_t, clan::Sprite>           m_sprites;
+    clan::Canvas						m_canvas;
+    std::map<clan::vec2, TileChunk>		m_chunks;
+    std::map<uint8_t, clan::Sprite>     m_sprites;
 };
 
 TileMap::TileMap()
