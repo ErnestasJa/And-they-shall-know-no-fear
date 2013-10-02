@@ -49,7 +49,6 @@ class TileMap_Impl
         {
             TileChunk c(m);
             m_chunks[pos]=c;
-            std::cout << "Chunk added." << std::endl;
             return c;
         }
         else
