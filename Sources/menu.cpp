@@ -22,14 +22,21 @@ bool Menu::init()
 	c->set_constant_repaint(true);
 
 	button_world = new clan::PushButton(c);
-	button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
+	button_world->set_geometry(clan::Rect( 420, 300, clan::Size(160, 60)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
 	button_world->set_text("World");
 
 	button_editor = new clan::PushButton(c);
-	button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
+	button_editor->set_geometry(clan::Rect( 420, 380, clan::Size(160, 60)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
 	button_editor->set_text("Editor");
+
+	m_label_quit = new clan::Label(c);
+	m_label_quit->set_geometry(clan::Rect( 420, 480, clan::Size(160, 60)));
+	m_label_quit->func_input_pressed().set(this, &Menu::on_label_clicked, m_label_quit);
+	m_label_quit->set_text("Quit");
+	m_label_quit->set_class("menulabel",true);
+
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
@@ -45,7 +52,7 @@ bool Menu::run()
 		m_gui_manager.process_messages(0);
 		m_gui_manager.render_windows();
 
-		m_window_manager.get_canvas(NULL).flush(); 
+		m_window_manager.get_canvas(NULL).flush();
 		m_window.flip(0);
 		clan::KeepAlive::process();
 	}
@@ -115,4 +122,10 @@ void Menu::on_button_clicked(clan::PushButton *button)
 			delete s;
 		}
 	}
+}
+
+bool Menu::on_label_clicked(const clan::InputEvent & e, clan::Label *button)
+{
+	m_run=false;
+	return false;
 }

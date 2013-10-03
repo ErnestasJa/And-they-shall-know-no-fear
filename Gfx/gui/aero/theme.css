@@ -25,6 +25,9 @@
 @import "messagebox.css";
 @import "ribbon.css";
 
+/* custom styles */
+@import "menulabel.css";
+
 dragbox
 {
 	background-color: #a0a0f0;

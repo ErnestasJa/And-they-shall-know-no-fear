@@ -19,7 +19,7 @@ protected:
 
 	//gui
 	clan::PushButton * button_world, *button_editor;
-	clan::Label * l, *l2;
+	clan::Label * m_label_quit;
 	clan::GUIComponent * c;
 
 	bool m_run;
@@ -36,4 +36,5 @@ public:
 
 	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
+	bool on_label_clicked(const clan::InputEvent & e, clan::Label *button);
 };
