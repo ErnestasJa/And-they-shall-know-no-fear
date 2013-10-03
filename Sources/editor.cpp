@@ -80,7 +80,6 @@ bool editor::exit()
 	return true;
 }
 
-
 void editor::on_input(const clan::InputEvent & e)
 {
 	switch(e.device.get_type())
