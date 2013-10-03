@@ -2,7 +2,6 @@
 #define TILECHUNK_H
 
 #include "tile_map.h"
-#include "map_attributes.h"
 
 enum TILE_TYPE
 {
