@@ -1,1 +1,2 @@
-- TileChunk, erase chunk
++ tile_chunk, erase chunk
+- editor, edge_pan add sensitivity
