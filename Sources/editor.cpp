@@ -1,7 +1,6 @@
 #include "precomp.h"
-#include "utility.h"
 #include "editor.h"
-#include "TileChunk.h"
+#include "tile_chunk.h"
 
 editor::editor(clan::DisplayWindow &display_window)
 {
@@ -36,6 +35,7 @@ bool editor::init()
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_input);
 	m_mouse_click = m_window.get_ic().get_mouse().sig_key_up().connect(this, &editor::on_input);
+	m_mouse_move = m_window.get_ic().get_mouse().sig_pointer_move().connect(this, &editor::on_input);
 
 	// load level
 	init_level();
@@ -43,6 +43,20 @@ bool editor::init()
 	return true;
 }
 
+void editor::edge_pan(const clan::vec2 & pos)
+{
+	int32_t sens=15;
+
+	if (pos.x < 30) m_pan.x=-sens;
+	else if (pos.x > m_window.get_viewport().get_width()-10) m_pan.x=sens;
+	else m_pan.x=0;
+
+	if (pos.y < 30) m_pan.y=-sens;
+	else if (pos.y > m_window.get_viewport().get_height()-10) m_pan.y=sens;
+	else m_pan.y=0;
+
+	
+}
 
 bool editor::run()
 {
@@ -51,6 +65,7 @@ bool editor::run()
 		m_game_time.update();
 		m_canvas.clear();
 
+		m_pos+=m_pan;
 		m_tile_map.render(m_pos);
 
 		m_window.flip(1);
@@ -81,6 +96,7 @@ bool editor::exit()
 }
 
 
+
 void editor::on_input(const clan::InputEvent & e)
 {
 	switch(e.device.get_type())
@@ -98,8 +114,14 @@ void editor::on_input(const clan::InputEvent & e)
 			if (e.id == clan::mouse_left)
 			{
 				clan::vec2 click_pos=e.mouse_pos;
+				m_pos.x=-100;m_pos.y=-100;//DEBUG
 				clan::vec2 chunk_pos=pixel_to_chunk_pos(click_pos+m_pos);
-				clan::Console::write_line("x:%1 y:%2",chunk_pos.x, chunk_pos.y); //DEBUG
+				clan::vec2 tile_pos=pixel_to_tile_pos(click_pos+m_pos);
+				clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
+			}
+			if (e.type == clan::InputEvent::pointer_moved)
+			{
+				edge_pan(e.mouse_pos);
 			}
 			break;
 		}

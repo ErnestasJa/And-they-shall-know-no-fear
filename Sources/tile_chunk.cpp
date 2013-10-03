@@ -1,6 +1,6 @@
 #include "precomp.h"
 
-#include "TileChunk.h"
+#include "tile_chunk.h"
 
 class TileChunk_Impl
 {

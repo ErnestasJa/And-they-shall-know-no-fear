@@ -1,7 +1,7 @@
 #pragma once
 
 #include "state.h"
-#include "TileMap.h"
+#include "tile_map.h"
 
 class editor: public State
 {
@@ -22,11 +22,13 @@ protected:
 
 	///game specific funcs
 	void init_level();
+	void edge_pan(const clan::vec2 & pos);
 
 protected:
 	bool m_run;
 	clan::Slot m_key_up;
 	clan::Slot m_mouse_click;
+	clan::Slot m_mouse_move;
 
 	clan::ResourceManager	m_resources;
 	clan::DisplayWindow		m_window;
@@ -35,6 +37,9 @@ protected:
 
 	///Kameros pozicija
 	clan::vec2 m_pos;
+
+	///Kameros poslinkis
+	clan::vec2 m_pan;
 
 	///game
 	TileMap m_tile_map;
