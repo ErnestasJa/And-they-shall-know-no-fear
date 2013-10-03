@@ -1,7 +1,7 @@
 #include "precomp.h"
 
 #include "world.h"
-#include "TileChunk.h"
+#include "tile_chunk.h"
 
 World::World(clan::DisplayWindow &display_window)
 {
