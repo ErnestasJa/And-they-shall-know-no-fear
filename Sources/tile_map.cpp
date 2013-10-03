@@ -85,15 +85,15 @@ class TileMap_Impl
 
 		clan::vec2 tl, br;
 		tl = pos;
-		br=pos+clan::vec2(w,h);
+		br = pos+clan::vec2(w,h);
 
 		tl=pixel_to_chunk_pos(tl);
 		br=pixel_to_chunk_pos(br);
 
         TileChunk c;
-        
-		for(int y = tl.y; y < br.y; y++)
-		for(int x = tl.x; x < br.x; x++)
+
+		for(int y = tl.y; y <= br.y; y++)
+		for(int x = tl.x; x <= br.x; x++)
 		{
 			c = get_chunk(clan::vec2(x,y));
 
