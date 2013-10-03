@@ -1,7 +1,7 @@
 #pragma once
 
 #include "state.h"
-#include "TileMap.h"
+#include "tile_map.h"
 
 class editor: public State
 {

@@ -1,7 +1,7 @@
 #include "precomp.h"
 
-#include "TileMap.h"
-#include "TileChunk.h"
+#include "tile_map.h"
+#include "tile_chunk.h"
 
 
 class TileMap_Impl

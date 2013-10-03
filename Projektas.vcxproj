@@ -155,8 +155,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Sources\TileChunk.cpp" />
-    <ClCompile Include="Sources\TileMap.cpp" />
+    <ClCompile Include="Sources\tile_chunk.cpp" />
+    <ClCompile Include="Sources\tile_map.cpp" />
     <ClCompile Include="Sources\utility.cpp" />
     <ClCompile Include="Sources\world.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -166,12 +166,12 @@
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
     <ClInclude Include="Sources\editor.h" />
-    <ClInclude Include="Sources\mapAttributes.h" />
+    <ClInclude Include="Sources\map_attributes.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\precomp.h" />
     <ClInclude Include="Sources\state.h" />
-    <ClInclude Include="Sources\TileChunk.h" />
-    <ClInclude Include="Sources\TileMap.h" />
+    <ClInclude Include="Sources\tile_chunk.h" />
+    <ClInclude Include="Sources\tile_map.h" />
     <ClInclude Include="Sources\utility.h" />
     <ClInclude Include="Sources\world.h" />
   </ItemGroup>
