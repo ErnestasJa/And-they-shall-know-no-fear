@@ -102,6 +102,7 @@ void editor::on_input(const clan::InputEvent & e)
 			if (e.id == clan::mouse_left)
 			{
 				clan::vec2 click_pos=e.mouse_pos;
+				m_pos.x=-100;m_pos.y=-100;
 				clan::vec2 chunk_pos=pixel_to_chunk_pos(click_pos+m_pos);
 				clan::vec2 tile_pos=pixel_to_tile_pos(click_pos+m_pos);
 				clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
