@@ -30,7 +30,7 @@ void editor::init_gui()
 	m_sprite_selection_window->set_visible(false);
 
 	m_sprite_selection = new SpriteSelection(m_sprite_selection_window);
-	m_frame_select = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
+	m_frame_select	   = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
 
 	m_gui_root->update_layout();
 }
@@ -54,7 +54,7 @@ bool editor::init()
 	m_canvas = clan::Canvas(m_window);
 	
 	// Setup resources
-	m_resources =   clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
+	m_resources = clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_input);
 	m_mouse_click = m_window.get_ic().get_mouse().sig_key_up().connect(this, &editor::on_input);
@@ -139,10 +139,6 @@ bool editor::exit()
 
 void editor::on_frame_select(int32_t frame)
 {
-	if(frame==-1)
-		return;
-
-	//kodas testavimui
 	Tile & t = m_tile_map.get_chunk(clan::vec2(0,0)).get_tile(clan::vec2(0,0),0);
 	t.sprite_frame=frame;
 }
@@ -161,10 +157,11 @@ void editor::on_input(const clan::InputEvent & e)
 		}
 		case clan::InputDevice::pointer:
 		{
+			if(m_gui_root->get_component_at(e.mouse_pos)!=m_gui_root) break;
+
 			if (e.id == clan::mouse_left)
 			{
 				clan::vec2 click_pos=e.mouse_pos;
-				m_pos.x=-100;m_pos.y=-100;//DEBUG
 				clan::vec2 chunk_pos=pixel_to_chunk_pos(click_pos+m_pos);
 				clan::vec2 tile_pos=pixel_to_tile_pos(click_pos+m_pos);
 				clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
