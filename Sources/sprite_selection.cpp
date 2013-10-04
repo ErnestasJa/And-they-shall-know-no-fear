@@ -37,7 +37,7 @@ void SpriteSelection::render(clan::Canvas & c, const clan::Rect & clip_rect)
 	this->push_cliprect(c,this->get_content_box());
 
 	for(int i = 0; i < 32; i++)
-	for(int j = 0; j < 32;  j++)
+	for(int j = 0; j < 32; j++)
 	{
 		m_sprite.set_frame((i*32)+j);
 		m_sprite.draw(c,j*32 - m_pos.x,i*32 - m_pos.y);

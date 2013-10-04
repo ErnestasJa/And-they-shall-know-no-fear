@@ -1,2 +1,5 @@
 + tile_chunk, erase chunk
 - editor, edge_pan add sensitivity
+
+issaugot frame paklikinta
+naudoti imput funkcija ir piest

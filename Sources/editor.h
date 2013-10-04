@@ -29,6 +29,7 @@ protected:
 	void init_gui();
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis();
+	void change_tile_sprite(const clan::vec2 & pos);
 
 protected:
 	bool m_run;
@@ -62,5 +63,7 @@ protected:
 	clan::Window				*m_sprite_selection_window;
 	SpriteSelection				*m_sprite_selection;
 
+
 	clan::Slot m_frame_select;
+	int32_t m_selected_frame;
 };
