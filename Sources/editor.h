@@ -23,6 +23,7 @@ protected:
 	///game specific funcs
 	void init_level();
 	void edge_pan(const clan::vec2 & pos);
+	void draw_world_axis();
 
 protected:
 	bool m_run;

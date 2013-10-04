@@ -54,8 +54,21 @@ void editor::edge_pan(const clan::vec2 & pos)
 	if (pos.y < 30) m_pan.y=-sens;
 	else if (pos.y > m_window.get_viewport().get_height()-10) m_pan.y=sens;
 	else m_pan.y=0;
+}
 
-	
+void editor::draw_world_axis()
+{
+	int32_t w = m_window.get_viewport().get_width(), h = m_window.get_viewport().get_height();
+
+	if(m_pos.x<=w && m_pos.x+w>=0)
+	{
+		m_canvas.draw_line(clan::LineSegment2f(clan::vec2(-m_pos.x,0),clan::vec2(-m_pos.x,h)),clan::Colorf::blue);
+	}
+
+	if(m_pos.y<=h && m_pos.y+h>=0)
+	{
+		m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
+	}
 }
 
 bool editor::run()
@@ -67,6 +80,7 @@ bool editor::run()
 
 		m_pos+=m_pan;
 		m_tile_map.render(m_pos);
+		draw_world_axis();
 
 		m_window.flip(1);
 		clan::KeepAlive::process();
