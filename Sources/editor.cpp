@@ -1,15 +1,38 @@
 #include "precomp.h"
 #include "editor.h"
 #include "tile_chunk.h"
+#include "sprite_selection.h"
 
 editor::editor(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
+	m_sprite_selection=nullptr;
 }
 
 editor::~editor()
 {
 
+}
+
+void editor::init_gui()
+{
+	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
+	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
+	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
+
+	m_button = new clan::PushButton(m_gui_root);
+	m_button->set_geometry(clan::Rect( 1024-80, 40, clan::Size(80, 25)));
+	m_button->func_clicked().set(this, &editor::on_button_clicked, m_button);
+	m_button->set_text("Select frame");
+
+	m_sprite_selection_window = new clan::Window(m_gui_root);
+	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
+	m_sprite_selection_window->set_visible(false);
+
+	m_sprite_selection = new SpriteSelection(m_sprite_selection_window);
+	m_frame_select = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
+
+	m_gui_root->update_layout();
 }
 
 void editor::init_level()
@@ -27,19 +50,18 @@ void editor::init_level()
 
 bool editor::init()
 {
+	m_run = true;
 	m_canvas = clan::Canvas(m_window);
-
+	
 	// Setup resources
 	m_resources =   clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
-	m_run = true;
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_input);
 	m_mouse_click = m_window.get_ic().get_mouse().sig_key_up().connect(this, &editor::on_input);
 	m_mouse_move = m_window.get_ic().get_mouse().sig_pointer_move().connect(this, &editor::on_input);
 
-	// load level
 	init_level();
-
+	init_gui();
 	return true;
 }
 
@@ -82,6 +104,11 @@ bool editor::run()
 		m_tile_map.render(m_pos);
 		draw_world_axis();
 
+		///render gui
+		m_gui_manager.process_messages(0);
+		m_gui_manager.render_windows();
+		m_window_manager.get_canvas(NULL).flush();
+
 		m_window.flip(1);
 		clan::KeepAlive::process();
 	}
@@ -109,7 +136,16 @@ bool editor::exit()
 	return true;
 }
 
+void editor::on_frame_select(int32_t frame)
+{
+	clan::Console::write_line("frame:%1",frame);
+	if(frame==-1)
+		return;
 
+	//kodas testavimui
+	Tile & t = m_tile_map.get_chunk(clan::vec2(0,0)).get_tile(clan::vec2(0,0),0);
+	t.sprite_frame=frame;
+}
 
 void editor::on_input(const clan::InputEvent & e)
 {
@@ -139,5 +175,14 @@ void editor::on_input(const clan::InputEvent & e)
 			}
 			break;
 		}
+	}
+}
+
+void editor::on_button_clicked(clan::PushButton * btn)
+{
+	if(btn==m_button)
+	{
+		m_sprite_selection->set_sprite(m_tile_map.get_sprite(0));
+		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
 	}
 }
