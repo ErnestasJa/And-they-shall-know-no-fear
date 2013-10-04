@@ -54,8 +54,30 @@ void editor::edge_pan(const clan::vec2 & pos)
 	if (pos.y < 30) m_pan.y=-sens;
 	else if (pos.y > m_window.get_viewport().get_height()-30) m_pan.y=sens;
 	else m_pan.y=0;
+}
 
-	
+void editor::draw_world_axis()
+{
+	int32_t w = m_window.get_viewport().get_width(), h = m_window.get_viewport().get_height();
+
+
+	//chunk and tile separators
+	for(int32_t i=0; i<=w; i++)
+		if((i+m_pos.x)%CHUNK_EDGE_LENGTH_PIXELS==0) 
+			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::yellow);
+		else if((i+m_pos.x)%TILE_SIZE==0) 
+			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::blue);
+
+	for(int32_t i=0; i<=h; i++)
+		if((i+m_pos.y)%CHUNK_EDGE_LENGTH_PIXELS==0) 
+			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::yellow);
+		else if((i+m_pos.y)%TILE_SIZE==0)
+			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::blue);
+		
+
+	//origin axis
+	if(m_pos.x<=w && m_pos.x+w>=0) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(-m_pos.x,0),clan::vec2(-m_pos.x,h)),clan::Colorf::red);
+	if(m_pos.y<=h && m_pos.y+h>=0) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
 }
 
 bool editor::run()
@@ -67,6 +89,7 @@ bool editor::run()
 
 		m_pos+=m_pan;
 		m_tile_map.render(m_pos);
+		draw_world_axis();
 
 		m_window.flip(1);
 		clan::KeepAlive::process();
