@@ -29,7 +29,6 @@ class TileMap
 	clan::Canvas & get_canvas();
     void render(const clan::vec2 & pos);
 	
-
 	bool load(const std::string & file);
 	bool save(const std::string & file);
 

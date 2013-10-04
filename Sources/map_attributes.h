@@ -1,6 +1,5 @@
 #pragma once
 
-
 static const int32_t VERSION = 1;
 
 static const int32_t TILE_SIZE = 32; /// tile dydis pixeliais (32x32)
