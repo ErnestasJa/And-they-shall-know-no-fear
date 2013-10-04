@@ -1,5 +1,4 @@
 + tile_chunk, erase chunk
 - editor, edge_pan add sensitivity
-
-issaugot frame paklikinta
-naudoti imput funkcija ir piest
+- editor, change_tile_sprite add layer selection
+- editor, change_tile_sprite add sprite removal (type set to no tile)

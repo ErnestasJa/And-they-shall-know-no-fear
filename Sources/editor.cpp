@@ -6,7 +6,7 @@
 editor::editor(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
-	m_sprite_selection=nullptr;
+	m_sprite_selection = nullptr;
 	m_selected_frame = -1;
 }
 
@@ -21,10 +21,15 @@ void editor::init_gui()
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 
-	m_button = new clan::PushButton(m_gui_root);
-	m_button->set_geometry(clan::Rect( 1024-80, 40, clan::Size(80, 25)));
-	m_button->func_clicked().set(this, &editor::on_button_clicked, m_button);
-	m_button->set_text("Select frame");
+	m_button_sprite = new clan::PushButton(m_gui_root);
+	m_button_sprite->set_geometry(clan::Rect( 1024-80, 40, clan::Size(80, 25)));
+	m_button_sprite->func_clicked().set(this, &editor::on_button_clicked, m_button_sprite);
+	m_button_sprite->set_text("Select frame");
+
+	m_button_layer = new clan::PushButton(m_gui_root);
+	m_button_layer->set_geometry(clan::Rect( 1024-80, 10, clan::Size(80, 25)));
+	m_button_layer->func_clicked().set(this, &editor::on_button_clicked, m_button_layer);
+	m_button_layer->set_text("Select layer");
 
 	m_sprite_selection_window = new clan::Window(m_gui_root);
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
@@ -161,9 +166,12 @@ void editor::on_input(const clan::InputEvent & e)
 			if(m_gui_root->get_component_at(e.mouse_pos)!=m_gui_root) break;
 
 			if (e.id == clan::mouse_left)
-			{
 				change_tile_sprite(e.mouse_pos);
+			else if (e.id == clan::mouse_right)
+			{
+				//WIP change change_tile_sprite to work in sprite deletion
 			}
+
 			if (e.type == clan::InputEvent::pointer_moved)
 			{
 				edge_pan(e.mouse_pos);
@@ -191,9 +199,13 @@ void editor::change_tile_sprite(const clan::vec2 & pos)
 
 void editor::on_button_clicked(clan::PushButton * btn)
 {
-	if(btn==m_button)
+	if(btn==m_button_sprite)
 	{
 		m_sprite_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
+	}
+	else if (btn==m_button_layer)
+	{
+		//WIP make a window for layer selection
 	}
 }

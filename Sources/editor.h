@@ -59,7 +59,7 @@ protected:
 	
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
-	clan::PushButton			*m_button;
+	clan::PushButton			*m_button_sprite, *m_button_layer;
 	clan::Window				*m_sprite_selection_window;
 	SpriteSelection				*m_sprite_selection;
 
