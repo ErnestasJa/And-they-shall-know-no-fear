@@ -85,6 +85,11 @@ class TileChunk_Impl
 			return m_layers[layer].tile[pos.y*TILE_COUNT + pos.x];
         }
 
+		TileLayer & get_tile_layer(int32_t layer)
+		{
+			return m_layers[layer];
+		}
+
     protected:
         TileLayer   m_layers[LAYER_COUNT];
         TileMap		m_tile_map;
@@ -120,4 +125,9 @@ void TileChunk::set_batched(bool is_batched)
 void TileChunk::batch()
 {
 	impl->batch();
+}
+
+TileLayer & TileChunk::get_tile_layer(int32_t layer)
+{
+	return impl->get_tile_layer(layer);
 }
