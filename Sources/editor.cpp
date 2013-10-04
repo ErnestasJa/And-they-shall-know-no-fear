@@ -130,6 +130,7 @@ bool editor::resume()
 	m_key_up.enable();
 	return true;
 }
+
 bool editor::exit()
 {
 	m_key_up.destroy();
@@ -138,7 +139,6 @@ bool editor::exit()
 
 void editor::on_frame_select(int32_t frame)
 {
-	clan::Console::write_line("frame:%1",frame);
 	if(frame==-1)
 		return;
 
