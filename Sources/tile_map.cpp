@@ -109,6 +109,111 @@ class TileMap_Impl
 
     }
 
+	bool load(TileMap map, const std::string & file)
+	{
+		m_chunks.clear();
+
+		try
+		{
+			clan::File f(file,clan::File::open_existing,clan::File::access_read);
+
+			if(f.is_null())
+				return false;
+
+			verify_header(f);
+
+			while(f.get_position()<f.get_size())
+			{
+				int32_t x = f.read_int32();
+				int32_t y = f.read_int32();
+
+				TileChunk c = add_chunk(map, clan::vec2(x,y));
+
+				for(int32_t i = 0; i < LAYER_COUNT; i++)
+				{
+					TileLayer & l = c.get_tile_layer(i);
+					for(int32_t j = 0; j < TILE_COUNT_IN_CHUNK; j++)
+					{
+						l.tile[j].type=f.read_uint8();
+						l.tile[j].sprite_ID=f.read_uint8();
+						l.tile[j].sprite_frame=f.read_uint16();
+					}
+				}
+			}
+
+			f.close();
+		}
+		catch(clan::Exception & e)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	bool save(const std::string & file)
+	{
+
+		clan::File f(file,clan::File::create_always,clan::File::access_write);
+
+		write_header(f);
+
+		for(std::map<clan::vec2, TileChunk>::iterator m = m_chunks.begin(); m != m_chunks.end(); m++)
+		{
+			TileChunk c = m->second;
+
+			f.write_int32(m->first.x);
+			f.write_int32(m->first.y);
+
+			for(int32_t i = 0; i < LAYER_COUNT; i++)
+			{
+				TileLayer & l = c.get_tile_layer(i);
+				for(int32_t j = 0; j < TILE_COUNT_IN_CHUNK; j++)
+				{
+					f.write_uint8(l.tile[j].type);
+					f.write_uint8(l.tile[j].sprite_ID);
+					f.write_uint16(l.tile[j].sprite_frame);
+				}
+			}
+		}
+
+		f.close();
+
+		return true;
+	}
+
+	protected:
+
+	void write_header(clan::File & f)
+	{
+		f.write_int32(VERSION);
+
+		f.write_int32(TILE_SIZE);
+		f.write_int32(TILE_COUNT);
+		f.write_int32(TILE_COUNT_IN_CHUNK);
+		f.write_int32(CHUNK_EDGE_LENGTH_PIXELS);
+
+		f.write_int32(GROUND_LAYER_COUNT);
+		f.write_int32(OBJECT_LAYER_COUNT);
+		f.write_int32(LAYER_COUNT);
+	}
+
+	bool verify_header(clan::File & f)
+	{
+		int32_t version = f.read_int32();
+
+		int32_t tile_size = f.read_int32();
+		int32_t tile_count = f.read_int32();
+		int32_t tile_count_in_chunk = f.read_int32();
+		int32_t chunk_edge_length_pixels = f.read_int32();
+
+		int32_t ground_layer_count = f.read_int32();
+		int32_t object_layer_count = f.read_int32();
+		int32_t layer_count = f.read_int32();
+
+		return true;
+	}
+
     protected:
     clan::Canvas						m_canvas;
     std::map<clan::vec2, TileChunk>		m_chunks;
@@ -173,4 +278,14 @@ clan::Canvas & TileMap::get_canvas()
 void TileMap::render(const clan::vec2 & pos)
 {
     impl->render(pos);
+}
+
+bool TileMap::load(const std::string & file)
+{
+	return impl->load(*this,file);
+}
+
+bool TileMap::save(const std::string & file)
+{
+	return impl->save(file);
 }
