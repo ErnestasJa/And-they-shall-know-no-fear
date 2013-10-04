@@ -113,33 +113,40 @@ class TileMap_Impl
 	{
 		m_chunks.clear();
 
-		clan::File f(file,clan::File::open_existing,clan::File::access_read);
-
-		if(f.is_null())
-			return false;
-
-		verify_header(f);
-
-		while(f.get_position()<f.get_size())
+		try
 		{
-			int32_t x = f.read_int32();
-			int32_t y = f.read_int32();
+			clan::File f(file,clan::File::open_existing,clan::File::access_read);
 
-			TileChunk c = add_chunk(map, clan::vec2(x,y));
+			if(f.is_null())
+				return false;
 
-			for(int32_t i = 0; i < LAYER_COUNT; i++)
+			verify_header(f);
+
+			while(f.get_position()<f.get_size())
 			{
-				TileLayer & l = c.get_tile_layer(i);
-				for(int32_t j = 0; j < TILE_COUNT_IN_CHUNK; j++)
+				int32_t x = f.read_int32();
+				int32_t y = f.read_int32();
+
+				TileChunk c = add_chunk(map, clan::vec2(x,y));
+
+				for(int32_t i = 0; i < LAYER_COUNT; i++)
 				{
-					l.tile[j].type=f.read_uint8();
-					l.tile[j].sprite_ID=f.read_uint8();
-					l.tile[j].sprite_frame=f.read_uint16();
+					TileLayer & l = c.get_tile_layer(i);
+					for(int32_t j = 0; j < TILE_COUNT_IN_CHUNK; j++)
+					{
+						l.tile[j].type=f.read_uint8();
+						l.tile[j].sprite_ID=f.read_uint8();
+						l.tile[j].sprite_frame=f.read_uint16();
+					}
 				}
 			}
-		}
 
-		f.close();
+			f.close();
+		}
+		catch(clan::Exception & e)
+		{
+			return false;
+		}
 
 		return true;
 	}

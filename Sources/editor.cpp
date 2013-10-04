@@ -40,6 +40,7 @@ void editor::init_level()
 {
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
+	m_tile_map.load("Level/Level.map");
 }
 
 bool editor::init()
@@ -56,6 +57,7 @@ bool editor::init()
 
 	init_level();
 	init_gui();
+
 	return true;
 }
 
@@ -133,6 +135,7 @@ bool editor::resume()
 }
 bool editor::exit()
 {
+	m_tile_map.save("Level/Level.map");
 	m_key_up.destroy();
 	return true;
 }
