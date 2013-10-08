@@ -19,7 +19,6 @@ bool Menu::init()
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
-	c->set_constant_repaint(true);
 
 	button_world = new clan::PushButton(c);
 	button_world->set_geometry(clan::Rect( 420, 300, clan::Size(160, 60)));
@@ -49,10 +48,12 @@ bool Menu::run()
 	if(m_run)
 	{
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
+
+		///render gui
 		m_gui_manager.process_messages(0);
 		m_gui_manager.render_windows();
-
 		m_window_manager.get_canvas(NULL).flush();
+
 		m_window.flip(0);
 		clan::KeepAlive::process();
 	}
@@ -64,7 +65,7 @@ bool Menu::pause()
 {
 	State::pause();
 
-	c->set_enabled(false);
+	c->set_visible(false);
 
 	m_key_up.disable();
 	return true;
@@ -74,7 +75,7 @@ bool Menu::resume()
 {
 	State::resume();
 
-	c->set_enabled(true);
+	c->set_visible(true);
 
 	m_key_up.enable();
 	return true;

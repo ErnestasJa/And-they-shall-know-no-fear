@@ -1,5 +1,7 @@
 #pragma once
 
+static const int32_t VERSION = 1;
+
 static const int32_t TILE_SIZE = 32; /// tile dydis pixeliais (32x32)
 static const int32_t TILE_COUNT = 16;/// tile kiekis vienoje bloko eileje
 static const int32_t TILE_COUNT_IN_CHUNK = TILE_COUNT * TILE_COUNT;
