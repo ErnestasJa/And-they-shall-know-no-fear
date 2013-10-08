@@ -156,6 +156,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sources\sprite_selection.cpp" />
+    <ClCompile Include="Sources\test_level_load.cpp" />
     <ClCompile Include="Sources\tile_chunk.cpp" />
     <ClCompile Include="Sources\tile_map.cpp" />
     <ClCompile Include="Sources\utility.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Sources\precomp.h" />
     <ClInclude Include="Sources\sprite_selection.h" />
     <ClInclude Include="Sources\state.h" />
+    <ClInclude Include="Sources\test_level_load.h" />
     <ClInclude Include="Sources\tile_chunk.h" />
     <ClInclude Include="Sources\tile_map.h" />
     <ClInclude Include="Sources\utility.h" />
