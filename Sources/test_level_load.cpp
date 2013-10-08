@@ -1,14 +1,13 @@
 #include "precomp.h"
 #include "test_level_load.h"
-struct std::vector<levelinfo> load(const std::string &id, const clan::XMLResourceDocument &doc)
+std::vector<levelinfo> load(const std::string &id, const clan::XMLResourceDocument &doc)
 {
 	levelinfo li;
 	std::vector<levelinfo>levels;
 
 	clan::XMLResourceNode resource = doc.get_resource(id);
 
-	if (resource.get_type() == "levellist") clan::Console::write_line("labas");
-	else throw clan::Exception("nera tokio level list");
+	if (resource.get_type() != "levellist") throw clan::Exception("nera tokio level list");
 
 	clan::DomNode cur_node = resource.get_element().get_first_child();
 
@@ -29,6 +28,6 @@ struct std::vector<levelinfo> load(const std::string &id, const clan::XMLResourc
 		}
 
 		cur_node = cur_node.get_next_sibling();
-		return levels;
 	}
+	return levels;
 }

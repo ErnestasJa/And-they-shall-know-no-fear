@@ -6,5 +6,5 @@ struct levelinfo
 	std::string fileinfo;
 };
 
-struct std::vector<levelinfo> load(const std::string &id,const clan::XMLResourceDocument &doc);
+std::vector<levelinfo> load(const std::string &id,const clan::XMLResourceDocument &doc);
 
