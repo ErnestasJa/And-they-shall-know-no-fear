@@ -157,7 +157,7 @@ void editor::on_input(const clan::InputEvent & e)
 	{
 		case clan::InputDevice::keyboard:
 		{
-			if(e.id == clan::keycode_w)
+			if(e.id == clan::keycode_escape)
 				m_run = false;
 			else if (e.id == clan::keycode_e)
 				clan::Console::write_line("x:%1 y:%2", m_pos.x,m_pos.y); //DEBUG

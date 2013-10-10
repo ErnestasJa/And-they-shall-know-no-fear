@@ -104,6 +104,6 @@ bool World::exit()
 
 void World::on_key_up(const clan::InputEvent & e)
 {
-	if(e.id == clan::keycode_w)
+	if(e.id == clan::keycode_escape)
 		m_run = false;
 }
