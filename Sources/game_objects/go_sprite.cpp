@@ -12,6 +12,11 @@ GOSprite::~GOSprite()
 
 }
 
+void GOSprite::load(clan::Sprite sprite)
+{
+	m_sprite = sprite;
+}
+
 void GOSprite::update(const clan::GameTime & time)
 {
 
