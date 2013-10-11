@@ -3,3 +3,4 @@
 - editor, change_tile_sprite add layer selection
 - editor, change_tile_sprite add sprite removal (type set to no tile)
 - editor, add sprite sheet loading
+- editor, divide draw world axis

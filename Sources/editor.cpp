@@ -31,10 +31,16 @@ void editor::init_gui()
 	m_button_layer->func_clicked().set(this, &editor::on_button_clicked, m_button_layer);
 	m_button_layer->set_text("Select layer");
 
+	//toolbar goes here
+	m_ribbon = new clan::Ribbon(m_gui_root);
+	m_ribbon->set_geometry(clan::Rect(0, 0, clan::Size(m_gui_root->get_content_box().get_width()/4, m_gui_root->get_content_box().get_height())));
+	m_ribbon->get_menu()->add_item(clan::Image(m_canvas,"\Gfx\gui\aero\Images\Ribbon\Tab.png"),"Labas1");
+	//m_ribbon->get_menu()->add_item(clan::Image(),"Labas");
+
 	m_sprite_selection_window = new clan::Window(m_gui_root);
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
 	m_sprite_selection_window->set_visible(false);
-
+	
 	m_sprite_selection = new SpriteSelection(m_sprite_selection_window);
 	m_frame_select = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
 
