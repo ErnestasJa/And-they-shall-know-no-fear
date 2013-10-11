@@ -171,7 +171,9 @@
     <ClInclude Include="Sources\app.h" />
     <ClInclude Include="Sources\editor.h" />
     <ClInclude Include="Sources\game_objects\game_object.h" />
+    <ClInclude Include="Sources\game_objects\game_objects.h" />
     <ClInclude Include="Sources\game_objects\game_object_manager.h" />
+    <ClInclude Include="Sources\game_objects\game_object_types.h" />
     <ClInclude Include="Sources\game_objects\go_sprite.h" />
     <ClInclude Include="Sources\map_attributes.h" />
     <ClInclude Include="Sources\menu.h" />

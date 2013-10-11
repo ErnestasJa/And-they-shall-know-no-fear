@@ -11,4 +11,10 @@
 		</image>
 	</sprite>
 	
+	<sprite name="champ">
+		<image file="Gfx\level\base_out_atlas.png">
+		<grid pos="0,0" size="32,32" array="1,1"/>
+		</image>
+	</sprite>
+	
 </resources>

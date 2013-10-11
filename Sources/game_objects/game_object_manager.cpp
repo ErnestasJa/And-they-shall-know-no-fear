@@ -4,7 +4,7 @@
 
 GameObjectManager::GameObjectManager()
 {
-	
+
 }
 
 GameObjectManager::~GameObjectManager()
@@ -34,10 +34,10 @@ GameObject * GameObjectManager::find_game_object_by_id(uint32_t id)
 	return (*it);
 }
 
-void GameObjectManager::update_game_objects()
+void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 {
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)
-		(*it)->update(m_game_time);
+		(*it)->update(game_time);
 }
 
 void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset)

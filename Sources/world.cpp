@@ -22,7 +22,10 @@ void World::init_level()
 
 	m_tile_map.load("test.map");
 
-	m_gom->add_game_object(new GOSprite());
+	GOSprite * spr = new GOSprite();
+	
+	spr->load(clan::Sprite::resource(m_canvas,"champ",m_resources));
+	m_gom->add_game_object(spr);
 }
 
 bool World::init()
@@ -49,8 +52,11 @@ bool World::run()
 		m_game_time.update();
 		m_canvas.clear();
 
-		m_tile_map.render(m_pos);
+		m_gom->update_game_objects(m_game_time);
+		//m_tile_map.render(m_pos);
+		m_gom->render_game_objects(m_canvas);
 
+		m_canvas.flush();
 		m_window.flip(1);
 		clan::KeepAlive::process();
 	}
