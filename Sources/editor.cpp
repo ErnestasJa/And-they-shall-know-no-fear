@@ -8,7 +8,7 @@ editor::editor(clan::DisplayWindow &display_window)
 	m_window = display_window;
 	m_sprite_selection = nullptr;
 	m_selected_frame = -1;
-	m_selected_layer = -1;
+	m_selected_layer = 0;
 }
 
 editor::~editor()
@@ -202,7 +202,7 @@ void editor::on_input(const clan::InputEvent & e)
 				change_tile_sprite(e.mouse_pos);
 			else if (e.id == clan::mouse_right)
 			{
-				//WIP change change_tile_sprite to work in sprite deletion and add here;
+				change_tile_sprite(e.mouse_pos,true);
 			}
 
 			if (e.type == clan::InputEvent::pointer_moved)
@@ -214,7 +214,7 @@ void editor::on_input(const clan::InputEvent & e)
 	}
 }
 
-void editor::change_tile_sprite(const clan::vec2 & pos)
+void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 {
 	clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
 	clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
@@ -223,7 +223,10 @@ void editor::change_tile_sprite(const clan::vec2 & pos)
 	TileChunk c=m_tile_map.get_chunk(chunk_pos);
 	if(c.is_null()) 
 		c = m_tile_map.add_chunk(chunk_pos);
-	if(m_selected_frame!=-1 && m_selected_layer!=-1)
+
+	if(remove)
+			c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
+	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
 	{
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
 		c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_frame;

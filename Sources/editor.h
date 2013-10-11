@@ -30,7 +30,7 @@ protected:
 	void init_gui();
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis();
-	void change_tile_sprite(const clan::vec2 & pos);
+	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
 
 protected:
 	bool m_run;
