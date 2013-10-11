@@ -2,48 +2,27 @@
 
 #include "world.h"
 #include "tile_chunk.h"
+#include "game_objects\go_sprite.h"
 
 World::World(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
+	m_gom = new GameObjectManager();
 }
 
 World::~World()
 {
-
+	delete m_gom;
 }
 
 void World::init_level()
 {
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
-	
-	/*
-	TileChunk c = m_tile_map.add_chunk(clan::vec2(0,0));
-
-	for(int32_t i = 0; i < 16; i++)
-	for(int32_t j = 0; j < 16; j++)
-	{
-		c.get_tile(clan::vec2(j,i),0).type=ETT_NORMAL;
-		c.get_tile(clan::vec2(j,i),0).sprite_frame=112; //mid
-	}
-
-	for(int32_t i = 0; i < 16; i++)
-	{
-		c.get_tile(clan::vec2(i,0),0).sprite_frame=80; ///top
-		c.get_tile(clan::vec2(i,15),0).sprite_frame=144; // bot
-
-		c.get_tile(clan::vec2(0,i),0).sprite_frame=111; /// left
-		c.get_tile(clan::vec2(15,i),0).sprite_frame=113; ///right
-	}
-
-	c.get_tile(clan::vec2(0,0),0).sprite_frame=79; /// top left
-	c.get_tile(clan::vec2(15,0),0).sprite_frame=81; /// top right
-	c.get_tile(clan::vec2(0,15),0).sprite_frame=143; /// bot left
-	c.get_tile(clan::vec2(15,15),0).sprite_frame=145; /// bot right
-	*/
 
 	m_tile_map.load("test.map");
+
+	m_gom->add_game_object(new GOSprite());
 }
 
 bool World::init()

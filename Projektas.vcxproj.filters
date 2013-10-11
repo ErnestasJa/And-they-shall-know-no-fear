@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Sources\app.cpp" />
+    <ClCompile Include="Sources\editor.cpp" />
+    <ClCompile Include="Sources\menu.cpp" />
+    <ClCompile Include="Sources\precomp.cpp" />
+    <ClCompile Include="Sources\sprite_selection.cpp" />
+    <ClCompile Include="Sources\tile_chunk.cpp" />
+    <ClCompile Include="Sources\tile_map.cpp" />
+    <ClCompile Include="Sources\utility.cpp" />
+    <ClCompile Include="Sources\world.cpp" />
+    <ClCompile Include="Sources\game_objects\game_object.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\game_objects\game_object_manager.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\game_objects\go_sprite.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sources\app.h" />
+    <ClInclude Include="Sources\editor.h" />
+    <ClInclude Include="Sources\map_attributes.h" />
+    <ClInclude Include="Sources\menu.h" />
+    <ClInclude Include="Sources\precomp.h" />
+    <ClInclude Include="Sources\sprite_selection.h" />
+    <ClInclude Include="Sources\state.h" />
+    <ClInclude Include="Sources\tile_chunk.h" />
+    <ClInclude Include="Sources\tile_map.h" />
+    <ClInclude Include="Sources\utility.h" />
+    <ClInclude Include="Sources\world.h" />
+    <ClInclude Include="Sources\game_objects\game_object_manager.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\game_object.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\go_sprite.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources.xml" />
+    <None Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="game_objects">
+      <UniqueIdentifier>{4b9c6b75-297a-4b19-83e0-021ca0a675be}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

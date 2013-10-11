@@ -2,10 +2,11 @@
 
 #include "state.h"
 #include "tile_map.h"
+#include "game_objects\game_object.h"
+#include "game_objects\game_object_manager.h"
 
 class World: public State
 {
-
 public:
 	World(clan::DisplayWindow &display_window);
 	~World();
@@ -38,4 +39,6 @@ protected:
 
 	///game
 	TileMap m_tile_map;
+	
+	GameObjectManager * m_gom;
 };
