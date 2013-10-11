@@ -23,6 +23,7 @@ protected:
 	void on_input(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton * btn);
 	void on_frame_select(int32_t frame);
+	void on_layer_select(int32_t layer);
 
 	///game specific funcs
 	void init_level();
@@ -59,12 +60,14 @@ protected:
 	
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
-	clan::PushButton			*m_button_sprite, *m_button_layer;
+	clan::PushButton			*m_button_sprite;
+	clan::ComboBox				*m_combo_layer;
+	clan::PopupMenu				m_combo_menu_layer;
 	clan::Ribbon				*m_ribbon;
-	clan::Window				*m_sprite_selection_window;
+	clan::Window				*m_sprite_selection_window, *m_button_selection_window;
 	SpriteSelection				*m_sprite_selection;
 
 
 	clan::Slot m_frame_select;
-	int32_t m_selected_frame;
+	int32_t m_selected_frame, m_selected_layer;
 };
