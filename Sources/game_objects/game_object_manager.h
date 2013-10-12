@@ -6,10 +6,12 @@ class GameObjectManager
 {
 protected:
 	std::vector<GameObject*> m_game_object_list;
-
+	clan::Canvas m_canvas;
 public:
-	GameObjectManager();
+	GameObjectManager(clan::Canvas & c);
 	virtual ~GameObjectManager();
+
+	clan::Canvas & get_canvas();
 
 	void add_game_object(GameObject * o);
 	void remove_game_object(GameObject * o);

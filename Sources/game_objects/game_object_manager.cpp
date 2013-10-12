@@ -2,14 +2,19 @@
 #include "game_object.h"
 #include "game_object_manager.h"
 
-GameObjectManager::GameObjectManager()
+GameObjectManager::GameObjectManager(clan::Canvas & c)
 {
-
+	m_canvas = c;
 }
 
 GameObjectManager::~GameObjectManager()
 {
 
+}
+
+clan::Canvas & GameObjectManager::get_canvas()
+{
+	return m_canvas;
 }
 
 void GameObjectManager::add_game_object(GameObject * o)

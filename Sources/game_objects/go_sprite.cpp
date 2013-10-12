@@ -1,8 +1,10 @@
 #include "precomp.h"
-#include "go_sprite.h"
 #include "game_object_types.h"
+#include "game_object_manager.h"
+#include "game_objects.h"
 
-GOSprite::GOSprite(): GameObject(GOT_SPRITE)
+
+GOSprite::GOSprite(GameObjectManager * gom): GameObject(GOT_SPRITE,gom)
 {
 
 }
@@ -12,15 +14,15 @@ GOSprite::~GOSprite()
 
 }
 
-void GOSprite::load(clan::Sprite sprite)
+void GOSprite::load(clan::ResourceManager & resources)
 {
-	m_sprite = sprite;
-	m_pos = clan::vec2(50,50);
+	m_sprite = clan::Sprite::resource(m_game_object_manager->get_canvas(), "champ_rw", resources );
 	clan::Console::write_line("is null: %1",m_sprite.is_null());
 }
 
 void GOSprite::update(const clan::GameTime & time)
 {
+	m_sprite.update (time.get_time_elapsed_ms());
 	m_pos.x += time.get_ticks_elapsed();
 }
 

@@ -7,24 +7,24 @@
 World::World(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
-	m_gom = new GameObjectManager();
 }
 
 World::~World()
 {
-	delete m_gom;
+
 }
 
 void World::init_level()
 {
+	m_gom = new GameObjectManager(m_canvas);
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
 
 	m_tile_map.load("test.map");
 
-	GOSprite * spr = new GOSprite();
+	GOSprite * spr = new GOSprite(m_gom);
 	
-	spr->load(clan::Sprite::resource(m_canvas,"champ",m_resources));
+	spr->load(m_resources);
 	m_gom->add_game_object(spr);
 }
 
@@ -83,6 +83,7 @@ bool World::resume()
 
 bool World::exit()
 {
+	delete m_gom;
 	m_key_up.destroy();
 	return true;
 }

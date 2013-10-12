@@ -1,10 +1,12 @@
 #include "precomp.h"
+#include "game_object_manager.h"
 #include "game_object.h"
 
 uint32_t GameObject::unique_runtime_id_counter = 0;
 
-GameObject::GameObject(uint32_t type)
+GameObject::GameObject(uint32_t type, GameObjectManager * gom)
 {
+	m_game_object_manager = gom;
 	m_type = type;
 	m_id = 0;
 	m_urid = unique_runtime_id_counter;
