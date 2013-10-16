@@ -43,7 +43,17 @@ void editor::init_gui()
 	m_combo_layer->set_popup_menu(m_combo_menu_layer);
 	m_combo_layer->set_text("Select layer");
 
-	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
+	m_checkbox_t = new clan::CheckBox(m_button_selection_window);
+	m_checkbox_t->set_geometry(clan::Rect( 10, 90, clan::Size(15, 15)));
+	m_checkbox_t->set_checked(true);
+	
+	m_checkbox_c = new clan::CheckBox(m_button_selection_window);
+	m_checkbox_c->set_geometry(clan::Rect( 30, 90, clan::Size(15, 15)));
+	m_checkbox_c->set_checked(true);
+	
+	m_checkbox_o = new clan::CheckBox(m_button_selection_window);
+	m_checkbox_o->set_geometry(clan::Rect( 50, 90, clan::Size(15, 15)));
+	m_checkbox_o->set_checked(true);
 
 	//toolbar goes here
 	/*m_ribbon = new clan::Ribbon(m_gui_root);
@@ -51,14 +61,14 @@ void editor::init_gui()
 	m_ribbon->get_menu()->add_item(clan::Image(m_canvas,"Gfx/gui/aero/Images/Ribbon/Tab.png"),"Labas1");
 	m_ribbon->get_menu()->add_item(clan::Image(m_canvas,"Gfx/gui/aero/Images/Ribbon/Tab.png"),"Labas");*/
 
-	
-
 	m_sprite_selection_window = new clan::Window(m_gui_root);
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
 	m_sprite_selection_window->set_visible(false);
 	
 	m_sprite_selection = new SpriteSelection(m_sprite_selection_window);
 	m_frame_select = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
+
+	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
 
 	m_gui_root->update_layout();
 }
@@ -101,26 +111,26 @@ void editor::edge_pan(const clan::vec2 & pos)
 	else m_pan.y=0;
 }
 
-void editor::draw_world_axis()
+void editor::draw_world_axis(bool t, bool c, bool o)
 {
 	int32_t w = m_window.get_viewport().get_width(), h = m_window.get_viewport().get_height();
 
 	//chunk and tile separators
 	for(int32_t i=0; i<=w; i++)
-		if((i+m_pos.x)%CHUNK_EDGE_LENGTH_PIXELS==0) 
+		if((i+m_pos.x)%CHUNK_EDGE_LENGTH_PIXELS==0 && t) 
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::yellow);
-		else if((i+m_pos.x)%TILE_SIZE==0) 
+		else if((i+m_pos.x)%TILE_SIZE==0 && c) 
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::blue);
 
 	for(int32_t i=0; i<=h; i++)
-		if((i+m_pos.y)%CHUNK_EDGE_LENGTH_PIXELS==0) 
+		if((i+m_pos.y)%CHUNK_EDGE_LENGTH_PIXELS==0 && t) 
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::yellow);
-		else if((i+m_pos.y)%TILE_SIZE==0)
+		else if((i+m_pos.y)%TILE_SIZE==0 && c)
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::blue);
 		
 	//origin axis
-	if(m_pos.x<=w && m_pos.x+w>=0) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(-m_pos.x,0),clan::vec2(-m_pos.x,h)),clan::Colorf::red);
-	if(m_pos.y<=h && m_pos.y+h>=0) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
+	if(m_pos.x<=w && m_pos.x+w>=0 && o) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(-m_pos.x,0),clan::vec2(-m_pos.x,h)),clan::Colorf::red);
+	if(m_pos.y<=h && m_pos.y+h>=0 && o) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
 }
 
 bool editor::run()
@@ -132,7 +142,7 @@ bool editor::run()
 
 		m_pos+=m_pan;
 		m_tile_map.render(m_pos);
-		draw_world_axis();
+		draw_world_axis(m_checkbox_t->is_checked(),m_checkbox_c->is_checked(),m_checkbox_o->is_checked());
 
 		///render gui
 		m_gui_manager.process_messages(0);
@@ -201,15 +211,25 @@ void editor::on_input(const clan::InputEvent & e)
 			if (e.id == clan::mouse_left)
 				change_tile_sprite(e.mouse_pos);
 			else if (e.id == clan::mouse_right)
-			{
 				change_tile_sprite(e.mouse_pos,true);
-			}
 
-			if (e.type == clan::InputEvent::pointer_moved)
+
+			else if (e.type == clan::InputEvent::pointer_moved)
 			{
 				edge_pan(e.mouse_pos);
+
+				if (e.device.get_keycode(clan::mouse_left))
+				{
+					change_tile_sprite(e.mouse_pos);
+				}
+				else if (e.device.get_keycode(clan::mouse_right))
+				{
+					change_tile_sprite(e.mouse_pos,true);
+				}
 			}
 			break;
+
+
 		}
 	}
 }

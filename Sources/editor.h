@@ -29,7 +29,7 @@ protected:
 	void init_level();
 	void init_gui();
 	void edge_pan(const clan::vec2 & pos);
-	void draw_world_axis();
+	void draw_world_axis(bool t, bool c, bool w);
 	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
 
 protected:
@@ -63,7 +63,7 @@ protected:
 	clan::PushButton			*m_button_sprite;
 	clan::ComboBox				*m_combo_layer;
 	clan::PopupMenu				m_combo_menu_layer;
-	clan::Ribbon				*m_ribbon;
+	clan::CheckBox				*m_checkbox_t, *m_checkbox_c, *m_checkbox_o;
 	clan::Window				*m_sprite_selection_window, *m_button_selection_window;
 	SpriteSelection				*m_sprite_selection;
 
