@@ -168,6 +168,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="message.h" />
     <ClInclude Include="Sources\app.h" />
     <ClInclude Include="Sources\editor.h" />
     <ClInclude Include="Sources\game_objects\game_object.h" />

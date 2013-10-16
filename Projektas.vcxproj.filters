@@ -47,6 +47,9 @@
     <ClInclude Include="Sources\game_objects\game_objects.h">
       <Filter>game_objects</Filter>
     </ClInclude>
+    <ClInclude Include="message.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />
