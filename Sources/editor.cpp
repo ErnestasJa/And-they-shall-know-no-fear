@@ -3,6 +3,7 @@
 #include "tile_chunk.h"
 #include "sprite_selection.h"
 #include "test_level_load.h"
+#include "temp2.h"
 
 editor::editor(clan::DisplayWindow &display_window)
 {
@@ -44,6 +45,8 @@ void editor::init_gui()
 
 void editor::init_level()
 {
+	saveheader("swx.txt",createsec());
+	printhead(loadheader("swx.txt"));
 	load("levellist", clan::XMLResourceDocument("resources.xml") );
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
