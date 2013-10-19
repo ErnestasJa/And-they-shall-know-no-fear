@@ -84,7 +84,7 @@ bool editor::init()
 
 	init_level();
 	init_gui();
-
+	
 	return true;
 }
 
@@ -164,6 +164,7 @@ bool editor::exit()
 {
 	m_tile_map.save("Level/Level.map");
 	m_key_up.destroy();
+	
 	return true;
 }
 
@@ -185,6 +186,7 @@ void editor::on_input(const clan::InputEvent & e)
 	{
 		case clan::InputDevice::keyboard:
 		{
+			
 			if(e.id == clan::keycode_escape)
 				m_run = false;
 			else if (e.id == clan::keycode_d)
@@ -195,7 +197,6 @@ void editor::on_input(const clan::InputEvent & e)
 		}
 		case clan::InputDevice::pointer:
 		{
-
 			if(m_gui_root->get_component_at(e.mouse_pos)!=m_gui_root) break;
 
 			if (e.id == clan::mouse_left)
@@ -204,7 +205,6 @@ void editor::on_input(const clan::InputEvent & e)
 			{
 				change_tile_sprite(e.mouse_pos,true);
 			}
-
 			if (e.type == clan::InputEvent::pointer_moved)
 			{
 				edge_pan(e.mouse_pos);
