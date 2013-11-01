@@ -1,28 +1,36 @@
 #pragma once
+#include "properties/property.h"
+#include "properties/property_container.h"
+
+
+/**
+Base game object class.
+
+Derived classes should implement all pure virtual functions and have these functions:
+	static GameObject * create(uint32_t guid){return new <ObjectType>(guid);};
+**/
 
 class GameObjectManager;
-class GameObject
+class GameObject: public PropertyContainer
 {
 protected:
-	GameObjectManager * m_game_object_manager;
 	uint32_t	m_type;
-	uint32_t	m_id;
-	uint32_t	m_urid;
-	clan::vec2	m_pos;
-	
-	static uint32_t	unique_runtime_id_counter;
+	uint32_t	m_guid;
+
+	///faster (direct) access to properties
+	Property<uint32_t>		m_id;
+	Property<clan::vec2>	m_pos;
 
 public:
-	GameObject(uint32_t	type, GameObjectManager * gom);
+	GameObject(uint32_t	type, uint32_t guid);
 	virtual ~GameObject();
 
-	clan::vec2	get_pos();
+	///should these two variables also be properties?
 	uint32_t	get_type();
-	uint32_t	get_id();
-	uint32_t	get_urid();
+	uint32_t	get_guid();
 
-	void		set_id(uint32_t id);
-	void		set_pos(const clan::vec2 & pos);
+	Property<clan::vec2>	get_pos();
+	Property<uint32_t>		get_id();
 
 	virtual void load(clan::ResourceManager & resources)=0;
 

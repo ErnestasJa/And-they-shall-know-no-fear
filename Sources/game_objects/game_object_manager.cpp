@@ -2,9 +2,11 @@
 #include "game_object.h"
 #include "game_object_manager.h"
 
-GameObjectManager::GameObjectManager(clan::Canvas & c)
+uint32_t GameObjectManager::globally_unique_id_counter = 0;
+
+GameObjectManager::GameObjectManager()
 {
-	m_canvas = c;
+
 }
 
 GameObjectManager::~GameObjectManager()
@@ -12,19 +14,29 @@ GameObjectManager::~GameObjectManager()
 
 }
 
-clan::Canvas & GameObjectManager::get_canvas()
+uint32_t GameObjectManager::generate_guid()
 {
-	return m_canvas;
+	const uint32_t guid = GameObjectManager::globally_unique_id_counter;
+	GameObjectManager::globally_unique_id_counter++;
+	return guid;
 }
 
-void GameObjectManager::add_game_object(GameObject * o)
+std::vector<GameObject*> & GameObjectManager::get_game_objects()
 {
+	return m_game_object_list;
+}
+
+GameObject * GameObjectManager::add_game_object(uint32_t type, uint32_t guid)
+{
+	GameObject * o = create_game_object(type,guid);
 	m_game_object_list.push_back(o);
+	return o;
 }
 
-void GameObjectManager::remove_game_object(GameObject * o)
+void GameObjectManager::remove_game_object(uint32_t guid)
 {
-	auto it = std::find(m_game_object_list.begin(), m_game_object_list.end(), o);
+	auto it = std::find_if(m_game_object_list.begin(), m_game_object_list.end(), [&guid](GameObject * o){return o->get_guid()==guid;});
+
 	if(it!=m_game_object_list.end())
 		m_game_object_list.erase(it);
 }
@@ -49,4 +61,16 @@ void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::v
 {
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)
 		(*it)->render(canvas,offset);
+}
+
+///factory
+
+GameObject * GameObjectManager::create_game_object(uint32_t type, uint32_t guid)
+{
+	auto it = m_go_create.find(type);
+
+	if(it != m_go_create.end())
+		return it->second(guid);
+
+	throw clan::Exception("Cannot create object of type " + clan::StringHelp::uint_to_text(type));
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-enum GameObjectType
+enum EGameObjectType
 {
-	GOT_SPRITE = 1,
-	GOT_COUNT
+	EGOT_SPRITE = 1,
+	EGOT_COUNT
 };
