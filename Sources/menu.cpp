@@ -23,12 +23,18 @@ bool Menu::init()
 	button_world = new clan::PushButton(c);
 	button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
-	button_world->set_text("World");
+	button_world->set_text("World1");
 
 	button_editor = new clan::PushButton(c);
 	button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
 	button_editor->set_text("Editor");
+
+	button_exit = new clan::PushButton(c);
+	button_exit->set_geometry(clan::Rect( 540, 460, clan::Size(160, 60)));
+	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
+	button_exit->set_text("Exit");
+	
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
@@ -115,5 +121,9 @@ void Menu::on_button_clicked(clan::PushButton *button)
 			s->exit();
 			delete s;
 		}
+	}
+	if(button==button_exit)
+	{m_run = false;
+		
 	}
 }
