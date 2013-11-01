@@ -108,7 +108,7 @@ void Menu::on_button_clicked(clan::PushButton *button)
 			delete s;
 		}
 	}
-	else if(button==button)
+	else if(button==button_world)
 	{
 		State * s = new World(m_window);
 		if(s->init())
@@ -122,7 +122,7 @@ void Menu::on_button_clicked(clan::PushButton *button)
 			delete s;
 		}
 	}
-	if(button==button_exit)
+	else if(button==button_exit)
 	{m_run = false;
 		
 	}
