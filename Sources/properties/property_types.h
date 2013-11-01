@@ -7,5 +7,6 @@ enum EPropertyType
 	EPT_UINT32,
 	EPT_FLOAT,
 	EPT_VEC2,
+	EPT_VEC2F,
 	EPT_STRING
 };

@@ -19,7 +19,7 @@ protected:
 
 	///faster (direct) access to properties
 	Property<uint32_t>		m_id;
-	Property<clan::vec2>	m_pos;
+	Property<clan::vec2f>	m_pos;
 
 public:
 	GameObject(uint32_t	type, uint32_t guid);
@@ -29,7 +29,7 @@ public:
 	uint32_t	get_type();
 	uint32_t	get_guid();
 
-	Property<clan::vec2>	get_pos();
+	Property<clan::vec2f>	get_pos();
 	Property<uint32_t>		get_id();
 
 	virtual void update(const clan::GameTime & time)=0;

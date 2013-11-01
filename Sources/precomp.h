@@ -16,6 +16,7 @@
 
 namespace clan{
 typedef Vec2<int32_t> vec2;
+typedef Vec2<float> vec2f;
 };
 
 #include "map_attributes.h"

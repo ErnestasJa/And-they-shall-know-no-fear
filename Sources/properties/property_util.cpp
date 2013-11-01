@@ -26,12 +26,22 @@ void serialize_type<clan::vec2>(clan::NetGameEventValue & v, const clan::vec2 & 
 	v.add_member(vec);
 }
 
+template <>
+void serialize_type<clan::vec2f>(clan::NetGameEventValue & v, const clan::vec2f & data)
+{
+	clan::NetGameEventValue vec(clan::NetGameEventValue::complex);
+	vec.add_member(data.x);
+	vec.add_member(data.y);
+	v.add_member(vec);
+}
+
 
 template <> void deserialize_type(const clan::NetGameEventValue & v, bool & data){data = v.to_boolean();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, int32_t & data){data = v.to_integer();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, uint32_t & data){data = v.to_uinteger();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, float & data){data = v.to_number();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, clan::vec2 & data){data.x = v.get_member(0).to_integer(); data.y = v.get_member(1).to_integer();}
+template <> void deserialize_type(const clan::NetGameEventValue & v, clan::vec2f & data){data.x = v.get_member(0).to_number(); data.y = v.get_member(1).to_number();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, std::string & data){data = v.to_string();}
 
 
@@ -65,6 +75,13 @@ void serialize_type(clan::File & f, const clan::vec2 & data)
 {
 	f.write_int32( data.x );
 	f.write_int32( data.y );
+}
+
+template <>
+void serialize_type(clan::File & f, const clan::vec2f & data)
+{
+	f.write_float( data.x );
+	f.write_float( data.y );
 }
 
 template <>
@@ -103,6 +120,13 @@ void deserialize_type(clan::File & f, clan::vec2 & data)
 {
 	data.x=f.read_int32();
 	data.y=f.read_int32();
+}
+
+template <>
+void deserialize_type(clan::File & f, clan::vec2f & data)
+{
+	data.x=f.read_float();
+	data.y=f.read_float();
 }
 
 template <>

@@ -23,7 +23,7 @@ void GOSprite::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 void GOSprite::update(const clan::GameTime & time)
 {
 	m_sprite.update(time.get_time_elapsed_ms());
-	m_pos.data().x += 100 * (float)time.get_time_elapsed_ms()/1000.0f;
+	m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 }
 
 void GOSprite::render(clan::Canvas & c, const clan::vec2 & offset)
