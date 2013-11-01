@@ -14,18 +14,16 @@ GOSprite::~GOSprite()
 
 }
 
-void GOSprite::load(clan::ResourceManager & resources)
+void GOSprite::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
-	m_sprite = clan::Sprite::resource(clan::Canvas(), "champ_rw", resources );
+	m_sprite = clan::Sprite::resource(canvas, "champ_rw", resources );
 	clan::Console::write_line("is null: %1",m_sprite.is_null());
 }
 
 void GOSprite::update(const clan::GameTime & time)
 {
-	m_sprite.update (time.get_time_elapsed_ms());
-	clan::vec2 v = m_pos;
-	v.x+= time.get_ticks_elapsed();
-	m_pos=v;
+	m_sprite.update(time.get_time_elapsed_ms());
+	m_pos.data().x += 100 * (float)time.get_time_elapsed_ms()/1000.0f;
 }
 
 void GOSprite::render(clan::Canvas & c, const clan::vec2 & offset)

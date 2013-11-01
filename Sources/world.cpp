@@ -7,6 +7,7 @@
 World::World(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
+	m_game_time = clan::GameTime(20,60);
 }
 
 World::~World()
@@ -16,16 +17,14 @@ World::~World()
 
 void World::init_level()
 {
-	m_gom = new GameObjectManager(m_canvas);
+	m_gom = new GameObjectManager();
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
 
 	m_tile_map.load("test.map");
 
-	GOSprite * spr = new GOSprite(m_gom);
-	
-	spr->load(m_resources);
-	m_gom->add_game_object(spr);
+	GOSprite * spr = static_cast<GOSprite *>(m_gom->add_game_object(EGOT_SPRITE,0));
+	spr->load(m_canvas,m_resources);
 }
 
 bool World::init()
@@ -52,12 +51,12 @@ bool World::run()
 		m_game_time.update();
 		m_canvas.clear();
 
-		m_gom->update_game_objects(m_game_time);
 		//m_tile_map.render(m_pos);
+		m_gom->update_game_objects(m_game_time);
 		m_gom->render_game_objects(m_canvas);
 
 		m_canvas.flush();
-		m_window.flip(1);
+		m_window.flip();
 		clan::KeepAlive::process();
 	}
 

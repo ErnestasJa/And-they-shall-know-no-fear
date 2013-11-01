@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Serialization/iserializable.h"
+#include "serialization/iserializable.h"
 
 class IProperty: public ISerializable, public INetValueSerializable
 {

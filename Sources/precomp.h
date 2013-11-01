@@ -7,6 +7,7 @@
 #include <ClanLib/swrender.h>
 #include <ClanLib/gl.h>
 #include <ClanLib/gui.h>
+#include <ClanLib/network.h>
 #include <stdint.h>
 #include <stack>
 #include <vector>

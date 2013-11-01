@@ -1,5 +1,6 @@
 #pragma once
 #include "game_object.h"
+#include "game_object_types.h"
 
 class GOSprite: public GameObject
 {
@@ -12,7 +13,7 @@ public:
 	GOSprite(uint32_t guid);
 	virtual ~GOSprite();
 
-	void load(clan::ResourceManager & resources);
+	void load(clan::Canvas & canvas, clan::ResourceManager & resources);
 
 	virtual void update(const clan::GameTime & time);
 	virtual void render(clan::Canvas & c, const clan::vec2 & offset);

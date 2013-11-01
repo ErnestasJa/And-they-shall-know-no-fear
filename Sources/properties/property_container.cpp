@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "Serialization/iserializable.h"
+#include "serialization/iserializable.h"
 #include "iproperty.h"
 #include "property.h"
 #include "property_util.h"

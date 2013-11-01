@@ -19,6 +19,18 @@
     <ClCompile Include="Sources\game_objects\go_sprite.cpp">
       <Filter>game_objects</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\properties\property.cpp">
+      <Filter>properties</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\properties\property_container.cpp">
+      <Filter>properties</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\properties\property_util.cpp">
+      <Filter>properties</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\serialization\iserializable.cpp">
+      <Filter>serialization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -50,6 +62,22 @@
     <ClInclude Include="message.h">
       <Filter>game_objects</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\properties\iproperty.h" />
+    <ClInclude Include="Sources\properties\property_types.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\property.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\property_container.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\property_util.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\serialization\iserializable.h">
+      <Filter>serialization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />
@@ -58,6 +86,12 @@
   <ItemGroup>
     <Filter Include="game_objects">
       <UniqueIdentifier>{4b9c6b75-297a-4b19-83e0-021ca0a675be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="properties">
+      <UniqueIdentifier>{bb44000f-0e6a-44ab-8128-28da2a55e2c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="serialization">
+      <UniqueIdentifier>{328129dc-0952-4bd4-afd3-9acaee0ffff6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

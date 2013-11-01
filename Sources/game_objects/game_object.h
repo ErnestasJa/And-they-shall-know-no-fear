@@ -32,8 +32,6 @@ public:
 	Property<clan::vec2>	get_pos();
 	Property<uint32_t>		get_id();
 
-	virtual void load(clan::ResourceManager & resources)=0;
-
 	virtual void update(const clan::GameTime & time)=0;
 	virtual void render(clan::Canvas & c, const clan::vec2 & offset)=0;
 };
