@@ -5,11 +5,11 @@
     <ClCompile Include="Sources\editor.cpp" />
     <ClCompile Include="Sources\menu.cpp" />
     <ClCompile Include="Sources\precomp.cpp" />
-    <ClCompile Include="Sources\sprite_selection.cpp" />
     <ClCompile Include="Sources\tile_chunk.cpp" />
     <ClCompile Include="Sources\tile_map.cpp" />
     <ClCompile Include="Sources\utility.cpp" />
     <ClCompile Include="Sources\world.cpp" />
+    <ClCompile Include="Sources\sprite_frame_selection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -17,12 +17,12 @@
     <ClInclude Include="Sources\map_attributes.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\precomp.h" />
-    <ClInclude Include="Sources\sprite_selection.h" />
     <ClInclude Include="Sources\state.h" />
     <ClInclude Include="Sources\tile_chunk.h" />
     <ClInclude Include="Sources\tile_map.h" />
     <ClInclude Include="Sources\utility.h" />
     <ClInclude Include="Sources\world.h" />
+    <ClInclude Include="Sources\sprite_frame_selection.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />

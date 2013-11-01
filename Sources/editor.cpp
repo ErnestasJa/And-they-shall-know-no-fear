@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "editor.h"
 #include "tile_chunk.h"
-#include "sprite_selection.h"
+#include "sprite_frame_selection.h"
 
 editor::editor(clan::DisplayWindow &display_window)
 {
@@ -22,16 +22,16 @@ void editor::init_gui()
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 
-	m_button_selection_window = new clan::Window(m_gui_root);
-	m_button_selection_window->set_geometry(clan::Rect(50,100,clan::Size(150,200)));
-	m_button_selection_window->set_visible(false);
+	m_editor_window = new clan::Window(m_gui_root);
+	m_editor_window->set_geometry(clan::Rect(50,100,clan::Size(150,200)));
+	m_editor_window->set_visible(false);
 
-	m_button_sprite = new clan::PushButton(m_button_selection_window);
-	m_button_sprite->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
-	m_button_sprite->func_clicked().set(this, &editor::on_button_clicked, m_button_sprite);
-	m_button_sprite->set_text("Select frame");
+	m_button_sprite_frame = new clan::PushButton(m_editor_window);
+	m_button_sprite_frame->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
+	m_button_sprite_frame->func_clicked().set(this, &editor::on_button_clicked, m_button_sprite_frame);
+	m_button_sprite_frame->set_text("Select frame");
 
-	m_combo_layer = new clan::ComboBox(m_button_selection_window);
+	m_combo_layer = new clan::ComboBox(m_editor_window);
 	m_combo_layer->set_geometry(clan::Rect( 10, 30, clan::Size(80, 25)));
 
 	uint32_t i;
@@ -43,22 +43,26 @@ void editor::init_gui()
 	m_combo_layer->set_popup_menu(m_combo_menu_layer);
 	m_combo_layer->set_text("Select layer");
 
-	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
-
-	//toolbar goes here
-	/*m_ribbon = new clan::Ribbon(m_gui_root);
-	m_ribbon->set_geometry(clan::Rect(0, 0, clan::Size(m_gui_root->get_content_box().get_width()/4, m_gui_root->get_content_box().get_height())));
-	m_ribbon->get_menu()->add_item(clan::Image(m_canvas,"Gfx/gui/aero/Images/Ribbon/Tab.png"),"Labas1");
-	m_ribbon->get_menu()->add_item(clan::Image(m_canvas,"Gfx/gui/aero/Images/Ribbon/Tab.png"),"Labas");*/
-
+	m_checkbox_t = new clan::CheckBox(m_editor_window);
+	m_checkbox_t->set_geometry(clan::Rect( 10, 90, clan::Size(15, 15)));
+	m_checkbox_t->set_checked(true);
 	
+	m_checkbox_c = new clan::CheckBox(m_editor_window);
+	m_checkbox_c->set_geometry(clan::Rect( 30, 90, clan::Size(15, 15)));
+	m_checkbox_c->set_checked(true);
+	
+	m_checkbox_o = new clan::CheckBox(m_editor_window);
+	m_checkbox_o->set_geometry(clan::Rect( 50, 90, clan::Size(15, 15)));
+	m_checkbox_o->set_checked(true);
 
 	m_sprite_selection_window = new clan::Window(m_gui_root);
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
 	m_sprite_selection_window->set_visible(false);
 	
-	m_sprite_selection = new SpriteSelection(m_sprite_selection_window);
+	m_sprite_selection = new SpriteFrameSelection(m_sprite_selection_window);
 	m_frame_select = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
+
+	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
 
 	m_gui_root->update_layout();
 }
@@ -84,7 +88,7 @@ bool editor::init()
 
 	init_level();
 	init_gui();
-	
+
 	return true;
 }
 
@@ -101,26 +105,26 @@ void editor::edge_pan(const clan::vec2 & pos)
 	else m_pan.y=0;
 }
 
-void editor::draw_world_axis()
+void editor::draw_world_axis(bool t, bool c, bool o)
 {
 	int32_t w = m_window.get_viewport().get_width(), h = m_window.get_viewport().get_height();
 
 	//chunk and tile separators
 	for(int32_t i=0; i<=w; i++)
-		if((i+m_pos.x)%CHUNK_EDGE_LENGTH_PIXELS==0) 
+		if((i+m_pos.x)%CHUNK_EDGE_LENGTH_PIXELS==0 && t) 
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::yellow);
-		else if((i+m_pos.x)%TILE_SIZE==0) 
+		else if((i+m_pos.x)%TILE_SIZE==0 && c) 
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::blue);
 
 	for(int32_t i=0; i<=h; i++)
-		if((i+m_pos.y)%CHUNK_EDGE_LENGTH_PIXELS==0) 
+		if((i+m_pos.y)%CHUNK_EDGE_LENGTH_PIXELS==0 && t) 
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::yellow);
-		else if((i+m_pos.y)%TILE_SIZE==0)
+		else if((i+m_pos.y)%TILE_SIZE==0 && c)
 			m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::blue);
 		
 	//origin axis
-	if(m_pos.x<=w && m_pos.x+w>=0) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(-m_pos.x,0),clan::vec2(-m_pos.x,h)),clan::Colorf::red);
-	if(m_pos.y<=h && m_pos.y+h>=0) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
+	if(m_pos.x<=w && m_pos.x+w>=0 && o) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(-m_pos.x,0),clan::vec2(-m_pos.x,h)),clan::Colorf::red);
+	if(m_pos.y<=h && m_pos.y+h>=0 && o) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
 }
 
 bool editor::run()
@@ -132,7 +136,7 @@ bool editor::run()
 
 		m_pos+=m_pan;
 		m_tile_map.render(m_pos);
-		draw_world_axis();
+		draw_world_axis(m_checkbox_t->is_checked(),m_checkbox_c->is_checked(),m_checkbox_o->is_checked());
 
 		///render gui
 		m_gui_manager.process_messages(0);
@@ -164,7 +168,6 @@ bool editor::exit()
 {
 	m_tile_map.save("Level/Level.map");
 	m_key_up.destroy();
-	
 	return true;
 }
 
@@ -186,30 +189,41 @@ void editor::on_input(const clan::InputEvent & e)
 	{
 		case clan::InputDevice::keyboard:
 		{
-			
 			if(e.id == clan::keycode_escape)
 				m_run = false;
 			else if (e.id == clan::keycode_d)
 				clan::Console::write_line("x:%1 y:%2", m_pos.x,m_pos.y); //DEBUG
 			else if (e.id == clan::keycode_e)
-				m_button_selection_window->set_visible(!m_button_selection_window->is_visible());
+				m_editor_window->set_visible(!m_editor_window->is_visible());
 			break;
 		}
 		case clan::InputDevice::pointer:
 		{
+
 			if(m_gui_root->get_component_at(e.mouse_pos)!=m_gui_root) break;
 
 			if (e.id == clan::mouse_left)
 				change_tile_sprite(e.mouse_pos);
 			else if (e.id == clan::mouse_right)
-			{
 				change_tile_sprite(e.mouse_pos,true);
-			}
-			if (e.type == clan::InputEvent::pointer_moved)
+
+
+			else if (e.type == clan::InputEvent::pointer_moved)
 			{
 				edge_pan(e.mouse_pos);
+
+				if (e.device.get_keycode(clan::mouse_left))
+				{
+					change_tile_sprite(e.mouse_pos);
+				}
+				else if (e.device.get_keycode(clan::mouse_right))
+				{
+					change_tile_sprite(e.mouse_pos,true);
+				}
 			}
 			break;
+
+
 		}
 	}
 }
@@ -235,7 +249,7 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 
 void editor::on_button_clicked(clan::PushButton * btn)
 {
-	if(btn==m_button_sprite)
+	if(btn==m_button_sprite_frame)
 	{
 		m_sprite_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
