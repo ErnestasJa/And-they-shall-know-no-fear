@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "menu.h"
 
+
 Menu::Menu(App * app, clan::DisplayWindow & wnd)
 {
 	m_app = app;
@@ -8,6 +9,9 @@ Menu::Menu(App * app, clan::DisplayWindow & wnd)
 	m_canvas = clan::Canvas(m_window);
 	m_run = true;
 }
+
+
+
 
 bool Menu::init()
 {
@@ -34,6 +38,23 @@ bool Menu::init()
 	button_exit->set_geometry(clan::Rect( 540, 460, clan::Size(160, 60)));
 	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
 	button_exit->set_text("Exit");
+
+
+	m_exit_window = new clan::Window(c);
+	m_exit_window->set_geometry(clan::Rect(100,100,clan::Size(200,140)));
+	m_exit_window->set_visible(false);
+	
+	button_1 = new clan::PushButton(m_exit_window);
+	button_1->set_geometry(clan::Rect( 50, 60, clan::Size(40, 20)));
+	button_1->func_clicked().set(this, &Menu::on_button_clicked, button_1);
+	button_1->set_text(" Taip");
+
+
+	button_2 = new clan::PushButton(m_exit_window);
+	button_2->set_geometry(clan::Rect( 120, 60, clan::Size(40, 20)));
+	button_2->func_clicked().set(this, &Menu::on_button_clicked, button_2);
+	button_2->set_text(" Ne");
+
 	
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
@@ -92,6 +113,7 @@ void Menu::on_key_up(const clan::InputEvent & e)
 		m_run = false;
 }
 
+
 void Menu::on_button_clicked(clan::PushButton *button)
 {
 	if(button==button_editor)
@@ -124,6 +146,14 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	}
 	else if(button==button_exit)
 	{
-		m_run = false;		
+		m_exit_window->set_visible(true);
+	}
+	else if(button==button_1)
+	{
+		m_run = false;;
+	}
+	else if(button==button_2)
+	{
+		m_exit_window->set_visible(false);
 	}
 }

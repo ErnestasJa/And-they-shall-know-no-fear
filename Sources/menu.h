@@ -5,11 +5,13 @@
 #include "editor.h"
 #include "app.h"
 
+
 class Menu: public State
 {
 protected:
 	App * m_app;
 
+	clan::Window *m_exit_window;
 	clan::Canvas m_canvas;
 	clan::DisplayWindow m_window;
 	clan::ResourceManager m_resources;
@@ -18,7 +20,7 @@ protected:
 	clan::GUIWindowManagerDirect m_window_manager;
 
 	//gui
-	clan::PushButton * button_world, *button_editor, *button_exit;
+	clan::PushButton * button_world, *button_editor, *button_exit,* button_1,*button_2;
 	clan::GUIComponent * c;
 
 	bool m_run;
