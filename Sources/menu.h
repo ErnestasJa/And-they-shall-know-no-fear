@@ -19,7 +19,6 @@ protected:
 
 	//gui
 	clan::PushButton * button_world, *button_editor, *button_exit;
-	clan::Label * l, *l2;
 	clan::GUIComponent * c;
 
 	bool m_run;

@@ -23,7 +23,7 @@ bool Menu::init()
 	button_world = new clan::PushButton(c);
 	button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
-	button_world->set_text("World1");
+	button_world->set_text("World");
 
 	button_editor = new clan::PushButton(c);
 	button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
@@ -123,7 +123,7 @@ void Menu::on_button_clicked(clan::PushButton *button)
 		}
 	}
 	else if(button==button_exit)
-	{m_run = false;
-		
+	{
+		m_run = false;		
 	}
 }
