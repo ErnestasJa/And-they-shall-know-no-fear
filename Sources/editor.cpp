@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "editor.h"
 #include "tile_chunk.h"
-#include "sprite_selection.h"
+#include "sprite_frame_selection.h"
 
 editor::editor(clan::DisplayWindow &display_window)
 {
@@ -22,16 +22,16 @@ void editor::init_gui()
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 
-	m_button_selection_window = new clan::Window(m_gui_root);
-	m_button_selection_window->set_geometry(clan::Rect(50,100,clan::Size(150,200)));
-	m_button_selection_window->set_visible(false);
+	m_editor_window = new clan::Window(m_gui_root);
+	m_editor_window->set_geometry(clan::Rect(50,100,clan::Size(150,200)));
+	m_editor_window->set_visible(false);
 
-	m_button_sprite = new clan::PushButton(m_button_selection_window);
-	m_button_sprite->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
-	m_button_sprite->func_clicked().set(this, &editor::on_button_clicked, m_button_sprite);
-	m_button_sprite->set_text("Select frame");
+	m_button_sprite_frame = new clan::PushButton(m_editor_window);
+	m_button_sprite_frame->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
+	m_button_sprite_frame->func_clicked().set(this, &editor::on_button_clicked, m_button_sprite_frame);
+	m_button_sprite_frame->set_text("Select frame");
 
-	m_combo_layer = new clan::ComboBox(m_button_selection_window);
+	m_combo_layer = new clan::ComboBox(m_editor_window);
 	m_combo_layer->set_geometry(clan::Rect( 10, 30, clan::Size(80, 25)));
 
 	uint32_t i;
@@ -43,29 +43,23 @@ void editor::init_gui()
 	m_combo_layer->set_popup_menu(m_combo_menu_layer);
 	m_combo_layer->set_text("Select layer");
 
-	m_checkbox_t = new clan::CheckBox(m_button_selection_window);
+	m_checkbox_t = new clan::CheckBox(m_editor_window);
 	m_checkbox_t->set_geometry(clan::Rect( 10, 90, clan::Size(15, 15)));
 	m_checkbox_t->set_checked(true);
 	
-	m_checkbox_c = new clan::CheckBox(m_button_selection_window);
+	m_checkbox_c = new clan::CheckBox(m_editor_window);
 	m_checkbox_c->set_geometry(clan::Rect( 30, 90, clan::Size(15, 15)));
 	m_checkbox_c->set_checked(true);
 	
-	m_checkbox_o = new clan::CheckBox(m_button_selection_window);
+	m_checkbox_o = new clan::CheckBox(m_editor_window);
 	m_checkbox_o->set_geometry(clan::Rect( 50, 90, clan::Size(15, 15)));
 	m_checkbox_o->set_checked(true);
-
-	//toolbar goes here
-	/*m_ribbon = new clan::Ribbon(m_gui_root);
-	m_ribbon->set_geometry(clan::Rect(0, 0, clan::Size(m_gui_root->get_content_box().get_width()/4, m_gui_root->get_content_box().get_height())));
-	m_ribbon->get_menu()->add_item(clan::Image(m_canvas,"Gfx/gui/aero/Images/Ribbon/Tab.png"),"Labas1");
-	m_ribbon->get_menu()->add_item(clan::Image(m_canvas,"Gfx/gui/aero/Images/Ribbon/Tab.png"),"Labas");*/
 
 	m_sprite_selection_window = new clan::Window(m_gui_root);
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
 	m_sprite_selection_window->set_visible(false);
 	
-	m_sprite_selection = new SpriteSelection(m_sprite_selection_window);
+	m_sprite_selection = new SpriteFrameSelection(m_sprite_selection_window);
 	m_frame_select = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
 
 	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
@@ -200,7 +194,7 @@ void editor::on_input(const clan::InputEvent & e)
 			else if (e.id == clan::keycode_d)
 				clan::Console::write_line("x:%1 y:%2", m_pos.x,m_pos.y); //DEBUG
 			else if (e.id == clan::keycode_e)
-				m_button_selection_window->set_visible(!m_button_selection_window->is_visible());
+				m_editor_window->set_visible(!m_editor_window->is_visible());
 			break;
 		}
 		case clan::InputDevice::pointer:
@@ -255,7 +249,7 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 
 void editor::on_button_clicked(clan::PushButton * btn)
 {
-	if(btn==m_button_sprite)
+	if(btn==m_button_sprite_frame)
 	{
 		m_sprite_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());

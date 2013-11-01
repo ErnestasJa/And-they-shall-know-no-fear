@@ -1,33 +1,33 @@
 #include "precomp.h"
-#include "sprite_selection.h"
+#include "sprite_frame_selection.h"
 
-SpriteSelection::SpriteSelection(clan::Window * root):clan::GUIComponent(root)
+SpriteFrameSelection::SpriteFrameSelection(clan::Window * root):clan::GUIComponent(root)
 {
 	set_constant_repaint(true);
 
-	func_render().set(this, &SpriteSelection::render);
-	func_process_message().set(this, &SpriteSelection::on_message);
+	func_render().set(this, &SpriteFrameSelection::render);
+	func_process_message().set(this, &SpriteFrameSelection::on_message);
 	this->set_geometry(root->get_client_area());
 }
 
-SpriteSelection::~SpriteSelection()
+SpriteFrameSelection::~SpriteFrameSelection()
 {
 		
 }
 
-clan::Signal_v1<int32_t> & SpriteSelection::func_frame_selected()
+clan::Signal_v1<int32_t> & SpriteFrameSelection::func_frame_selected()
 {
 	return m_sig;
 }
 
-void SpriteSelection::set_sprite(clan::Sprite & s)
+void SpriteFrameSelection::set_sprite(clan::Sprite & s)
 {
 	m_sprite = s.clone();
 	m_pos=clan::vec2(0,0);
 	m_selected_frame=-1;
 }
 
-void SpriteSelection::render(clan::Canvas & c, const clan::Rect & clip_rect)
+void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect)
 {
 	m_pos+=m_pan;
 	clamp_pos();
@@ -46,7 +46,7 @@ void SpriteSelection::render(clan::Canvas & c, const clan::Rect & clip_rect)
 	this->pop_cliprect(c);
 }
 
-void SpriteSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
+void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 {
 	std::shared_ptr<clan::GUIMessage_Input> input_msg = std::dynamic_pointer_cast<clan::GUIMessage_Input>(msg);
 	if (input_msg)
@@ -69,7 +69,7 @@ void SpriteSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 	}
 }
 
-void SpriteSelection::clamp_pos()
+void SpriteFrameSelection::clamp_pos()
 {
 	int32_t w=this->get_content_box().get_width(),h=this->get_content_box().get_height();
 
@@ -80,7 +80,7 @@ void SpriteSelection::clamp_pos()
 	if(m_pos.y>1024-h) m_pos.y = 1024-h;
 }
 
-void SpriteSelection::edge_pan(const clan::vec2 & pos)
+void SpriteFrameSelection::edge_pan(const clan::vec2 & pos)
 {
 	int32_t sens=15;
 
