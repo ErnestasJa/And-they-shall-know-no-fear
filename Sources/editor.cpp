@@ -106,6 +106,8 @@ void editor::edge_pan(const clan::vec2 & pos)
 {
 	int32_t sens=15;
 
+
+
 	if (pos.x < 30) m_pan.x=-sens;
 	else if (pos.x > m_window.get_viewport().get_width()-30) m_pan.x=sens;
 	else m_pan.x=0;
@@ -183,7 +185,6 @@ bool editor::exit()
 
 void editor::on_frame_select(int32_t frame)
 {
-	//Tile & t = m_tile_map.get_chunk(clan::vec2(0,0)).get_tile(clan::vec2(0,0),0);
 	m_selected_frame = frame;
 }
 
@@ -216,10 +217,17 @@ void editor::on_input(const clan::InputEvent & e)
 				change_tile_sprite(e.mouse_pos);
 			else if (e.id == clan::mouse_right)
 				change_tile_sprite(e.mouse_pos,true);
-			else if (e.id == clan::mouse_middle)
+			else if (e.id == clan::mouse_middle && e.id == clan::InputEvent::pressed)
 			{
-				//movement goes here
+				m_drag_offset = e.mouse_pos;
+				clan::Console::write_line("PRESSED"); //DEBUG
 			}
+			else if (e.id == clan::mouse_middle && e.id == clan::InputEvent::released)
+			{
+				m_pan.x=0; m_pan.y=0;
+				clan::Console::write_line("RELEASED"); //DEBUG
+			}
+
 
 			else if (e.type == clan::InputEvent::pointer_moved)
 			{
@@ -232,6 +240,10 @@ void editor::on_input(const clan::InputEvent & e)
 				else if (e.device.get_keycode(clan::mouse_right))
 				{
 					change_tile_sprite(e.mouse_pos,true);
+				}
+				else if (e.device.get_keycode(clan::mouse_middle))
+				{
+					m_pan=e.mouse_pos-m_drag_offset;
 				}
 			}
 			break;
