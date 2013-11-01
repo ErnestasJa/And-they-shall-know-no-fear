@@ -6,7 +6,7 @@
 editor::editor(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
-	m_sprite_selection = nullptr;
+	m_sprite_frame_selection = nullptr;
 	m_selected_frame = -1;
 	m_selected_layer = 0;
 }
@@ -26,15 +26,31 @@ void editor::init_gui()
 	m_editor_window->set_geometry(clan::Rect(50,100,clan::Size(150,200)));
 	m_editor_window->set_visible(false);
 
+	init_gui_layer_dropbox(m_editor_window, clan::Rect(10, 30, clan::Size(80, 25)));
+
 	m_button_sprite_frame = new clan::PushButton(m_editor_window);
 	m_button_sprite_frame->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
 	m_button_sprite_frame->func_clicked().set(this, &editor::on_button_clicked, m_button_sprite_frame);
 	m_button_sprite_frame->set_text("Select frame");
 
-	m_combo_layer = new clan::ComboBox(m_editor_window);
-	m_combo_layer->set_geometry(clan::Rect( 10, 30, clan::Size(80, 25)));
+	init_gui_axis_checkbox(m_editor_window, 10, 90, clan::Size(15, 15));
 
+	m_sprite_selection_window = new clan::Window(m_gui_root);
+	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
+	m_sprite_selection_window->set_visible(false);
+	
+	m_sprite_frame_selection = new SpriteFrameSelection(m_sprite_selection_window);
+
+	m_frame_select = m_sprite_frame_selection->func_frame_selected().connect(this,&editor::on_frame_select);
+
+	m_gui_root->update_layout();
+}
+
+void editor::init_gui_layer_dropbox(clan::Window * root, const clan::Rect pos)
+{
 	uint32_t i;
+	m_combo_layer = new clan::ComboBox(root);
+	m_combo_layer->set_geometry(pos);
 	for(i=0;i<GROUND_LAYER_COUNT;i++) 
 		m_combo_menu_layer.insert_item("Ground "+clan::StringHelp::uint_to_text(i+1),i,i);
 	m_combo_menu_layer.insert_separator(i);
@@ -43,28 +59,22 @@ void editor::init_gui()
 	m_combo_layer->set_popup_menu(m_combo_menu_layer);
 	m_combo_layer->set_text("Select layer");
 
-	m_checkbox_t = new clan::CheckBox(m_editor_window);
-	m_checkbox_t->set_geometry(clan::Rect( 10, 90, clan::Size(15, 15)));
+	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
+}
+
+void editor::init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size)
+{
+	m_checkbox_t = new clan::CheckBox(root);
+	m_checkbox_t->set_geometry(clan::Rect(left, right, size));
 	m_checkbox_t->set_checked(true);
 	
-	m_checkbox_c = new clan::CheckBox(m_editor_window);
-	m_checkbox_c->set_geometry(clan::Rect( 30, 90, clan::Size(15, 15)));
+	m_checkbox_c = new clan::CheckBox(root);
+	m_checkbox_c->set_geometry(clan::Rect(left+=20, right, size));
 	m_checkbox_c->set_checked(true);
 	
-	m_checkbox_o = new clan::CheckBox(m_editor_window);
-	m_checkbox_o->set_geometry(clan::Rect( 50, 90, clan::Size(15, 15)));
+	m_checkbox_o = new clan::CheckBox(root);
+	m_checkbox_o->set_geometry(clan::Rect(left+=20, right, size));
 	m_checkbox_o->set_checked(true);
-
-	m_sprite_selection_window = new clan::Window(m_gui_root);
-	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
-	m_sprite_selection_window->set_visible(false);
-	
-	m_sprite_selection = new SpriteFrameSelection(m_sprite_selection_window);
-	m_frame_select = m_sprite_selection->func_frame_selected().connect(this,&editor::on_frame_select);
-
-	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
-
-	m_gui_root->update_layout();
 }
 
 void editor::init_level()
@@ -206,7 +216,10 @@ void editor::on_input(const clan::InputEvent & e)
 				change_tile_sprite(e.mouse_pos);
 			else if (e.id == clan::mouse_right)
 				change_tile_sprite(e.mouse_pos,true);
-
+			else if (e.id == clan::mouse_middle)
+			{
+				//movement goes here
+			}
 
 			else if (e.type == clan::InputEvent::pointer_moved)
 			{
@@ -222,8 +235,6 @@ void editor::on_input(const clan::InputEvent & e)
 				}
 			}
 			break;
-
-
 		}
 	}
 }
@@ -251,7 +262,7 @@ void editor::on_button_clicked(clan::PushButton * btn)
 {
 	if(btn==m_button_sprite_frame)
 	{
-		m_sprite_selection->set_sprite(m_tile_map.get_sprite(0));
+		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
 	}
 }

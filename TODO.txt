@@ -7,5 +7,5 @@
 +/- editor, divide draw world axis
 + editor, added world axis selection
 + editor, fix shit names
-+ editor, fix not so shit names
-- editor, move dropbox creation to a function
+- editor, fix not so shit names
++ editor, move dropbox creation to a function

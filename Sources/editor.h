@@ -28,6 +28,8 @@ protected:
 	///game specific funcs
 	void init_level();
 	void init_gui();
+	void init_gui_layer_dropbox(clan::Window * root, const clan::Rect pos);
+	void init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size);
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis(bool t, bool c, bool w);
 	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
@@ -65,7 +67,7 @@ protected:
 	clan::PopupMenu				m_combo_menu_layer;
 	clan::CheckBox				*m_checkbox_t, *m_checkbox_c, *m_checkbox_o;
 	clan::Window				*m_sprite_selection_window, *m_editor_window;
-	SpriteFrameSelection		*m_sprite_selection;
+	SpriteFrameSelection		*m_sprite_frame_selection;
 
 
 	clan::Slot m_frame_select;
