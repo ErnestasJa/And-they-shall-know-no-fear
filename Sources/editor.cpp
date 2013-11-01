@@ -93,8 +93,10 @@ bool editor::init()
 	m_resources = clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &editor::on_input);
-	m_mouse_click = m_window.get_ic().get_mouse().sig_key_up().connect(this, &editor::on_input);
+	m_mouse_up = m_window.get_ic().get_mouse().sig_key_up().connect(this, &editor::on_input);
+	m_mouse_down = m_window.get_ic().get_mouse().sig_key_down().connect(this, &editor::on_input);
 	m_mouse_move = m_window.get_ic().get_mouse().sig_pointer_move().connect(this, &editor::on_input);
+
 
 	init_level();
 	init_gui();
@@ -146,7 +148,9 @@ bool editor::run()
 		m_game_time.update();
 		m_canvas.clear();
 
-		m_pos+=m_pan;
+
+		m_pos=m_pos + m_pan + m_scroll;
+
 		m_tile_map.render(m_pos);
 		draw_world_axis(m_checkbox_t->is_checked(),m_checkbox_c->is_checked(),m_checkbox_o->is_checked());
 
@@ -217,21 +221,19 @@ void editor::on_input(const clan::InputEvent & e)
 				change_tile_sprite(e.mouse_pos);
 			else if (e.id == clan::mouse_right)
 				change_tile_sprite(e.mouse_pos,true);
-			else if (e.id == clan::mouse_middle && e.id == clan::InputEvent::pressed)
+			else if (e.id == clan::mouse_middle && e.type == clan::InputEvent::pressed)
 			{
 				m_drag_offset = e.mouse_pos;
 				clan::Console::write_line("PRESSED"); //DEBUG
 			}
-			else if (e.id == clan::mouse_middle && e.id == clan::InputEvent::released)
+			else if (e.id == clan::mouse_middle && e.type == clan::InputEvent::released)
 			{
-				m_pan.x=0; m_pan.y=0;
+				m_scroll=clan::vec2();
 				clan::Console::write_line("RELEASED"); //DEBUG
 			}
-
-
 			else if (e.type == clan::InputEvent::pointer_moved)
 			{
-				edge_pan(e.mouse_pos);
+				//edge_pan(e.mouse_pos);
 
 				if (e.device.get_keycode(clan::mouse_left))
 				{
@@ -243,9 +245,10 @@ void editor::on_input(const clan::InputEvent & e)
 				}
 				else if (e.device.get_keycode(clan::mouse_middle))
 				{
-					m_pan=e.mouse_pos-m_drag_offset;
+					m_scroll=(e.mouse_pos-m_drag_offset)/10;
 				}
 			}
+
 			break;
 		}
 	}

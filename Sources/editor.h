@@ -39,7 +39,8 @@ protected:
 
 	///input event slots
 	clan::Slot m_key_up;
-	clan::Slot m_mouse_click;
+	clan::Slot m_mouse_up;
+	clan::Slot m_mouse_down;
 	clan::Slot m_mouse_move;
 
 	clan::ResourceManager	m_resources;
@@ -47,8 +48,10 @@ protected:
 	clan::Canvas			m_canvas;
 	clan::GameTime			m_game_time;
 
-	///Kameros pozicija, paslinkimas, peles paslinkimo pradzia
-	clan::vec2 m_pos, m_pan, m_drag_offset;
+	clan::vec2 m_pos, 
+		m_pan, 
+		m_drag_offset, 
+		m_scroll;
 
 	///game
 	TileMap m_tile_map;
