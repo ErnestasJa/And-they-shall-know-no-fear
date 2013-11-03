@@ -31,6 +31,9 @@
     <ClCompile Include="Sources\serialization\iserializable.cpp">
       <Filter>serialization</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\game_objects\message.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -59,9 +62,6 @@
     <ClInclude Include="Sources\game_objects\game_objects.h">
       <Filter>game_objects</Filter>
     </ClInclude>
-    <ClInclude Include="message.h">
-      <Filter>game_objects</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\properties\iproperty.h" />
     <ClInclude Include="Sources\properties\property_types.h">
       <Filter>properties</Filter>
@@ -77,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="Sources\serialization\iserializable.h">
       <Filter>serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\message.h">
+      <Filter>game_objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 #include "properties/property.h"
 #include "properties/property_container.h"
-
+#include "message.h"
 
 /**
 Base game object class.
@@ -34,4 +34,5 @@ public:
 
 	virtual void update(const clan::GameTime & time)=0;
 	virtual void render(clan::Canvas & c, const clan::vec2 & offset)=0;
+	virtual void on_message(const Message & msg)=0;
 };

@@ -153,6 +153,7 @@
     <ClCompile Include="Sources\game_objects\game_object.cpp" />
     <ClCompile Include="Sources\game_objects\game_object_manager.cpp" />
     <ClCompile Include="Sources\game_objects\go_sprite.cpp" />
+    <ClCompile Include="Sources\game_objects\message.cpp" />
     <ClCompile Include="Sources\menu.cpp" />
     <ClCompile Include="Sources\precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -172,7 +173,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="message.h" />
     <ClInclude Include="Sources\app.h" />
     <ClInclude Include="Sources\editor.h" />
     <ClInclude Include="Sources\game_objects\game_object.h" />
@@ -180,6 +180,7 @@
     <ClInclude Include="Sources\game_objects\game_object_manager.h" />
     <ClInclude Include="Sources\game_objects\game_object_types.h" />
     <ClInclude Include="Sources\game_objects\go_sprite.h" />
+    <ClInclude Include="Sources\game_objects\message.h" />
     <ClInclude Include="Sources\map_attributes.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\precomp.h" />

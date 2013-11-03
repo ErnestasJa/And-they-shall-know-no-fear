@@ -30,3 +30,10 @@ void GOSprite::render(clan::Canvas & c, const clan::vec2 & offset)
 {
 	m_sprite.draw(c, m_pos.data().x+offset.x, m_pos.data().y+offset.y);
 }
+
+void GOSprite::on_message(const Message & msg)
+{
+	if(msg.type==0)
+	{
+	}
+}

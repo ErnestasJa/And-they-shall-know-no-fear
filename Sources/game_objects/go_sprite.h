@@ -17,4 +17,5 @@ public:
 
 	virtual void update(const clan::GameTime & time);
 	virtual void render(clan::Canvas & c, const clan::vec2 & offset);
+	virtual void on_message(const Message & msg);
 };
