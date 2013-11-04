@@ -9,6 +9,7 @@ editor::editor(clan::DisplayWindow &display_window)
 	m_sprite_frame_selection = nullptr;
 	m_selected_frame = -1;
 	m_selected_layer = 0;
+	m_game_time = clan::GameTime(20,60);
 }
 
 editor::~editor()
@@ -104,11 +105,9 @@ bool editor::init()
 	return true;
 }
 
-void editor::edge_pan(const clan::vec2 & pos)
+/*void editor::edge_pan(const clan::vec2 & pos)
 {
 	int32_t sens=15;
-
-
 
 	if (pos.x < 30) m_pan.x=-sens;
 	else if (pos.x > m_window.get_viewport().get_width()-30) m_pan.x=sens;
@@ -117,7 +116,7 @@ void editor::edge_pan(const clan::vec2 & pos)
 	if (pos.y < 30) m_pan.y=-sens;
 	else if (pos.y > m_window.get_viewport().get_height()-30) m_pan.y=sens;
 	else m_pan.y=0;
-}
+}*/
 
 void editor::draw_world_axis(bool t, bool c, bool o)
 {
@@ -234,21 +233,13 @@ void editor::on_input(const clan::InputEvent & e)
 			else if (e.type == clan::InputEvent::pointer_moved)
 			{
 				//edge_pan(e.mouse_pos);
-
 				if (e.device.get_keycode(clan::mouse_left))
-				{
 					change_tile_sprite(e.mouse_pos);
-				}
 				else if (e.device.get_keycode(clan::mouse_right))
-				{
 					change_tile_sprite(e.mouse_pos,true);
-				}
 				else if (e.device.get_keycode(clan::mouse_middle))
-				{
-					m_scroll=(e.mouse_pos-m_drag_offset)/10;
-				}
+					m_scroll=(e.mouse_pos-m_drag_offset)/m_game_time.get_time_elapsed_ms();
 			}
-
 			break;
 		}
 	}
