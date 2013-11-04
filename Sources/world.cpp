@@ -6,6 +6,7 @@
 World::World(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
+	pagrindiniomenuuzdarymas = m_window.sig_window_close().connect(this, &World::uzdarymas);
 }
 
 World::~World()
@@ -77,6 +78,11 @@ bool World::run()
 	}
 
 	return m_run;
+}
+void World::uzdarymas()
+{
+	m_run = false;
+	
 }
 
 
