@@ -16,7 +16,8 @@ public:
 
 	bool pause();
 	bool resume();
-
+	void uzdarymas();
+	
 protected:
 	///event funcs
 	void on_key_up(const clan::InputEvent & e);
@@ -27,7 +28,7 @@ protected:
 protected:
 	bool m_run;
 	clan::Slot m_key_up;
-
+	clan::Slot pagrindiniomenuuzdarymas;
 	clan::ResourceManager	m_resources;
 	clan::DisplayWindow		m_window;
 	clan::Canvas			m_canvas;
