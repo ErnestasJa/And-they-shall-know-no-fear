@@ -45,13 +45,13 @@ bool Menu::init()
 	m_exit_window->set_visible(false);
 	
 	button_1 = new clan::PushButton(m_exit_window);
-	button_1->set_geometry(clan::Rect( 20, 55, clan::Size(60, 30)));
+	button_1->set_geometry(clan::Rect( 20, 65, clan::Size(60, 30)));
 	button_1->func_clicked().set(this, &Menu::on_button_clicked, button_1);
 	button_1->set_text("TAIP");
 
 
 	button_2 = new clan::PushButton(m_exit_window);
-	button_2->set_geometry(clan::Rect( 120, 55, clan::Size(60, 30)));
+	button_2->set_geometry(clan::Rect( 120, 65, clan::Size(60, 30)));
 	button_2->func_clicked().set(this, &Menu::on_button_clicked, button_2);
 	button_2->set_text("NE");
 
