@@ -23,8 +23,11 @@ protected:
 	clan::PushButton * button_world, *button_editor, *button_exit,* button_1,*button_2;
 	clan::GUIComponent * c;
 
+	void WindowCloseEventHandler();
 	bool m_run;
+
 	clan::Slot m_key_up;
+	clan::Slot windowClosedEventSlot;
 public:
 
 	Menu(App * app, clan::DisplayWindow & wnd);
@@ -34,6 +37,7 @@ public:
 	bool pause();
 	bool resume();
 	bool exit();
+	
 
 	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
