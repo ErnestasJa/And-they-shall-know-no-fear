@@ -1,5 +1,10 @@
 #include "precomp.h"
 #include "menu.h"
+#include <ClanLib/gl.h>
+#include <ClanLib/core.h>
+#include <ClanLib/application.h>
+#include <ClanLib/display.h>
+
 
 
 Menu::Menu(App * app, clan::DisplayWindow & wnd)
@@ -20,9 +25,10 @@ bool Menu::init()
 	m_background = clan::Image::resource(m_canvas,"background",m_resources);
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
 
-	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
+	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
+	windowClosedEventSlot = m_window.sig_window_close().connect(this, &Menu::WindowCloseEventHandler);
 
 	button_world = new clan::PushButton(c);
 	button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
@@ -41,19 +47,19 @@ bool Menu::init()
 
 
 	m_exit_window = new clan::Window(c);
-	m_exit_window->set_geometry(clan::Rect(100,100,clan::Size(200,140)));
+	m_exit_window->set_geometry(clan::Rect( 300, 460, clan::Size(200,140)));
 	m_exit_window->set_visible(false);
 	
 	button_1 = new clan::PushButton(m_exit_window);
-	button_1->set_geometry(clan::Rect( 50, 60, clan::Size(40, 20)));
+	button_1->set_geometry(clan::Rect( 20, 65, clan::Size(60, 30)));
 	button_1->func_clicked().set(this, &Menu::on_button_clicked, button_1);
-	button_1->set_text(" Taip");
+	button_1->set_text("TAIP");
 
 
 	button_2 = new clan::PushButton(m_exit_window);
-	button_2->set_geometry(clan::Rect( 120, 60, clan::Size(40, 20)));
+	button_2->set_geometry(clan::Rect( 120, 65, clan::Size(60, 30)));
 	button_2->func_clicked().set(this, &Menu::on_button_clicked, button_2);
-	button_2->set_text(" Ne");
+	button_2->set_text("NE");
 
 	
 
@@ -67,6 +73,7 @@ bool Menu::run()
 {
 	if(m_run)
 	{
+	
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 
 		///render gui
@@ -79,6 +86,12 @@ bool Menu::run()
 	}
 
 	return m_run;
+}
+
+void Menu::WindowCloseEventHandler()
+{
+	m_run = false;
+	
 }
 
 bool Menu::pause()
