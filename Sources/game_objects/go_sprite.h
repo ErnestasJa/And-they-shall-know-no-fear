@@ -5,7 +5,10 @@
 class GOSprite: public GameObject
 {
 protected:
+	clan::Sprite m_rw,m_lw,m_uw,m_dw;
 	clan::Sprite m_sprite;
+
+	uint32_t keys;
 public:
 	static GameObject * create(uint32_t guid){return new GOSprite(guid);};
 	static uint32_t type(){return EGOT_SPRITE;}

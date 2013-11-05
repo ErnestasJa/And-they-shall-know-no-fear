@@ -37,7 +37,6 @@ public:
 	template <class T>
 	bool register_game_object()
 	{
-		///galbut reiketu patikrinti ar nera jau priregistruoto objekto tokiu tipu
 		m_go_create[T::type()]=&T::create;
 		return true;
 	}

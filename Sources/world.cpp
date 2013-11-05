@@ -17,13 +17,14 @@ World::~World()
 
 void World::init_level()
 {
+	Message::register_messages();
 	m_gom = new GameObjectManager();
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
 
 	m_tile_map.load("test.map");
 
-	GOSprite * spr = static_cast<GOSprite *>(m_gom->add_game_object(EGOT_SPRITE,0));
+	spr = static_cast<GOSprite *>(m_gom->add_game_object(EGOT_SPRITE,0));
 	spr->load(m_canvas,m_resources);
 }
 
@@ -36,7 +37,7 @@ bool World::init()
 	m_run = true;
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &World::on_key_up);
-
+	m_key_down = m_window.get_ic().get_keyboard().sig_key_down().connect(this, &World::on_key_down);
 	///load level
 	init_level();
 
@@ -69,14 +70,15 @@ bool World::pause()
 	State::pause();
 
 	m_key_up.disable();
+	m_key_down.disable();
 	return true;
 }
 
 bool World::resume()
 {
 	State::resume();
-
 	m_key_up.enable();
+	m_key_down.enable();
 	return true;
 }
 
@@ -84,6 +86,7 @@ bool World::exit()
 {
 	delete m_gom;
 	m_key_up.destroy();
+	m_key_down.destroy();
 	return true;
 }
 
@@ -91,4 +94,52 @@ void World::on_key_up(const clan::InputEvent & e)
 {
 	if(e.id == clan::keycode_escape)
 		m_run = false;
+
+	
+	else if(e.id == clan::keycode_a)
+	{
+		msg.keys.data()&= ~EUIKT_MOVE_LEFT;
+		spr->on_message(msg);
+	}
+	else if(e.id == clan::keycode_d)
+	{
+		msg.keys.data()&= ~EUIKT_MOVE_RIGHT;
+		spr->on_message(msg);
+	}
+	else if(e.id == clan::keycode_w)
+	{
+		msg.keys.data()&= ~EUIKT_MOVE_UP;
+		spr->on_message(msg);
+	}
+	else if(e.id == clan::keycode_s)
+	{
+		msg.keys.data()&= ~EUIKT_MOVE_DOWN;
+		spr->on_message(msg);
+	}
+	clan::Console::write_line("Released: %1", e.id);
+}
+
+void World::on_key_down(const clan::InputEvent & e)
+{
+	if(e.id == clan::keycode_a)
+	{
+		msg.keys.data()|=EUIKT_MOVE_LEFT;
+		spr->on_message(msg);
+	}
+	else if(e.id == clan::keycode_d)
+	{
+		msg.keys.data()|=EUIKT_MOVE_RIGHT;
+		spr->on_message(msg);
+	}
+	else if(e.id == clan::keycode_w)
+	{
+		msg.keys.data()|=EUIKT_MOVE_UP;
+		spr->on_message(msg);
+	}
+	else if(e.id == clan::keycode_s)
+	{
+		msg.keys.data()|=EUIKT_MOVE_DOWN;
+		spr->on_message(msg);
+	}
+	clan::Console::write_line("Pressed: %1", e.id);
 }
