@@ -11,7 +11,6 @@ class Menu: public State
 protected:
 	App * m_app;
 
-	clan::Window *m_exit_window;
 	clan::Canvas m_canvas;
 	clan::DisplayWindow m_window;
 	clan::ResourceManager m_resources;
@@ -20,10 +19,12 @@ protected:
 	clan::GUIWindowManagerDirect m_window_manager;
 
 	//gui
-	clan::PushButton * button_world, *button_editor, *button_exit,* button_1,*button_2;
+	clan::Window *m_exit_window;
+	clan::PushButton * button_world, *button_editor, *button_exit, *button_exit_Y, *button_exit_N;
 	clan::GUIComponent * c;
 
 	void WindowCloseEventHandler();
+	bool Close_exit_YN_window();
 	bool m_run;
 
 	clan::Slot m_key_up;

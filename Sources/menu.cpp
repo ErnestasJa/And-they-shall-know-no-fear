@@ -49,17 +49,17 @@ bool Menu::init()
 	m_exit_window = new clan::Window(c);
 	m_exit_window->set_geometry(clan::Rect( 300, 460, clan::Size(200,140)));
 	m_exit_window->set_visible(false);
+	m_exit_window->func_close().set(this, &Menu::Close_exit_YN_window);;
 	
-	button_1 = new clan::PushButton(m_exit_window);
-	button_1->set_geometry(clan::Rect( 20, 65, clan::Size(60, 30)));
-	button_1->func_clicked().set(this, &Menu::on_button_clicked, button_1);
-	button_1->set_text("TAIP");
+	button_exit_Y = new clan::PushButton(m_exit_window);
+	button_exit_Y->set_geometry(clan::Rect( 20, 65, clan::Size(60, 30)));
+	button_exit_Y->func_clicked().set(this, &Menu::on_button_clicked, button_exit_Y);
+	button_exit_Y->set_text("TAIP");
 
-
-	button_2 = new clan::PushButton(m_exit_window);
-	button_2->set_geometry(clan::Rect( 120, 65, clan::Size(60, 30)));
-	button_2->func_clicked().set(this, &Menu::on_button_clicked, button_2);
-	button_2->set_text("NE");
+	button_exit_N = new clan::PushButton(m_exit_window);
+	button_exit_N->set_geometry(clan::Rect( 120, 65, clan::Size(60, 30)));
+	button_exit_N->func_clicked().set(this, &Menu::on_button_clicked, button_exit_N);
+	button_exit_N->set_text("NE");
 
 	
 
@@ -92,6 +92,12 @@ void Menu::WindowCloseEventHandler()
 {
 	m_run = false;
 	
+}
+
+bool Menu::Close_exit_YN_window()
+{
+    m_exit_window->set_visible(false);
+	return  m_exit_window->is_visible();
 }
 
 bool Menu::pause()
@@ -161,11 +167,11 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	{
 		m_exit_window->set_visible(true);
 	}
-	else if(button==button_1)
+	else if(button==button_exit_Y)
 	{
 		m_run = false;;
 	}
-	else if(button==button_2)
+	else if(button==button_exit_N)
 	{
 		m_exit_window->set_visible(false);
 	}
