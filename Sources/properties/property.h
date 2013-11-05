@@ -135,7 +135,7 @@ public:
 
 ///File serilization
 public:
-	virtual void serialize(clan::File & f)
+	virtual void serialize(clan::File & f) const
 	{
 		f.write_string_a(m_data->name);
 		serialize_type<T>(f,m_data->data);
@@ -149,13 +149,13 @@ public:
 
 ///Net serilization
 public:
-	virtual void net_value_serialize(clan::NetGameEventValue & e)
+	virtual void net_value_serialize(clan::NetGameEventValue & e) const
 	{
 		e.add_member(m_data->name);
 		serialize_type<T>(e,m_data->data);
 	}
 
-	virtual void net_value_serialize(const clan::NetGameEventValue & e)
+	virtual void net_value_deserialize(const clan::NetGameEventValue & e)
 	{
 		m_data->name = e.get_member(1).to_string();
 		deserialize_type<T>(e.get_member(2),m_data->data);

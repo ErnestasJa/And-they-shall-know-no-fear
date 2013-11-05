@@ -6,7 +6,7 @@ template <class T>
 class Property;
 
 ///Every function that may fail will throw clan::Exception
-class PropertyContainer: public ISerializable, public INetSerializable
+class PropertyContainer
 {
 ///property container
 protected:

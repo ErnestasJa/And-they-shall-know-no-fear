@@ -11,8 +11,6 @@ enum MESSAGE_TYPE
 
 #define DEF_MSG(CLASSNAME,ENUM) public: static uint32_t type(){return ENUM;} static Message * create(){return new CLASSNAME();} virtual uint32_t get_type()const{return CLASSNAME::type();}
 
-
-
 class Message: public PropertyContainer
 {
 	DEF_MSG(Message,MSG_GENERIC)

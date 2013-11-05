@@ -1,5 +1,4 @@
 #include "precomp.h"
-#include "serialization/iserializable.h"
 #include "iproperty.h"
 #include "property.h"
 #include "property_util.h"
@@ -115,7 +114,7 @@ void PropertyContainer::net_deserialize(const clan::NetGameEvent & e)
 		uint32_t type = v.get_member(0).to_uinteger();
 
 		IProperty * p = PropertyContainer::create_property(type,std::string());
-		p->net_value_serialize(v);
+		p->net_value_deserialize(v);
 
 		clan::Console::write_line("Deserialized property with name='%1', type='%2'",p->get_name(),p->get_type());
 
