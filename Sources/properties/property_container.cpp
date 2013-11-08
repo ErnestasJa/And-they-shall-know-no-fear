@@ -60,7 +60,7 @@ bool PropertyContainer::remove_property(const std::string & name)
 	return false;
 }
 
-void PropertyContainer::serialize(clan::File & file)
+void PropertyContainer::serialize(clan::File & file) const
 {
 	file.write_uint32(m_props.size());
 	for(auto it = m_props.begin(); it != m_props.end(); it++)
@@ -92,7 +92,7 @@ void PropertyContainer::deserialize(clan::File & file)
 	}
 }
 
-void PropertyContainer::net_serialize(clan::NetGameEvent & e)
+void PropertyContainer::net_serialize(clan::NetGameEvent & e) const
 {
 	e.add_argument((uint32_t)m_props.size());
 	for(auto it = m_props.begin(); it != m_props.end(); it++)

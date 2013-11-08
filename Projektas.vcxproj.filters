@@ -28,8 +28,11 @@
     <ClCompile Include="Sources\properties\property_util.cpp">
       <Filter>properties</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\game_objects\message.cpp">
-      <Filter>game_objects</Filter>
+    <ClCompile Include="Sources\net\client.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\net\message.cpp">
+      <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,8 +75,11 @@
     <ClInclude Include="Sources\properties\property_util.h">
       <Filter>properties</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\game_objects\message.h">
-      <Filter>game_objects</Filter>
+    <ClInclude Include="Sources\net\client.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\net\message.h">
+      <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +92,9 @@
     </Filter>
     <Filter Include="properties">
       <UniqueIdentifier>{bb44000f-0e6a-44ab-8128-28da2a55e2c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{a0b669e6-085f-4a34-9752-9f10853a30ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -16,7 +16,7 @@ public:
 	void remove_game_object(uint32_t guid);
 
 	GameObject * find_game_object_by_id(uint32_t id);
-	GameObject * find_game_object_by_guid(uint32_t id);
+	GameObject * find_game_object_by_guid(uint32_t guid);
 
 	std::vector<GameObject*> & get_game_objects();
 

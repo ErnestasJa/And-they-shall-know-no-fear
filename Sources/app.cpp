@@ -15,14 +15,15 @@ int App::main(const std::vector<std::string> &args)
 	clan::SetupGUI setup_gui;
 	clan::SetupSound setup_sound;
 	clan::SoundOutput output(44100);
-
+	
 	clan::DisplayWindowDescription desc;
 	desc.set_title("Demo");
 	desc.set_size(clan::Size(1024, 720), true);
 	clan::DisplayWindow window(desc);
 
-	clan::ConsoleWindow console_window("Console");
-
+	clan::SetupNetwork setup_network;
+	clan::ConsoleWindow console("Client console", 160, 1000);
+	clan::ConsoleLogger logger;
 
 	clan::Slot slot_quit = window.sig_window_close().connect(this, &App::on_window_close);
 

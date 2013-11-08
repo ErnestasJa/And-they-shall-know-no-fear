@@ -78,6 +78,16 @@ public:
 		return m_data.get() == nullptr ? true : false;
 	}
 
+	void set(const T & data)
+	{
+		m_data->data = data;
+	}
+
+	const T & get()
+	{
+		return m_data->data;
+	}
+
 	const T & data() const
 	{
 		return m_data->data;

@@ -60,9 +60,9 @@ void GOSprite::render(clan::Canvas & c, const clan::vec2 & offset)
 
 void GOSprite::on_message(const Message & msg)
 {
-	if(msg.get_type()==MSG_USER_INPUT)
+	if(msg.get_type()==MSG_CLIENT_INPUT)
 	{
-		const MSG_User_Input & input = (const MSG_User_Input &)msg;
+		const MSG_Client_Input & input = (const MSG_Client_Input &)msg;
 		keys = input.keys;
 	}
 }

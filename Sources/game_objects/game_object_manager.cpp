@@ -51,6 +51,18 @@ GameObject * GameObjectManager::find_game_object_by_id(uint32_t id)
 	return (*it);
 }
 
+
+GameObject * GameObjectManager::find_game_object_by_guid(uint32_t guid)
+{
+	auto it = std::find_if(m_game_object_list.begin(), m_game_object_list.end(), [&guid](GameObject * o){return o->get_guid()==guid;});
+
+	if(it==m_game_object_list.end())
+		return nullptr;
+
+	return (*it);
+}
+
+
 void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 {
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)

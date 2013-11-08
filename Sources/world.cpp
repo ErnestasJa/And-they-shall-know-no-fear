@@ -2,12 +2,18 @@
 
 #include "world.h"
 #include "tile_chunk.h"
+#include "net\client.h"
 #include "game_objects\go_sprite.h"
+
 
 World::World(clan::DisplayWindow &display_window)
 {
+	clan::SetupNetwork setup_network;
+	clan::ConsoleLogger logger;
+
 	m_window = display_window;
 	m_game_time = clan::GameTime(20,60);
+	m_client = new Client();
 }
 
 World::~World()
@@ -40,10 +46,40 @@ bool World::init()
 	m_key_down = m_window.get_ic().get_keyboard().sig_key_down().connect(this, &World::on_key_down);
 	///load level
 	init_level();
+	
+	m_client->set_name("Troll");
+	
+	msg_auth.name = m_client->get_name();
+	msg_auth.timestamp = m_game_time.get_current_time_ms();
+	
 
+	m_net_slots.connect(m_client->sig_connected(),this, &World::on_connected);
+	m_net_slots.connect(m_client->sig_disconnected(),this, &World::on_disconnected);
+	m_net_slots.connect(m_client->sig_event_received(),this, &World::on_net_event);
+
+	clan::log_event("system", "Client trying to connect");
+	m_client->connect("192.168.1.100","27015");
+	
 	return true;
 }
 
+
+void World::on_connected()
+{
+	clan::log_event("net_event","Connected to server.");
+	m_client->send_message(msg_auth);
+}
+
+void World::on_net_event(const clan::NetGameEvent & e)
+{
+
+}
+
+void World::on_disconnected()
+{
+	clan::log_event("net_event","Disconnected from server.");
+	m_run = false;
+}
 
 bool World::run()
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "properties/property.h"
 #include "properties/property_container.h"
-#include "message.h"
+#include "net/message.h"
 
 /**
 Base game object class.

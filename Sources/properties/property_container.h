@@ -26,13 +26,14 @@ public:
 	
 	template <class T> Property<T> add_property(const Property<T> & prop);
 	template <class T> Property<T> add_property(const std::string & name, const T & data);
+	template <class T> Property<T> add_property(const std::string & name);
 	template <class T> Property<T> get_property(const std::string & name);
 
 public:
-	virtual void serialize(clan::File & file);
+	virtual void serialize(clan::File & file) const;
 	virtual void deserialize(clan::File & file);
 
-	virtual void net_serialize(clan::NetGameEvent & e);
+	virtual void net_serialize(clan::NetGameEvent & e) const;
 	virtual void net_deserialize(const clan::NetGameEvent & e);
 ///factory methods
 private:
@@ -42,7 +43,6 @@ public:
 
 	template <class T>
 	static bool register_property(){
-		///galbut reiketu patikrinti ar nera jau priregistruoto objekto tokiu tipu
 		m_prop_create[T::get_property_type_id()]=&T::create;
 		return true;
 	}
@@ -100,6 +100,27 @@ Property<T> PropertyContainer::add_property(const Property<T> & prop)
 }
 
 template <class T>
+Property<T> PropertyContainer::add_property(const std::string & name)
+{
+	Property<T> * r;
+	auto it = std::find_if(m_props.begin(), m_props.end(), [&name](IProperty * o){return o->get_name()==name;});
+
+	if(it!=m_props.end())
+	{
+		r = static_cast< Property<T> *>(*it);
+
+		if(r->get_type()!=get_type_id<T>())
+			throw clan::Exception("Another property already exists with the same name but different type");
+		
+		return *r;
+	}
+
+	r = new Property<T>(name);
+	m_props.push_back(r);
+	return *r;
+}
+
+template <class T>
 Property<T> PropertyContainer::add_property(const std::string & name, const T & data)
 {
 	Property<T> * r;
@@ -120,3 +141,4 @@ Property<T> PropertyContainer::add_property(const std::string & name, const T & 
 	m_props.push_back(r);
 	return *r;
 }
+

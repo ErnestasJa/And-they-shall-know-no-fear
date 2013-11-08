@@ -17,7 +17,8 @@ Message * Message::create_message(uint32_t type)
 bool Message::register_messages()
 {
 	register_message<Message>();
-	register_message<MSG_User_Input>();
+	register_message<MSG_Client_Input>();
+	register_message<MSG_Client_Auth>();
 
 	return true;
 }

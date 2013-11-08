@@ -5,6 +5,7 @@
 #include "game_objects\game_objects.h"
 #include "game_objects\game_object_manager.h"
 
+class Client;
 class World: public State
 {
 public:
@@ -25,6 +26,14 @@ protected:
 	///game specific funcs
 	void init_level();
 
+
+protected:
+	///net
+	clan::SlotContainer m_net_slots;
+
+	void on_connected();
+	void on_net_event(const clan::NetGameEvent & e);
+	void on_disconnected();
 protected:
 	bool m_run;
 	clan::Slot m_key_up;
@@ -41,7 +50,9 @@ protected:
 	///game
 	TileMap m_tile_map;
 	GOSprite * spr; ///player, but not really
-	MSG_User_Input msg;
-	
+	MSG_Client_Input msg;
+	MSG_Client_Auth msg_auth;
+
 	GameObjectManager * m_gom;
+	Client * m_client;
 };
