@@ -31,22 +31,22 @@ void GOSprite::update(const clan::GameTime & time)
 	m_sprite.update(time.get_time_elapsed_ms());
 	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
-	if(CHECK_BIT(keys,EUIKT_MOVE_LEFT))
+	if(keys&EUIKT_MOVE_LEFT)
 	{
 		m_sprite=m_lw;
 		m_pos.data().x -= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 	}
-	if(CHECK_BIT(keys,EUIKT_MOVE_RIGHT))
+	if(keys&EUIKT_MOVE_RIGHT)
 	{
 		m_sprite=m_rw;
 		m_pos.data().x += 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 	}
-	if(CHECK_BIT(keys,EUIKT_MOVE_UP))
+	if(keys&EUIKT_MOVE_UP)
 	{
 		m_sprite=m_uw;
 		m_pos.data().y -= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 	}
-	if(CHECK_BIT(keys,EUIKT_MOVE_DOWN))
+	if(keys&EUIKT_MOVE_DOWN)
 	{
 		m_sprite=m_dw;
 		m_pos.data().y += 32.0f * (float)time.get_time_elapsed_ms()/900.0f;

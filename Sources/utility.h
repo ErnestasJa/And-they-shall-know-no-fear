@@ -1,7 +1,6 @@
 #pragma once
 
 #define BIT(x) 1<<(x)
-#define CHECK_BIT(val,bit) (((val) & (bit)) == (bit))
 
 #define loop(V,X) for(uint32_t (V) = 0; (V) < (X); (V)++)
 #define loopi(X) loop(i,(X))

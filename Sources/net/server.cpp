@@ -90,28 +90,35 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClient * client)
 		MSGC_Auth * m = static_cast<MSGC_Auth*>(Message::create_message(type));
 		m->net_deserialize(e);
 
-		MSGS_Auth_Status msg;
+		MSGS_AuthStatus msg;
+		std::string str;
+
 		if(m->name.get().size()<33&&m->name.get().size()>2)
 		{
 			client->set_name(m->name);
 			client->set_flag(ECF_LOGGED_IN);
-			clan::log_event("net_event","Client with user name '%1' connected, id '%2'.",client->get_name(),client->get_id());
 
-			
-			msg.auth_sucessful.set(true);
-			msg.id.set(client->get_id());
+			clan::StringFormat fmt("Client with user name '%1' connected, id '%2'.");
+			fmt.set_arg(0,client->get_name());
+			fmt.set_arg(1,client->get_id());
+
+			msg.auth_sucessful	= true;
+			msg.id				= client->get_id();
+			msg.msg				= fmt.get_result();
+
+			clan::log_event("net_event",msg.msg);
+
 			client->send_message(msg);
 		}
 		else
 		{
-			msg.auth_sucessful.set(false);
+			msg.auth_sucessful	= false;
+			msg.msg				= "Nick name should be from 3 to 32 symbols length.";
 			
 			client->send_message(msg);
 			client->get_connection()->disconnect();/// disconnect doesn't happen before you send another msg.
-			Message gen;
-			gen.add_property("generic_ignore________",123456);
-			client->send_message(gen); ///Make sure disconnect gets sent
-			clan::log_event("net_event","Nick name should be from 3 to 32 symbols length");
+			
+			clan::log_event("net_event",msg.msg);
 		}
 	}
 	else

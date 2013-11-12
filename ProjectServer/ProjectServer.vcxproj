@@ -74,6 +74,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Sources\game_objects\game_object.cpp" />
+    <ClCompile Include="..\Sources\game_objects\game_object_manager.cpp" />
+    <ClCompile Include="..\Sources\game_objects\go_sprite.cpp" />
     <ClCompile Include="..\Sources\net\common.cpp" />
     <ClCompile Include="..\Sources\net\message.cpp" />
     <ClCompile Include="..\Sources\net\server.cpp" />
@@ -87,6 +90,11 @@
     <ClCompile Include="..\Sources\properties\property_util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Sources\game_objects\game_object.h" />
+    <ClInclude Include="..\Sources\game_objects\game_objects.h" />
+    <ClInclude Include="..\Sources\game_objects\game_object_manager.h" />
+    <ClInclude Include="..\Sources\game_objects\game_object_types.h" />
+    <ClInclude Include="..\Sources\game_objects\go_sprite.h" />
     <ClInclude Include="..\Sources\net\common.h" />
     <ClInclude Include="..\Sources\net\message.h" />
     <ClInclude Include="..\Sources\net\server.h" />

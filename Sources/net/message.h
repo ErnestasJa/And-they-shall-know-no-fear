@@ -9,12 +9,13 @@ enum MESSAGE_TYPE
 	MSGC_INPUT,
 	MSGC_AUTH,
 	MSGS_AUTH_STATUS,
+	MSGS_CLIENT_PUNISHMENT,
 
 	///Game
 	MSGS_CREATE_GAME_OBJECT
 };
 
-#define DEF_MSG(CLASSNAME,ENUM) public: static uint32_t type(){return ENUM;} static Message * create(){return new CLASSNAME();} virtual uint32_t get_type()const{return CLASSNAME::type();}
+#define DEF_MSG(CLASSNAME,ENUM) public: static uint32_t msg_type(){return ENUM;} static Message * create(){return new CLASSNAME();} virtual uint32_t get_type()const{return CLASSNAME::msg_type();}
 
 class Message: public PropertyContainer
 {
@@ -39,7 +40,7 @@ public:
 	template <class T>
 	static bool register_message()
 	{
-		m_msg_create[T::type()]=&T::create;
+		m_msg_create[T::msg_type()]=&T::create;
 		return true;
 	}
 
@@ -51,6 +52,25 @@ public:
 ############# Net messages ####################
 ###############################################
 **/
+
+enum EClientPunishmentType
+{
+	ECPT_KICK = 0,
+	ECPT_BAN,
+};
+
+class MSGS_ClientPunishment: public Message
+{
+	DEF_MSG(MSGS_ClientPunishment,MSGS_CLIENT_PUNISHMENT)
+public:
+	Property<uint32_t> id, type;
+
+	MSGS_ClientPunishment()
+	{
+		id = add_property<uint32_t>("id");
+		type = add_property<uint32_t>("type");
+	}
+};
 
 class MSGC_Auth: public Message
 {
@@ -64,17 +84,19 @@ public:
 	}
 };
 
-class MSGS_Auth_Status: public Message
+class MSGS_AuthStatus: public Message
 {
-	DEF_MSG(MSGS_Auth_Status,MSGS_AUTH_STATUS)
+	DEF_MSG(MSGS_AuthStatus,MSGS_AUTH_STATUS)
 public:
 	Property<bool> auth_sucessful;
 	Property<uint32_t> id;
+	Property<std::string> msg;
 
-	MSGS_Auth_Status()
+	MSGS_AuthStatus()
 	{
 		auth_sucessful = add_property<bool>("as");
 		id = add_property<uint32_t>("id");
+		msg = add_property<std::string>("name");
 	}
 };
 
@@ -84,14 +106,14 @@ public:
 ###############################################
 **/
 
-class MSGS_Create_Game_Object: public Message
+class MSGS_CreateGameObject: public Message
 {
-	DEF_MSG(MSGS_Create_Game_Object,MSGS_CREATE_GAME_OBJECT)
+	DEF_MSG(MSGS_CreateGameObject,MSGS_CREATE_GAME_OBJECT)
 public:
 	Property<uint32_t> guid;
 	Property<uint32_t> obj_type;
 
-	MSGS_Create_Game_Object()
+	MSGS_CreateGameObject()
 	{
 		guid = add_property<uint32_t>("guid");
 		obj_type = add_property<uint32_t>("type");

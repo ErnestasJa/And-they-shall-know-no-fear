@@ -25,11 +25,13 @@ struct PropertyData
 	{
 		name=pname;
 		data=pdata;
+		flags=0;
 	}
 
 	PropertyData(const std::string & pname)
 	{
 		name=pname;
+		flags=0;
 	}
 };
 
@@ -78,9 +80,13 @@ public:
 		return m_data.get() == nullptr ? true : false;
 	}
 
-	void set(const T & data)
+	inline void set(const T & data)
 	{
-		m_data->data = data;
+		if(m_data->data!=data)
+		{
+			m_data->data = data;
+			m_data->flags &= ~EPF_UNCHANGED;
+		}
 	}
 
 	const T & get()
@@ -137,7 +143,7 @@ public:
 
 	Property<T> operator = (const T & data)
 	{
-		m_data->data = data;
+		set(data);
 		return *this;
 	}
 
@@ -163,6 +169,7 @@ public:
 	{
 		e.add_member(m_data->name);
 		serialize_type<T>(e,m_data->data);
+		m_data->flags|= EPF_UNCHANGED;
 	}
 
 	virtual void net_value_deserialize(const clan::NetGameEventValue & e)

@@ -1,5 +1,10 @@
 #pragma once
 
+enum EPropertyFlag
+{
+	EPF_UNCHANGED = BIT(0),
+};
+
 
 class IProperty
 {
@@ -13,8 +18,8 @@ public:
 	virtual uint32_t get_type() const=0;
 	virtual uint32_t get_flags() const=0;
 
-	virtual void serialize(clan::File & f)const=0;
+	virtual void serialize(clan::File & f) const=0;
 	virtual void deserialize(clan::File & f)=0;
-	virtual void net_value_serialize(clan::NetGameEventValue & e)const=0;
+	virtual void net_value_serialize(clan::NetGameEventValue & e) const=0;
 	virtual void net_value_deserialize(const clan::NetGameEventValue & e)=0;
 };

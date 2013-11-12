@@ -33,7 +33,7 @@ public:
 	virtual void serialize(clan::File & file) const;
 	virtual void deserialize(clan::File & file);
 
-	virtual void net_serialize(clan::NetGameEvent & e) const;
+	virtual void net_serialize(clan::NetGameEvent & e, bool only_changed = true) const;
 	virtual void net_deserialize(const clan::NetGameEvent & e, uint32_t start_at_argument=1);
 ///factory methods
 private:

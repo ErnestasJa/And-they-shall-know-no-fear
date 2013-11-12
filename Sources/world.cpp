@@ -80,17 +80,18 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 	if(type==MSGS_AUTH_STATUS)
 	{
-		MSGS_Auth_Status * m = static_cast<MSGS_Auth_Status*>(Message::create_message(type));
+		MSGS_AuthStatus * m = static_cast<MSGS_AuthStatus*>(Message::create_message(type));
 		m->net_deserialize(e);
 
 		if(m->auth_sucessful)
 		{
 			m_client->set_id(m->id);
-			clan::log_event("net_event","Successfully authenticated on server, id '%1'.",m->id);
+			clan::log_event("net_event",m->msg);
 		}
 		else
 		{
-			clan::log_event("net_event","Failed authenticating client on server.");
+			clan::log_event("net_event",m->msg);
+			m_client->disconnect();
 		}
 	}
 }
