@@ -17,8 +17,11 @@ Message * Message::create_message(uint32_t type)
 bool Message::register_messages()
 {
 	register_message<Message>();
-	register_message<MSG_Client_Input>();
-	register_message<MSG_Client_Auth>();
+	register_message<MSGC_Input>();
+	register_message<MSGC_Auth>();
+	register_message<MSGS_Auth_Status>();
+	register_message<MSGS_Create_Game_Object>();
+	
 
 	return true;
 }

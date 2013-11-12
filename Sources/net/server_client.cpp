@@ -1,28 +1,21 @@
 #include "precomp.h"
 #include "common.h"
+#include "message.h"
 #include "server_client.h"
 
 ServerClient::ServerClient()
 {
-
 }
 
 ServerClient::~ServerClient()
 {
-	init(0);
+	
 }
 
-void ServerClient::init(uint32_t id)
+void ServerClient::init()
 {
-	m_id = id;
 	m_connection = nullptr;
 	m_flags = 0;
-}
-
-void ServerClient::connect(clan::NetGameConnection * connection)
-{
-	m_connection = connection;
-	m_connection->set_data("cl_ptr",this);
 }
 
 const std::string & ServerClient::get_name()
@@ -55,9 +48,22 @@ void ServerClient::set_flag(uint32_t flag)
 	m_flags |= flag;
 }
 
+void ServerClient::send_message(const Message & msg)
+{
+	clan::NetGameEvent e("msg");
+	e.add_argument(msg.get_type());
+	msg.net_serialize(e);
+	m_connection->send_event(e);
+}
+
 clan::NetGameConnection * ServerClient::get_connection()
 {
 	return m_connection;
+}
+
+void ServerClient::connect(clan::NetGameConnection * connection)
+{
+	m_connection = connection;
 }
 
 bool ServerClient::is_connected()
@@ -67,7 +73,6 @@ bool ServerClient::is_connected()
 
 void ServerClient::disconnect()
 {
-	m_connection->set_data("cl_ptr",nullptr);
 	m_connection = nullptr;
 }
 

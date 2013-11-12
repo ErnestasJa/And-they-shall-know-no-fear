@@ -6,8 +6,12 @@
 enum MESSAGE_TYPE
 {
 	MSG_GENERIC=0,
-	MSG_CLIENT_INPUT,
-	MSG_CLIENT_AUTH,
+	MSGC_INPUT,
+	MSGC_AUTH,
+	MSGS_AUTH_STATUS,
+
+	///Game
+	MSGS_CREATE_GAME_OBJECT
 };
 
 #define DEF_MSG(CLASSNAME,ENUM) public: static uint32_t type(){return ENUM;} static Message * create(){return new CLASSNAME();} virtual uint32_t get_type()const{return CLASSNAME::type();}
@@ -48,23 +52,51 @@ public:
 ###############################################
 **/
 
-class MSG_Client_Auth: public Message
+class MSGC_Auth: public Message
 {
-	DEF_MSG(MSG_Client_Auth,MSG_CLIENT_AUTH)
+	DEF_MSG(MSGC_Auth,MSGC_AUTH)
 public:
 	Property<std::string> name;
 
-	MSG_Client_Auth()
+	MSGC_Auth()
 	{
 		name = add_property<std::string>("name");
 	}
 };
 
+class MSGS_Auth_Status: public Message
+{
+	DEF_MSG(MSGS_Auth_Status,MSGS_AUTH_STATUS)
+public:
+	Property<bool> auth_sucessful;
+	Property<uint32_t> id;
+
+	MSGS_Auth_Status()
+	{
+		auth_sucessful = add_property<bool>("as");
+		id = add_property<uint32_t>("id");
+	}
+};
+
 /**
 ###############################################
-############# Input messages ##################
+############# Game messages ####################
 ###############################################
 **/
+
+class MSGS_Create_Game_Object: public Message
+{
+	DEF_MSG(MSGS_Create_Game_Object,MSGS_CREATE_GAME_OBJECT)
+public:
+	Property<uint32_t> guid;
+	Property<uint32_t> obj_type;
+
+	MSGS_Create_Game_Object()
+	{
+		guid = add_property<uint32_t>("guid");
+		obj_type = add_property<uint32_t>("type");
+	}
+};
 
 enum EUSER_INPUT_KEY
 {
@@ -74,13 +106,13 @@ enum EUSER_INPUT_KEY
 	EUIKT_MOVE_DOWN=BIT(3)
 };
 
-class MSG_Client_Input: public Message
+class MSGC_Input: public Message
 {
-	DEF_MSG(MSG_Client_Input,MSG_CLIENT_INPUT)
+	DEF_MSG(MSGC_Input,MSGC_INPUT)
 public:
 	Property<uint32_t> keys;	  ///enumerated types
 	
-	MSG_Client_Input()
+	MSGC_Input()
 	{
 		keys = add_property<uint32_t>("keys",0);
 	}

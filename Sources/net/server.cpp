@@ -7,12 +7,15 @@
 
 bool Server::init(uint32_t max_clients, const std::string & port)
 {
+	register_property_types();
 	Message::register_messages();
-
+	
 	m_clients = new ServerClient[max_clients];
 	
-	loopi(max_clients)
-		m_clients[i].init(i);
+	loopi(max_clients){
+		m_clients[i].m_id = i;
+		m_clients[i].init();
+	}
 
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
 	m_slots.connect(m_net_server.sig_client_disconnected(), this, &Server::on_client_disconnected);
@@ -52,7 +55,10 @@ void Server::on_client_connected(clan::NetGameConnection *connection)
 	{
 		if(!m_clients[i].is_connected())
 		{
+			m_clients[i].init();
 			m_clients[i].connect(connection);
+			connection->set_data("cl_ptr",&m_clients[i]);
+
 			clan::log_event("net_event","User connected, id '%1'.",i);
 			return;
 		}
@@ -67,7 +73,11 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 	ServerClient* client = ServerClient::get_client(connection);
 
 	if(client)
+	{
+		clan::log_event("net_event","Client disconnected: id '%1'.",client->get_id());
+		connection->set_data("cl_ptr",nullptr);
 		client->disconnect();
+	}
 }
 
 
@@ -75,27 +85,38 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClient * client)
 {
 	uint32_t type = e.get_argument(0).to_uinteger();
 
-	if(type==MSG_CLIENT_AUTH)
+	if(type==MSGC_AUTH)
 	{
-		MSG_Client_Auth * m = static_cast<MSG_Client_Auth*>(Message::create_message(type));
+		MSGC_Auth * m = static_cast<MSGC_Auth*>(Message::create_message(type));
 		m->net_deserialize(e);
-		
-		if(m->name.get().size()<33&&m->name.get().size()>2){
+
+		MSGS_Auth_Status msg;
+		if(m->name.get().size()<33&&m->name.get().size()>2)
+		{
 			client->set_name(m->name);
-			client->init(client->get_id());
 			client->set_flag(ECF_LOGGED_IN);
 			clan::log_event("net_event","Client with user name '%1' connected, id '%2'.",client->get_name(),client->get_id());
+
+			
+			msg.auth_sucessful.set(true);
+			msg.id.set(client->get_id());
+			client->send_message(msg);
 		}
 		else
 		{
-			client->get_connection()->disconnect();
-			client->disconnect();
+			msg.auth_sucessful.set(false);
+			
+			client->send_message(msg);
+			client->get_connection()->disconnect();/// disconnect doesn't happen before you send another msg.
+			Message gen;
+			gen.add_property("generic_ignore________",123456);
+			client->send_message(gen); ///Make sure disconnect gets sent
 			clan::log_event("net_event","Nick name should be from 3 to 32 symbols length");
 		}
-		
 	}
 	else
 	{
+		client->get_connection()->disconnect();
 		clan::log_event("net_event", "Expected auth event from client, but client sent event of type: %1", type);
 	}
 

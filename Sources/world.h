@@ -50,8 +50,8 @@ protected:
 	///game
 	TileMap m_tile_map;
 	GOSprite * spr; ///player, but not really
-	MSG_Client_Input msg;
-	MSG_Client_Auth msg_auth;
+	MSGC_Input msg;
+	MSGC_Auth msg_auth;
 
 	GameObjectManager * m_gom;
 	Client * m_client;

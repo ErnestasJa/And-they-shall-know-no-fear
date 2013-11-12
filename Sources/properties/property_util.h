@@ -34,6 +34,7 @@ void serialize_type(clan::NetGameEventValue & v, const T & data)
 	v.add_member(data);
 }
 
+template <> void serialize_type<bool>(clan::NetGameEventValue & e, const bool & data);
 template <> void serialize_type<clan::vec2>(clan::NetGameEventValue & e, const clan::vec2 & data);
 template <> void serialize_type<clan::vec2f>(clan::NetGameEventValue & e, const clan::vec2f & data);
 

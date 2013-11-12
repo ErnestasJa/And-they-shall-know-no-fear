@@ -104,12 +104,13 @@ void PropertyContainer::net_serialize(clan::NetGameEvent & e) const
 	}
 }
 
-void PropertyContainer::net_deserialize(const clan::NetGameEvent & e)
+void PropertyContainer::net_deserialize(const clan::NetGameEvent & e, uint32_t start_at_argument)
 {
-	uint32_t size = e.get_argument(0).to_uinteger();
+	uint32_t size = e.get_argument(start_at_argument).to_uinteger();
+	start_at_argument++;
 	for(uint32_t i = 0; i < size; i++)
 	{
-		const clan::NetGameEventValue & v = e.get_argument(1+i);
+		const clan::NetGameEventValue & v = e.get_argument(start_at_argument+i);
 
 		uint32_t type = v.get_member(0).to_uinteger();
 

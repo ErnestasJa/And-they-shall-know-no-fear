@@ -24,6 +24,8 @@ World::~World()
 void World::init_level()
 {
 	Message::register_messages();
+	register_property_types();
+
 	m_gom = new GameObjectManager();
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
@@ -47,10 +49,9 @@ bool World::init()
 	///load level
 	init_level();
 	
-	m_client->set_name("Troll");
+	m_client->set_name("Tr");
 	
-	msg_auth.name = m_client->get_name();
-	msg_auth.timestamp = m_game_time.get_current_time_ms();
+	
 	
 
 	m_net_slots.connect(m_client->sig_connected(),this, &World::on_connected);
@@ -67,12 +68,31 @@ bool World::init()
 void World::on_connected()
 {
 	clan::log_event("net_event","Connected to server.");
+	msg_auth.name = m_client->get_name();
+	msg_auth.timestamp = m_game_time.get_current_time_ms();
 	m_client->send_message(msg_auth);
 }
 
 void World::on_net_event(const clan::NetGameEvent & e)
 {
+	uint32_t type = e.get_argument(0).to_uinteger();
+	clan::log_event("net_event","Got message from server type='%1' msg='%2'.",type,e.to_string());
 
+	if(type==MSGS_AUTH_STATUS)
+	{
+		MSGS_Auth_Status * m = static_cast<MSGS_Auth_Status*>(Message::create_message(type));
+		m->net_deserialize(e);
+
+		if(m->auth_sucessful)
+		{
+			m_client->set_id(m->id);
+			clan::log_event("net_event","Successfully authenticated on server, id '%1'.",m->id);
+		}
+		else
+		{
+			clan::log_event("net_event","Failed authenticating client on server.");
+		}
+	}
 }
 
 void World::on_disconnected()
@@ -120,6 +140,7 @@ bool World::resume()
 
 bool World::exit()
 {
+	m_client->disconnect();
 	delete m_gom;
 	m_key_up.destroy();
 	m_key_down.destroy();

@@ -8,6 +8,11 @@ void Client::connect(const std::string & server,const std::string & port)
 	m_net_client.connect(server,port);
 }
 
+void Client::disconnect()
+{
+	m_net_client.disconnect();
+}
+
 clan::Signal_v0 &  Client::sig_connected()
 {
 	return m_net_client.sig_connected();
@@ -38,6 +43,15 @@ void Client::set_flag(uint32_t flag)
 	m_flags |= flag;
 }
 
+uint32_t Client::get_id()
+{
+	return m_id;
+}
+
+void Client::set_id(uint32_t id)
+{
+	m_id = id;
+}
 
 const std::string & Client::get_name()
 {

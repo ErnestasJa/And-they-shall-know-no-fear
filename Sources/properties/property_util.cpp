@@ -18,6 +18,13 @@ void register_property_types()
 
 ///Data to Net game event data
 template <>
+void serialize_type<bool>(clan::NetGameEventValue & v, const bool & data)
+{
+	clan::NetGameEventValue val((bool)data);
+	v.add_member(val);
+}
+
+template <>
 void serialize_type<clan::vec2>(clan::NetGameEventValue & v, const clan::vec2 & data)
 {
 	clan::NetGameEventValue vec(clan::NetGameEventValue::complex);

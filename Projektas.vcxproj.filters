@@ -34,6 +34,9 @@
     <ClCompile Include="Sources\net\message.cpp">
       <Filter>net</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\net\common.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -79,6 +82,9 @@
       <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="Sources\net\message.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\net\common.h">
       <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
