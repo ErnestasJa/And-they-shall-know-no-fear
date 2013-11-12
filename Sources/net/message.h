@@ -25,7 +25,7 @@ public:
 
 	Message()
 	{
-		timestamp = add_property<uint32_t>("timestamp",0);
+		timestamp = add_property<uint32_t>("ts",0);
 	}
 
 ///------Message factory-------

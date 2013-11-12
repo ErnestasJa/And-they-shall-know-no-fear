@@ -1,10 +1,15 @@
 #pragma once
 
+
+class GOSprite;
+class GameObjectManager;
 class ServerClient;
 class Server
 {
 protected:
 	ServerClient*		m_clients;
+	GameObjectManager*	m_gom;
+	GOSprite**			m_player_objects;
 	uint32_t			m_max_clients;
 
 	clan::NetGameServer m_net_server;
@@ -14,6 +19,8 @@ protected:
 	clan::NetGameEventDispatcher_v1<ServerClient*> m_game_events;
 
 	clan::GameTime m_game_time;
+
+
 public:
 
 	//connect
@@ -27,6 +34,10 @@ public:
 
 	void on_auth(const clan::NetGameEvent &e, ServerClient * user);
 
+	void on_game_event(const clan::NetGameEvent &e, ServerClient * user);
+
+public:
+	void send_all_game_objects(); /// implement this, then refactor the fuck out of everything
 
 public:
 	bool init(uint32_t max_users, const std::string & port);

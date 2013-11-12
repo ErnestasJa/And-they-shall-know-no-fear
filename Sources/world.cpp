@@ -49,7 +49,7 @@ bool World::init()
 	///load level
 	init_level();
 	
-	m_client->set_name("Tr");
+	m_client->set_name("Skell");
 	
 	
 	
@@ -183,21 +183,25 @@ void World::on_key_down(const clan::InputEvent & e)
 	{
 		msg.keys.data()|=EUIKT_MOVE_LEFT;
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_d)
 	{
 		msg.keys.data()|=EUIKT_MOVE_RIGHT;
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_w)
 	{
 		msg.keys.data()|=EUIKT_MOVE_UP;
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_s)
 	{
 		msg.keys.data()|=EUIKT_MOVE_DOWN;
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	clan::Console::write_line("Pressed: %1", e.id);
 }

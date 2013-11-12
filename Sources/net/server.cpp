@@ -3,26 +3,34 @@
 #include "server.h"
 #include "server_client.h"
 #include "message.h"
+#include "game_objects/game_object_manager.h"
+#include "game_objects/game_objects.h"
 
 
 bool Server::init(uint32_t max_clients, const std::string & port)
 {
 	register_property_types();
 	Message::register_messages();
+	m_gom = new GameObjectManager();
+	m_gom->register_game_object<GOSprite>();
 	
 	m_clients = new ServerClient[max_clients];
-	
+	m_player_objects = new GOSprite * [max_clients];
+
 	loopi(max_clients){
+		m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
 		m_clients[i].m_id = i;
 		m_clients[i].init();
 	}
+
+	
 
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
 	m_slots.connect(m_net_server.sig_client_disconnected(), this, &Server::on_client_disconnected);
 	m_slots.connect(m_net_server.sig_event_received(), this, &Server::on_event);
 
 	m_login_events.func_event("msg").set(this, &Server::on_auth);
-	//m_game_events.func_event("query_game_info").set(this, &Server::on_event_query_game_info);
+	m_game_events.func_event("msg").set(this, &Server::on_game_event);
 
 	m_net_server.start(port);
 
@@ -126,8 +134,24 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClient * client)
 		client->get_connection()->disconnect();
 		clan::log_event("net_event", "Expected auth event from client, but client sent event of type: %1", type);
 	}
+}
 
+void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * user)
+{
+	uint32_t type = e.get_argument(0).to_uinteger();
 
+	if(type==MSGC_INPUT)
+	{
+		MSGC_Input * m = static_cast<MSGC_Input*>(Message::create_message(type));
+		m->net_deserialize(e);
+
+		GOSprite * spr=m_player_objects[user->get_id()];
+		spr->on_message(*m);
+	}
+	else
+	{
+		clan::log_event("net_event", "Unexpected event received from client, type: %1", type);
+	}
 }
 
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)
@@ -160,5 +184,6 @@ void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEv
 
 void Server::exit()
 {
+	delete m_gom;
 	m_net_server.stop();
 }
