@@ -15,6 +15,7 @@ World::World(clan::DisplayWindow &display_window)
 	m_game_time = clan::GameTime(20,60);
 	m_client = new Client();
 	m_gom = nullptr;
+	m_player = nullptr;
 }
 
 World::~World()
@@ -27,11 +28,7 @@ void World::init_level(const std::string & level)
 	m_gom = new GameObjectManager();
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
-
 	m_tile_map.load(level);
-
-	spr = static_cast<GOSprite *>(m_gom->add_game_object(EGOT_SPRITE,0));
-	spr->load(m_canvas,m_resources);
 }
 
 bool World::init()
@@ -97,14 +94,43 @@ void World::on_net_event(const clan::NetGameEvent & e)
 	}
 	else if(type==MSG_QUERY_RESPONSE)
 	{
-		MSG_QueryResponse qr;
-		qr.net_deserialize(e);
-		if(qr.query_type==EQT_MAP_INFO)
+		MSG_QueryResponse m;
+		m.net_deserialize(e);
+		if(m.query_type==EQT_MAP_INFO)
 		{
-			if(qr.has_property("name",EPT_STRING))
-				init_level(qr.get_property<std::string>("name"));
+			if(m.has_property("name",EPT_STRING))
+				init_level(m.get_property<std::string>("name"));
 			else
 				throw clan::Exception("Server didn't set property 'name'.");
+		}
+	}
+	else if(type==MSGS_GAME_OBJECT_ACTION)
+	{
+		MSGS_GameObjectAction m;
+		m.net_deserialize(e);
+		
+		if(m.action_type==EGOAT_CREATE)
+		{
+			GameObject * o = m_gom->add_game_object(m.object_type,m.guid);
+
+			if(o->get_type()==EGOT_SPRITE)
+			{
+				GOSprite * spr = static_cast<GOSprite*>(o);
+
+				if(o->get_guid()==m_client->get_id())
+					m_player = spr;
+
+				spr->load(m_canvas,m_resources);
+			}
+		}
+		else if(m.action_type==EGOAT_REMOVE)
+		{
+			m_gom->remove_game_object(m.guid);
+
+			if(m.guid==m_client->get_id())
+			{
+				m_player = nullptr;
+			}
 		}
 	}
 
@@ -122,14 +148,14 @@ bool World::run()
 	{
 		if(m_gom)
 		{
-		m_game_time.update();
-		m_canvas.clear();
+			m_game_time.update();
+			m_canvas.clear();
 
-		m_tile_map.render(m_pos);
-		m_gom->update_game_objects(m_game_time);
-		m_gom->render_game_objects(m_canvas);
-
+			m_tile_map.render(m_pos);
+			m_gom->update_game_objects(m_game_time);
+			m_gom->render_game_objects(m_canvas);
 		}
+
 		m_canvas.flush();
 		m_window.flip();
 		
@@ -171,59 +197,65 @@ void World::on_key_up(const clan::InputEvent & e)
 	if(e.id == clan::keycode_escape)
 		m_run = false;
 
-	
-	else if(e.id == clan::keycode_a)
+	else if(m_player)
 	{
-		msg.keys = msg.keys& (~EUIKT_MOVE_LEFT);
-		spr->on_message(msg);
-		m_client->send_message(msg);
-	}
-	else if(e.id == clan::keycode_d)
-	{
-		msg.keys = msg.keys& (~EUIKT_MOVE_RIGHT);
-		spr->on_message(msg);
-		m_client->send_message(msg);
-	}
-	else if(e.id == clan::keycode_w)
-	{
-		msg.keys = msg.keys& (~EUIKT_MOVE_UP);
-		spr->on_message(msg);
-		m_client->send_message(msg);
-	}
-	else if(e.id == clan::keycode_s)
-	{
-		msg.keys = msg.keys& (~EUIKT_MOVE_DOWN);
-		spr->on_message(msg);
-		m_client->send_message(msg);
+		if(e.id == clan::keycode_a)
+		{
+			msg.keys = msg.keys& (~EUIKT_MOVE_LEFT);
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
+		else if(e.id == clan::keycode_d)
+		{
+			msg.keys = msg.keys& (~EUIKT_MOVE_RIGHT);
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
+		else if(e.id == clan::keycode_w)
+		{
+			msg.keys = msg.keys& (~EUIKT_MOVE_UP);
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
+		else if(e.id == clan::keycode_s)
+		{
+			msg.keys = msg.keys& (~EUIKT_MOVE_DOWN);
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
 	}
 	clan::Console::write_line("Released: %1", e.id);
 }
 
 void World::on_key_down(const clan::InputEvent & e)
-{
-	if(e.id == clan::keycode_a)
+{	
+	if(m_player)
 	{
-		msg.keys=msg.keys|EUIKT_MOVE_LEFT;
-		spr->on_message(msg);
-		m_client->send_message(msg);
+		if(e.id == clan::keycode_a)
+		{
+			msg.keys=msg.keys|EUIKT_MOVE_LEFT;
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
+		else if(e.id == clan::keycode_d)
+		{
+			msg.keys=msg.keys|EUIKT_MOVE_RIGHT;
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
+		else if(e.id == clan::keycode_w)
+		{
+			msg.keys=msg.keys|EUIKT_MOVE_UP;
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
+		else if(e.id == clan::keycode_s)
+		{
+			msg.keys=msg.keys|EUIKT_MOVE_DOWN;
+			m_player->on_message(msg);
+			m_client->send_message(msg);
+		}
 	}
-	else if(e.id == clan::keycode_d)
-	{
-		msg.keys=msg.keys|EUIKT_MOVE_RIGHT;
-		spr->on_message(msg);
-		m_client->send_message(msg);
-	}
-	else if(e.id == clan::keycode_w)
-	{
-		msg.keys=msg.keys|EUIKT_MOVE_UP;
-		spr->on_message(msg);
-		m_client->send_message(msg);
-	}
-	else if(e.id == clan::keycode_s)
-	{
-		msg.keys=msg.keys|EUIKT_MOVE_DOWN;
-		spr->on_message(msg);
-		m_client->send_message(msg);
-	}
+
 	clan::Console::write_line("Pressed: %1", e.id);
 }

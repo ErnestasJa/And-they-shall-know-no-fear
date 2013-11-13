@@ -49,7 +49,7 @@ protected:
 
 	///game
 	TileMap m_tile_map;
-	GOSprite * spr; ///player, but not really
+	GOSprite * m_player; ///player, but not really
 	MSGC_Input msg;
 	MSGC_Auth msg_auth;
 

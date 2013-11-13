@@ -25,7 +25,7 @@ bool Message::register_messages()
 	//server
 	register_message<MSGS_AuthStatus>();
 	register_message<MSGS_ClientPunishment>();
-	register_message<MSGS_CreateGameObject>();
+	register_message<MSGS_GameObjectAction>();
 	
 	///cient/server
 	register_message<MSG_Query>();

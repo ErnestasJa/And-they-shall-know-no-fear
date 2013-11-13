@@ -21,7 +21,7 @@ enum MESSAGE_TYPE
 	//server 
 	MSGS_AUTH_STATUS,
 	MSGS_CLIENT_PUNISHMENT,
-	MSGS_CREATE_GAME_OBJECT,
+	MSGS_GAME_OBJECT_ACTION,
 
 	///client/server
 	MSG_QUERY, ///query, query response are a bit abstract message types to avoid too many message classes
@@ -141,17 +141,25 @@ public:
 	}
 };
 
-class MSGS_CreateGameObject: public Message
+enum EGameObjectActionType
 {
-	DEF_MSG(MSGS_CreateGameObject,MSGS_CREATE_GAME_OBJECT)
-public:
-	Property<uint32_t> guid;
-	Property<uint32_t> obj_type;
+	EGOAT_CREATE = 0,
+	EGOAT_REMOVE
+};
 
-	MSGS_CreateGameObject()
+class MSGS_GameObjectAction: public Message
+{
+	DEF_MSG(MSGS_GameObjectAction,MSGS_GAME_OBJECT_ACTION)
+public:
+	Property<uint32_t> action_type;
+	Property<uint32_t> guid;
+	Property<uint32_t> object_type;
+
+	MSGS_GameObjectAction()
 	{
+		action_type = add_property<uint32_t>("at");
 		guid = add_property<uint32_t>("guid");
-		obj_type = add_property<uint32_t>("type");
+		object_type = add_property<uint32_t>("ot");
 	}
 };
 

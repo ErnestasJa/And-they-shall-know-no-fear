@@ -20,7 +20,7 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_player_objects = new GOSprite * [m_max_clients];
 
 	loopi(m_max_clients){
-		m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
+		//m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
 		m_clients[i].m_id = i;
 		m_clients[i].init();
 	}
@@ -44,14 +44,7 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 
 void Server::create_all_game_objects(ServerClient * client)
 {
-	///kolkas visu galimu zaideju objektai yra sukuriami
-	loopi(m_max_clients)
-	{
-		MSGS_CreateGameObject msg;
-		msg.guid = i;
-		msg.obj_type = EGOT_SPRITE;
-		client->send_message(msg);
-	}
+	
 }
 
 bool Server::run()
@@ -89,6 +82,15 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 		clan::log_event("net_event","Client disconnected: id '%1'.",client->get_id());
 		connection->set_data("cl_ptr",nullptr);
 		client->disconnect();
+
+		int32_t id = client->get_id();
+
+		MSGS_GameObjectAction msg;
+		msg.action_type = EGOAT_REMOVE;
+		msg.guid = id;
+		msg.object_type = EGOT_SPRITE; /// realiai tipas nereikalingas
+
+		send_message(msg);
 	}
 }
 
@@ -164,6 +166,26 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 			qr.query_type=EQT_MAP_INFO;
 			qr.add_property<std::string>("name","Level/Level.map");
 			client->send_message(qr);
+			
+			MSGS_GameObjectAction msg;
+			msg.action_type = EGOAT_CREATE;
+			msg.guid = client->get_id();
+			msg.object_type = EGOT_SPRITE;
+			send_message(msg); ///visiem prisijungusiem zaidejam sukuriame sio zaidejo objekta
+
+			m_player_objects[client->get_id()]=static_cast<GOSprite*>(m_gom->add_game_object(EGOT_SPRITE,client->get_id()));
+		
+			loopi(m_max_clients)
+			{
+				if(m_clients[i].is_connected()&&i!=client->get_id())
+				{
+					MSGS_GameObjectAction c;
+					c.action_type = EGOAT_CREATE;
+					c.guid = i;
+					c.object_type = EGOT_SPRITE;
+					client->send_message(c);
+				}
+			}
 		}
 		else if(q.query_type==EQT_PLAYER_INFO)
 		{
@@ -174,6 +196,14 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 	{
 		clan::log_event("net_event", "Unexpected event received from client, type: %1", type);
 	}
+}
+
+void Server::send_message(const Message & msg)
+{
+	clan::NetGameEvent e("msg");
+	e.add_argument(msg.get_type());
+	msg.net_serialize(e);
+	m_net_server.send_event(e);
 }
 
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)

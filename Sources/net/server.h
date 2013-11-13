@@ -4,6 +4,7 @@
 class GOSprite;
 class GameObjectManager;
 class ServerClient;
+class Message;
 class Server
 {
 protected:
@@ -28,7 +29,6 @@ public:
 	void on_client_disconnected(clan::NetGameConnection *connection, const std::string &message);
 
 public:
-
 	//events
 	void on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e);
 
@@ -38,14 +38,13 @@ public:
 
 public:
 	void create_all_game_objects(ServerClient * client); /// implement this, then refactor the fuck out of everything
-
+	void send_message(const Message & msg);
 public:
 	bool init(uint32_t max_users, const std::string & port);
+	bool run();
+	void exit();
 
+public:
 	ServerClient & get_client(uint32_t id);
 	uint32_t get_max_clients();
-
-	bool run();
-
-	void exit();
 };

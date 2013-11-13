@@ -28,7 +28,8 @@ void GOSprite::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 
 void GOSprite::update(const clan::GameTime & time)
 {
-	m_sprite.update(time.get_time_elapsed_ms());
+	if(!m_sprite.is_null())
+		m_sprite.update(time.get_time_elapsed_ms());
 	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
 	if(keys&EUIKT_MOVE_LEFT)
@@ -63,7 +64,8 @@ void GOSprite::update(const clan::GameTime & time)
 
 void GOSprite::render(clan::Canvas & c, const clan::vec2 & offset)
 {
-	m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
+	if(!m_sprite.is_null())
+		m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
 }
 
 void GOSprite::on_message(const Message & msg)
