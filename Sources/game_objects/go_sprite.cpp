@@ -34,28 +34,36 @@ void GOSprite::update(const clan::GameTime & time)
 	if(keys&EUIKT_MOVE_LEFT)
 	{
 		m_sprite=m_lw;
-		m_pos.data().x -= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		clan::vec2f v=m_pos;
+		v.x-=32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_RIGHT)
 	{
 		m_sprite=m_rw;
-		m_pos.data().x += 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		clan::vec2f v=m_pos;
+		v.x+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_UP)
 	{
 		m_sprite=m_uw;
-		m_pos.data().y -= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		clan::vec2f v=m_pos;
+		v.y-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_DOWN)
 	{
 		m_sprite=m_dw;
-		m_pos.data().y += 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		clan::vec2f v=m_pos;
+		v.y+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		m_pos.set(v);
 	}
 }
 
 void GOSprite::render(clan::Canvas & c, const clan::vec2 & offset)
 {
-	m_sprite.draw(c, m_pos.data().x+offset.x, m_pos.data().y+offset.y);
+	m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
 }
 
 void GOSprite::on_message(const Message & msg)

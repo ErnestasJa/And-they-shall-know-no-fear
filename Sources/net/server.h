@@ -37,7 +37,7 @@ public:
 	void on_game_event(const clan::NetGameEvent &e, ServerClient * user);
 
 public:
-	void send_all_game_objects(); /// implement this, then refactor the fuck out of everything
+	void create_all_game_objects(ServerClient * client); /// implement this, then refactor the fuck out of everything
 
 public:
 	bool init(uint32_t max_users, const std::string & port);

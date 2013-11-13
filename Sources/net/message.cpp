@@ -17,11 +17,19 @@ Message * Message::create_message(uint32_t type)
 bool Message::register_messages()
 {
 	register_message<Message>();
+
+	///client
 	register_message<MSGC_Input>();
 	register_message<MSGC_Auth>();
+
+	//server
 	register_message<MSGS_AuthStatus>();
 	register_message<MSGS_ClientPunishment>();
 	register_message<MSGS_CreateGameObject>();
 	
+	///cient/server
+	register_message<MSG_Query>();
+	register_message<MSG_QueryResponse>();
+
 	return true;
 }

@@ -31,7 +31,7 @@ struct PropertyData
 	PropertyData(const std::string & pname)
 	{
 		name=pname;
-		flags=0;
+		flags=EPF_UNCHANGED;
 	}
 };
 
@@ -94,23 +94,14 @@ public:
 		return m_data->data;
 	}
 
-	const T & data() const
-	{
-		return m_data->data;
-	}
-
-	T & data()
-	{
-		return m_data->data;
-	}
-
 	void set(IProperty * other)
 	{
 		if(get_type()!=other->get_type())
 			throw clan::Exception("Tried to set data from other property with different type");
 
 		Property<T> * o = static_cast<Property<T> *>(other);
-		m_data->data = o->data();
+
+		set(o->m_data->data);
 	}
 
 	const std::string & get_name() const

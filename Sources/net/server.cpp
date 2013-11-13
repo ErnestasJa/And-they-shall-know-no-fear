@@ -13,17 +13,18 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	Message::register_messages();
 	m_gom = new GameObjectManager();
 	m_gom->register_game_object<GOSprite>();
-	
-	m_clients = new ServerClient[max_clients];
-	m_player_objects = new GOSprite * [max_clients];
 
-	loopi(max_clients){
+	m_max_clients = max_clients;
+	
+	m_clients = new ServerClient[m_max_clients];
+	m_player_objects = new GOSprite * [m_max_clients];
+
+	loopi(m_max_clients){
 		m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
 		m_clients[i].m_id = i;
 		m_clients[i].init();
 	}
 
-	
 
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
 	m_slots.connect(m_net_server.sig_client_disconnected(), this, &Server::on_client_disconnected);
@@ -41,21 +42,24 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	return true;
 }
 
+void Server::create_all_game_objects(ServerClient * client)
+{
+	///kolkas visu galimu zaideju objektai yra sukuriami
+	loopi(m_max_clients)
+	{
+		MSGS_CreateGameObject msg;
+		msg.guid = i;
+		msg.obj_type = EGOT_SPRITE;
+		client->send_message(msg);
+	}
+}
+
 bool Server::run()
 {
 	//m_game_time.update();
 	return true;
 }
 
-ServerClient & Server::get_client(uint32_t id)
-{
-	return m_clients[id];
-}
-
-uint32_t Server::get_max_clients()
-{
-	return m_max_clients;
-}
 
 void Server::on_client_connected(clan::NetGameConnection *connection)
 {
@@ -95,15 +99,15 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClient * client)
 
 	if(type==MSGC_AUTH)
 	{
-		MSGC_Auth * m = static_cast<MSGC_Auth*>(Message::create_message(type));
-		m->net_deserialize(e);
+		MSGC_Auth m;
+		m.net_deserialize(e);
 
 		MSGS_AuthStatus msg;
 		std::string str;
 
-		if(m->name.get().size()<33&&m->name.get().size()>2)
+		if(m.name.get().size()<33&&m.name.get().size()>2)
 		{
-			client->set_name(m->name);
+			client->set_name(m.name);
 			client->set_flag(ECF_LOGGED_IN);
 
 			clan::StringFormat fmt("Client with user name '%1' connected, id '%2'.");
@@ -136,17 +140,35 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClient * client)
 	}
 }
 
-void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * user)
+void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 {
 	uint32_t type = e.get_argument(0).to_uinteger();
 
 	if(type==MSGC_INPUT)
 	{
-		MSGC_Input * m = static_cast<MSGC_Input*>(Message::create_message(type));
-		m->net_deserialize(e);
+		MSGC_Input m;
+		m.net_deserialize(e);
 
-		GOSprite * spr=m_player_objects[user->get_id()];
-		spr->on_message(*m);
+		GOSprite * spr=m_player_objects[client->get_id()];
+		spr->on_message(m);
+	}
+	else if(type==MSG_QUERY)
+	{
+		MSG_Query q;
+		MSG_QueryResponse qr;
+
+		q.net_deserialize(e);
+
+		if(q.query_type==EQT_MAP_INFO)
+		{
+			qr.query_type=EQT_MAP_INFO;
+			qr.add_property<std::string>("name","Level/Level.map");
+			client->send_message(qr);
+		}
+		else if(q.query_type==EQT_PLAYER_INFO)
+		{
+
+		}
 	}
 	else
 	{
@@ -176,7 +198,6 @@ void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEv
 
 		if (!handled_event)
 		{
-			// We received an event which we didn't hook up
 			clan::log_event("events", "Unhandled event: %1", e.to_string());
 		}
 	}
@@ -186,4 +207,14 @@ void Server::exit()
 {
 	delete m_gom;
 	m_net_server.stop();
+}
+
+ServerClient & Server::get_client(uint32_t id)
+{
+	return m_clients[id];
+}
+
+uint32_t Server::get_max_clients()
+{
+	return m_max_clients;
 }

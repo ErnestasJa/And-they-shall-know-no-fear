@@ -14,6 +14,7 @@ World::World(clan::DisplayWindow &display_window)
 	m_window = display_window;
 	m_game_time = clan::GameTime(20,60);
 	m_client = new Client();
+	m_gom = nullptr;
 }
 
 World::~World()
@@ -21,16 +22,13 @@ World::~World()
 
 }
 
-void World::init_level()
+void World::init_level(const std::string & level)
 {
-	Message::register_messages();
-	register_property_types();
-
 	m_gom = new GameObjectManager();
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
 
-	m_tile_map.load("test.map");
+	m_tile_map.load(level);
 
 	spr = static_cast<GOSprite *>(m_gom->add_game_object(EGOT_SPRITE,0));
 	spr->load(m_canvas,m_resources);
@@ -38,6 +36,9 @@ void World::init_level()
 
 bool World::init()
 {
+	Message::register_messages();
+	register_property_types();
+
 	m_canvas = clan::Canvas(m_window);
 
 	// Setup resources
@@ -46,14 +47,10 @@ bool World::init()
 	
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &World::on_key_up);
 	m_key_down = m_window.get_ic().get_keyboard().sig_key_down().connect(this, &World::on_key_down);
-	///load level
-	init_level();
+	
 	
 	m_client->set_name("Skell");
 	
-	
-	
-
 	m_net_slots.connect(m_client->sig_connected(),this, &World::on_connected);
 	m_net_slots.connect(m_client->sig_disconnected(),this, &World::on_disconnected);
 	m_net_slots.connect(m_client->sig_event_received(),this, &World::on_net_event);
@@ -80,20 +77,37 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 	if(type==MSGS_AUTH_STATUS)
 	{
-		MSGS_AuthStatus * m = static_cast<MSGS_AuthStatus*>(Message::create_message(type));
-		m->net_deserialize(e);
+		MSGS_AuthStatus m;
+		m.net_deserialize(e);
 
-		if(m->auth_sucessful)
+		if(m.auth_sucessful)
 		{
-			m_client->set_id(m->id);
-			clan::log_event("net_event",m->msg);
+			m_client->set_id(m.id);
+			clan::log_event("net_event",m.msg);
+
+			MSG_Query q;
+			q.query_type = EQT_MAP_INFO;
+			m_client->send_message(q);
 		}
 		else
 		{
-			clan::log_event("net_event",m->msg);
+			clan::log_event("net_event",m.msg);
 			m_client->disconnect();
 		}
 	}
+	else if(type==MSG_QUERY_RESPONSE)
+	{
+		MSG_QueryResponse qr;
+		qr.net_deserialize(e);
+		if(qr.query_type==EQT_MAP_INFO)
+		{
+			if(qr.has_property("name",EPT_STRING))
+				init_level(qr.get_property<std::string>("name"));
+			else
+				throw clan::Exception("Server didn't set property 'name'.");
+		}
+	}
+
 }
 
 void World::on_disconnected()
@@ -106,15 +120,19 @@ bool World::run()
 {
 	if(m_run)
 	{
+		if(m_gom)
+		{
 		m_game_time.update();
 		m_canvas.clear();
 
-		//m_tile_map.render(m_pos);
+		m_tile_map.render(m_pos);
 		m_gom->update_game_objects(m_game_time);
 		m_gom->render_game_objects(m_canvas);
 
+		}
 		m_canvas.flush();
 		m_window.flip();
+		
 		clan::KeepAlive::process();
 	}
 
@@ -156,23 +174,27 @@ void World::on_key_up(const clan::InputEvent & e)
 	
 	else if(e.id == clan::keycode_a)
 	{
-		msg.keys.data()&= ~EUIKT_MOVE_LEFT;
+		msg.keys = msg.keys& (~EUIKT_MOVE_LEFT);
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_d)
 	{
-		msg.keys.data()&= ~EUIKT_MOVE_RIGHT;
+		msg.keys = msg.keys& (~EUIKT_MOVE_RIGHT);
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_w)
 	{
-		msg.keys.data()&= ~EUIKT_MOVE_UP;
+		msg.keys = msg.keys& (~EUIKT_MOVE_UP);
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_s)
 	{
-		msg.keys.data()&= ~EUIKT_MOVE_DOWN;
+		msg.keys = msg.keys& (~EUIKT_MOVE_DOWN);
 		spr->on_message(msg);
+		m_client->send_message(msg);
 	}
 	clan::Console::write_line("Released: %1", e.id);
 }
@@ -181,25 +203,25 @@ void World::on_key_down(const clan::InputEvent & e)
 {
 	if(e.id == clan::keycode_a)
 	{
-		msg.keys.data()|=EUIKT_MOVE_LEFT;
+		msg.keys=msg.keys|EUIKT_MOVE_LEFT;
 		spr->on_message(msg);
 		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_d)
 	{
-		msg.keys.data()|=EUIKT_MOVE_RIGHT;
+		msg.keys=msg.keys|EUIKT_MOVE_RIGHT;
 		spr->on_message(msg);
 		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_w)
 	{
-		msg.keys.data()|=EUIKT_MOVE_UP;
+		msg.keys=msg.keys|EUIKT_MOVE_UP;
 		spr->on_message(msg);
 		m_client->send_message(msg);
 	}
 	else if(e.id == clan::keycode_s)
 	{
-		msg.keys.data()|=EUIKT_MOVE_DOWN;
+		msg.keys=msg.keys|EUIKT_MOVE_DOWN;
 		spr->on_message(msg);
 		m_client->send_message(msg);
 	}

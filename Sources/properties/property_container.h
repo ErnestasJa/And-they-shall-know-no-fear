@@ -133,7 +133,7 @@ Property<T> PropertyContainer::add_property(const std::string & name, const T & 
 		if(r->get_type()!=get_type_id<T>())
 			throw clan::Exception("Another property already exists with the same name but different type");
 		
-		r->data() = data; //not sure if data should be replaced or just set
+		r->set(data); //not sure if data should be replaced or just set
 		return *r;
 	}
 

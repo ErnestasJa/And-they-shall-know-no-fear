@@ -24,7 +24,7 @@ protected:
 	void on_key_up(const clan::InputEvent & e);
 	void on_key_down(const clan::InputEvent & e);
 	///game specific funcs
-	void init_level();
+	void init_level(const std::string & level);
 
 
 protected:
