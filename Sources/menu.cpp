@@ -61,8 +61,6 @@ bool Menu::init()
 	button_exit_N->func_clicked().set(this, &Menu::on_button_clicked, button_exit_N);
 	button_exit_N->set_text("NE");
 
-	
-
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
 

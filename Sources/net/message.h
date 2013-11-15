@@ -177,7 +177,6 @@ enum EQueryType
 	EQT_SERVER_INFO,
 
 	//server asks client
-
 };
 
 class MSG_Query: public Message

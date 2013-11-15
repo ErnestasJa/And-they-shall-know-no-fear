@@ -20,7 +20,8 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_clients = new ServerClient[m_max_clients];
 	m_player_objects = new GOSprite * [m_max_clients];
 
-	loopi(m_max_clients){
+	loopi(m_max_clients)
+	{
 		//m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
 		m_clients[i].m_id = i;
 		m_clients[i].init();
@@ -50,7 +51,6 @@ bool Server::run()
 	//m_game_time.update();
 	return true;
 }
-
 
 void Server::on_client_connected(clan::NetGameConnection *connection)
 {
@@ -172,7 +172,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 			send_message(msg); ///visiem prisijungusiem zaidejam sukuriame sio zaidejo objekta
 
 			m_player_objects[client->get_id()]=static_cast<GOSprite*>(m_gom->add_game_object(EGOT_SPRITE,client->get_id()));
-		
+
 			loopi(m_max_clients)
 			{
 				if(m_clients[i].is_connected() && i!=client->get_id())

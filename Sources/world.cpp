@@ -53,11 +53,10 @@ bool World::init()
 	m_net_slots.connect(m_client->sig_event_received(),this, &World::on_net_event);
 
 	clan::log_event("system", "Client trying to connect");
-	m_client->connect("62.80.252.115","27015");
+	m_client->connect("localhost","27015");
 	
 	return true;
 }
-
 
 void World::on_connected()
 {
@@ -133,7 +132,6 @@ void World::on_net_event(const clan::NetGameEvent & e)
 			}
 		}
 	}
-
 }
 
 void World::on_disconnected()
