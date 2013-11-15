@@ -4,7 +4,6 @@ class GameObject;
 class GameObjectManager
 {
 protected:
-	static uint32_t	globally_unique_id_counter;
 	std::vector<GameObject*> m_game_object_list;
 
 public:
@@ -22,9 +21,6 @@ public:
 
 	void update_game_objects(const clan::GameTime & game_time);
 	void render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset = clan::vec2(0,0));
-
-	///should this really be here or on server code?
-	uint32_t generate_guid();
 
 ///------Game object factory-------
 protected:
