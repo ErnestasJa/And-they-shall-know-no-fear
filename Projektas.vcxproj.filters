@@ -5,12 +5,12 @@
     <ClCompile Include="Sources\editor.cpp" />
     <ClCompile Include="Sources\menu.cpp" />
     <ClCompile Include="Sources\precomp.cpp" />
-    <ClCompile Include="Sources\sprite_selection.cpp" />
     <ClCompile Include="Sources\tile_chunk.cpp" />
     <ClCompile Include="Sources\tile_map.cpp" />
     <ClCompile Include="Sources\utility.cpp" />
     <ClCompile Include="Sources\world.cpp" />
     <ClCompile Include="Sources\game_objects\game_object.cpp">
+    <ClCompile Include="Sources\sprite_frame_selection.cpp" />
       <Filter>game_objects</Filter>
     </ClCompile>
     <ClCompile Include="Sources\game_objects\game_object_manager.cpp">
@@ -44,13 +44,13 @@
     <ClInclude Include="Sources\map_attributes.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\precomp.h" />
-    <ClInclude Include="Sources\sprite_selection.h" />
     <ClInclude Include="Sources\state.h" />
     <ClInclude Include="Sources\tile_chunk.h" />
     <ClInclude Include="Sources\tile_map.h" />
     <ClInclude Include="Sources\utility.h" />
     <ClInclude Include="Sources\world.h" />
     <ClInclude Include="Sources\game_objects\game_object_manager.h">
+    <ClInclude Include="Sources\sprite_frame_selection.h" />
       <Filter>game_objects</Filter>
     </ClInclude>
     <ClInclude Include="Sources\game_objects\game_object.h">

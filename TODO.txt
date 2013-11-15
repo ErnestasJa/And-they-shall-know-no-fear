@@ -1,6 +1,16 @@
 + tile_chunk, erase chunk
-- editor, edge_pan add sensitivity
-- editor, change_tile_sprite add layer selection
-- editor, change_tile_sprite add sprite removal (type set to no tile)
+- editor, add edge_pan sensitivity
++ editor, change_tile_sprite add layer selection
++ editor, change_tile_sprite add sprite removal (type set to no tile)
 - editor, add sprite sheet loading
-- editor, divide draw world axis
++ editor, added sprite hold draw 
++ editor, divide draw world axis
+- editor, divide draw world into separate functions axis
++ editor, added world axis selection
++ editor, fix shit names
+- editor, fix not so shit names
++ editor, move dropbox creation to a function
+- editor, add right click scroll to frame selection window
+- editor, add toolbar
+- editor, show hovered tiles layer frames
+- editor, add sprite sheet loading

@@ -162,9 +162,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sources\properties\property.cpp" />
+    <ClCompile Include="Sources\sprite_frame_selection.cpp" />
     <ClCompile Include="Sources\properties\property_container.cpp" />
     <ClCompile Include="Sources\properties\property_util.cpp" />
-    <ClCompile Include="Sources\sprite_selection.cpp" />
     <ClCompile Include="Sources\tile_chunk.cpp" />
     <ClCompile Include="Sources\tile_map.cpp" />
     <ClCompile Include="Sources\utility.cpp" />
@@ -188,11 +188,11 @@
     <ClInclude Include="Sources\net\message.h" />
     <ClInclude Include="Sources\precomp.h" />
     <ClInclude Include="Sources\properties\iproperty.h" />
+    <ClInclude Include="Sources\sprite_frame_selection.h" />
     <ClInclude Include="Sources\properties\property.h" />
     <ClInclude Include="Sources\properties\property_container.h" />
     <ClInclude Include="Sources\properties\property_types.h" />
     <ClInclude Include="Sources\properties\property_util.h" />
-    <ClInclude Include="Sources\sprite_selection.h" />
     <ClInclude Include="Sources\state.h" />
     <ClInclude Include="Sources\tile_chunk.h" />
     <ClInclude Include="Sources\tile_map.h" />

@@ -1,5 +1,11 @@
 #include "precomp.h"
 #include "menu.h"
+#include <ClanLib/gl.h>
+#include <ClanLib/core.h>
+#include <ClanLib/application.h>
+#include <ClanLib/display.h>
+
+
 
 Menu::Menu(App * app, clan::DisplayWindow & wnd)
 {
@@ -9,6 +15,9 @@ Menu::Menu(App * app, clan::DisplayWindow & wnd)
 	m_run = true;
 }
 
+
+
+
 bool Menu::init()
 {
 	clan::XMLResourceDocument res("menu.xml");
@@ -16,26 +25,43 @@ bool Menu::init()
 	m_background = clan::Image::resource(m_canvas,"background",m_resources);
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
 
-	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
+	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
+	windowClosedEventSlot = m_window.sig_window_close().connect(this, &Menu::WindowCloseEventHandler);
 
 	button_world = new clan::PushButton(c);
-	button_world->set_geometry(clan::Rect( 420, 300, clan::Size(160, 60)));
+	button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
 	button_world->set_text("World");
 
 	button_editor = new clan::PushButton(c);
-	button_editor->set_geometry(clan::Rect( 420, 380, clan::Size(160, 60)));
+	button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
 	button_editor->set_text("Editor");
 
-	m_label_quit = new clan::Label(c);
-	m_label_quit->set_geometry(clan::Rect( 420, 480, clan::Size(160, 60)));
-	m_label_quit->func_input_pressed().set(this, &Menu::on_label_clicked, m_label_quit);
-	m_label_quit->set_text("Quit");
-	m_label_quit->set_class("menulabel",true);
+	button_exit = new clan::PushButton(c);
+	button_exit->set_geometry(clan::Rect( 540, 460, clan::Size(160, 60)));
+	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
+	button_exit->set_text("Exit");
 
+
+	m_exit_window = new clan::Window(c);
+	m_exit_window->set_geometry(clan::Rect( 300, 460, clan::Size(200,140)));
+	m_exit_window->set_visible(false);
+	m_exit_window->func_close().set(this, &Menu::Close_exit_YN_window);;
+	
+	button_exit_Y = new clan::PushButton(m_exit_window);
+	button_exit_Y->set_geometry(clan::Rect( 20, 65, clan::Size(60, 30)));
+	button_exit_Y->func_clicked().set(this, &Menu::on_button_clicked, button_exit_Y);
+	button_exit_Y->set_text("TAIP");
+
+	button_exit_N = new clan::PushButton(m_exit_window);
+	button_exit_N->set_geometry(clan::Rect( 120, 65, clan::Size(60, 30)));
+	button_exit_N->func_clicked().set(this, &Menu::on_button_clicked, button_exit_N);
+	button_exit_N->set_text("NE");
+
+	
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
@@ -47,18 +73,31 @@ bool Menu::run()
 {
 	if(m_run)
 	{
+	
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 
 		///render gui
 		m_gui_manager.process_messages(0);
 		m_gui_manager.render_windows();
-		m_window_manager.get_canvas(NULL).flush();
+		m_window_manager.get_canvas(NULL).flush(); 
 
 		m_window.flip(0);
 		clan::KeepAlive::process();
 	}
 
 	return m_run;
+}
+
+void Menu::WindowCloseEventHandler()
+{
+	m_run = false;
+	
+}
+
+bool Menu::Close_exit_YN_window()
+{
+    m_exit_window->set_visible(false);
+	return  m_exit_window->is_visible();
 }
 
 bool Menu::pause()
@@ -93,6 +132,7 @@ void Menu::on_key_up(const clan::InputEvent & e)
 		m_run = false;
 }
 
+
 void Menu::on_button_clicked(clan::PushButton *button)
 {
 	if(button==button_editor)
@@ -109,7 +149,7 @@ void Menu::on_button_clicked(clan::PushButton *button)
 			delete s;
 		}
 	}
-	else if(button==button)
+	else if(button==button_world)
 	{
 		State * s = new World(m_window);
 		if(s->init())
@@ -123,10 +163,16 @@ void Menu::on_button_clicked(clan::PushButton *button)
 			delete s;
 		}
 	}
-}
-
-bool Menu::on_label_clicked(const clan::InputEvent & e, clan::Label *button)
-{
-	m_run=false;
-	return false;
+	else if(button==button_exit)
+	{
+		m_exit_window->set_visible(true);
+	}
+	else if(button==button_exit_Y)
+	{
+		m_run = false;;
+	}
+	else if(button==button_exit_N)
+	{
+		m_exit_window->set_visible(false);
+	}
 }

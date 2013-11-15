@@ -5,6 +5,7 @@
 #include "editor.h"
 #include "app.h"
 
+
 class Menu: public State
 {
 protected:
@@ -18,12 +19,16 @@ protected:
 	clan::GUIWindowManagerDirect m_window_manager;
 
 	//gui
-	clan::PushButton * button_world, *button_editor;
-	clan::Label * m_label_quit;
+	clan::Window *m_exit_window;
+	clan::PushButton * button_world, *button_editor, *button_exit, *button_exit_Y, *button_exit_N;
 	clan::GUIComponent * c;
 
+	void WindowCloseEventHandler();
+	bool Close_exit_YN_window();
 	bool m_run;
+
 	clan::Slot m_key_up;
+	clan::Slot windowClosedEventSlot;
 public:
 
 	Menu(App * app, clan::DisplayWindow & wnd);
@@ -33,8 +38,8 @@ public:
 	bool pause();
 	bool resume();
 	bool exit();
+	
 
 	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
-	bool on_label_clicked(const clan::InputEvent & e, clan::Label *button);
 };
