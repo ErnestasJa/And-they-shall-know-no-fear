@@ -1,3 +1,108 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Sources\app.cpp" />
+    <ClCompile Include="Sources\editor.cpp" />
+    <ClCompile Include="Sources\menu.cpp" />
+    <ClCompile Include="Sources\precomp.cpp" />
+    <ClCompile Include="Sources\sprite_frame_selection.cpp" />
+    <ClCompile Include="Sources\tile_chunk.cpp" />
+    <ClCompile Include="Sources\tile_map.cpp" />
+    <ClCompile Include="Sources\utility.cpp" />
+    <ClCompile Include="Sources\world.cpp" />
+    <ClCompile Include="Sources\game_objects\game_object.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\game_objects\game_object_manager.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\game_objects\go_sprite.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\properties\property_container.cpp">
+      <Filter>properties</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\properties\property_util.cpp">
+      <Filter>properties</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\properties\property.cpp">
+      <Filter>properties</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\net\message.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\net\common.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\net\client.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sources\app.h" />
+    <ClInclude Include="Sources\editor.h" />
+    <ClInclude Include="Sources\map_attributes.h" />
+    <ClInclude Include="Sources\menu.h" />
+    <ClInclude Include="Sources\precomp.h" />
+    <ClInclude Include="Sources\sprite_frame_selection.h" />
+    <ClInclude Include="Sources\state.h" />
+    <ClInclude Include="Sources\tile_chunk.h" />
+    <ClInclude Include="Sources\tile_map.h" />
+    <ClInclude Include="Sources\utility.h" />
+    <ClInclude Include="Sources\world.h" />
+    <ClInclude Include="Sources\game_objects\game_objects.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\game_object.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\game_object_manager.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\game_object_types.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\go_sprite.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\iproperty.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\property_util.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\property_container.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\property_types.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\properties\property.h">
+      <Filter>properties</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\net\message.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\net\common.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\net\client.h">
+      <Filter>net</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources.xml" />
+    <None Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="game_objects">
+      <UniqueIdentifier>{75bf29d4-6a8d-4278-80c5-0ffe21604502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="properties">
+      <UniqueIdentifier>{0ae00040-6f83-4f27-ae3a-364764b36c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{0d92ad1d-ea75-4aee-8697-63df04ecb547}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>
