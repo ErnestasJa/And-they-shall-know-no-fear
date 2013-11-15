@@ -7,14 +7,7 @@
 TYPE_LIST
 #undef X
 
-#define X(type,type_enum) PropertyContainer::register_property<Property<type> >();
 
-void register_property_types()
-{
-	TYPE_LIST
-}
-
-#undef X
 
 ///Data to Net game event data
 template <>

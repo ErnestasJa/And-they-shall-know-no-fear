@@ -1,34 +1,23 @@
 #pragma once
 
+class Client;
 class Message;
-class ServerClient
+class ServerClientConnection
 {
-friend class Server;
 protected:
-	clan::NetGameConnection * m_connection;
-
-	uint32_t	m_id;
-	uint32_t	m_flags;
-	std::string m_name;
+	clan::NetGameConnection *	m_connection;
+	Client *					m_client;
 public:
+	ServerClientConnection();
+	~ServerClientConnection();
 
-	ServerClient();
-	~ServerClient();
-
-	void init();
-	uint32_t get_id();
-
-	void clear_flag(uint32_t flag);
-	bool check_flag(uint32_t flag);
-	void set_flag(uint32_t flag);
-
-	void set_name(const std::string & name);
-	const std::string & get_name();
+	void init(Client * client);
+	Client * get_client();
 
 public:
-	static ServerClient * get_client(clan::NetGameConnection * connection);
+	static ServerClientConnection * get_client(clan::NetGameConnection * connection);
 
-	void send_message(const Message & msg);
+	void send_message(const Message & msg, bool only_changed = true);
 	void connect(clan::NetGameConnection * connection);
 	clan::NetGameConnection * get_connection();
 	bool is_connected();

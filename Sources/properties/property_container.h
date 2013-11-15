@@ -41,6 +41,8 @@ private:
 	static std::map<uint32_t, prop_create_func> m_prop_create;
 
 public:
+	static void register_properties();
+
 	template <class T>
 	static bool register_property()
 	{

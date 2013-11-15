@@ -3,80 +3,55 @@
 #include "message.h"
 #include "server_client.h"
 
-ServerClient::ServerClient()
+ServerClientConnection::ServerClientConnection()
 {
 }
 
-ServerClient::~ServerClient()
+ServerClientConnection::~ServerClientConnection()
 {
 	
 }
 
-void ServerClient::init()
+void ServerClientConnection::init(Client * client)
 {
 	m_connection = nullptr;
-	m_flags = 0;
+	m_client = client;
 }
 
-const std::string & ServerClient::get_name()
+Client * ServerClientConnection::get_client()
 {
-	return m_name;
+	return m_client;
 }
 
-void ServerClient::set_name(const std::string & name)
-{
-	m_name = name;
-}
-
-uint32_t ServerClient::get_id()
-{
-	return m_id;
-}
-
-void ServerClient::clear_flag(uint32_t flag)
-{
-	m_flags &= ~flag;
-}
-
-bool ServerClient::check_flag(uint32_t flag)
-{
-	return ((m_flags & flag) == flag);
-}
-
-void ServerClient::set_flag(uint32_t flag)
-{
-	m_flags |= flag;
-}
-
-void ServerClient::send_message(const Message & msg)
+void ServerClientConnection::send_message(const Message & msg, bool only_changed)
 {
 	clan::NetGameEvent e("msg");
 	e.add_argument(msg.get_type());
-	msg.net_serialize(e);
+	msg.net_serialize(e,only_changed);
 	m_connection->send_event(e);
 }
 
-clan::NetGameConnection * ServerClient::get_connection()
+clan::NetGameConnection * ServerClientConnection::get_connection()
 {
 	return m_connection;
 }
 
-void ServerClient::connect(clan::NetGameConnection * connection)
+void ServerClientConnection::connect(clan::NetGameConnection * connection)
 {
 	m_connection = connection;
 }
 
-bool ServerClient::is_connected()
+bool ServerClientConnection::is_connected()
 {
 	return m_connection!=nullptr;
 }
 
-void ServerClient::disconnect()
+void ServerClientConnection::disconnect()
 {
 	m_connection = nullptr;
 }
 
-ServerClient * ServerClient::get_client(clan::NetGameConnection * connection)
+ServerClientConnection * ServerClientConnection::get_client(clan::NetGameConnection * connection)
 {
-	return reinterpret_cast<ServerClient*>(connection->get_data("cl_ptr"));
+	return reinterpret_cast<ServerClientConnection*>(connection->get_data("cl_ptr"));
 }

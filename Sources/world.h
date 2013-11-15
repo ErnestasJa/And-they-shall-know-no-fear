@@ -6,6 +6,7 @@
 #include "game_objects\game_object_manager.h"
 
 class Client;
+class ClientConnection;
 class World: public State
 {
 public:
@@ -50,10 +51,17 @@ protected:
 
 	///game
 	TileMap m_tile_map;
-	GOSprite * m_player; ///player, but not really
+	
 	MSGC_Input msg;
 	MSGC_Auth msg_auth;
 
 	GameObjectManager * m_gom;
-	Client * m_client;
+
+	
+
+	ClientConnection * m_client_con;
+	Client * m_client; ///NOT SURE ABOUT THIS ONE
+	Client * m_clients;
+	GOSprite * m_player;
+	GOSprite ** m_players;
 };

@@ -7,6 +7,13 @@
 
 std::map<uint32_t, PropertyContainer::prop_create_func> PropertyContainer::m_prop_create;
 
+void PropertyContainer::register_properties()
+{
+	#define X(type,type_enum) PropertyContainer::register_property<Property<type> >();
+	TYPE_LIST
+	#undef X
+}
+
 PropertyContainer::PropertyContainer()
 {
 	

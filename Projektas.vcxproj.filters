@@ -34,7 +34,7 @@
     <ClCompile Include="Sources\net\common.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\net\client.cpp">
+    <ClCompile Include="Sources\net\user_client.cpp">
       <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,7 +86,7 @@
     <ClInclude Include="Sources\net\common.h">
       <Filter>net</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\net\client.h">
+    <ClInclude Include="Sources\net\user_client.h">
       <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,8 +7,6 @@ Most functions in this header are not meant to be used directly.
 #include "property_types.h"
 #include "property_container.h"
 
-void register_property_types();
-
 ///type ids
 template <class T>
 uint32_t get_type_id();

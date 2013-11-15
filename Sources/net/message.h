@@ -27,6 +27,7 @@ enum MESSAGE_TYPE
 	///client/server
 	MSG_QUERY,	///query, query response are a bit abstract message types to avoid too many message classes
 	MSG_QUERY_RESPONSE,
+	MSG_CLIENT_INFO
 };
 
 #define DEF_MSG(CLASSNAME,ENUM) public: static uint32_t msg_type(){return ENUM;} static Message * create(){return new CLASSNAME();} virtual uint32_t get_type()const{return CLASSNAME::msg_type();}
@@ -63,7 +64,7 @@ public:
 
 /**
 ###############################################
-############# Client messages #################
+############# ClientConnection messages #################
 ###############################################
 **/
 
@@ -79,10 +80,12 @@ class MSGC_Input: public Message
 {
 	DEF_MSG(MSGC_Input,MSGC_INPUT)
 public:
+	Property<uint32_t> id;	  ///cliento id
 	Property<uint32_t> keys;	  ///enumerated types
 	
 	MSGC_Input()
 	{
+		id = add_property<uint32_t>("id");
 		keys = add_property<uint32_t>("keys",0);
 	}
 };
@@ -183,9 +186,31 @@ public:
 
 /**
 ###############################################
-########## Client/Server messages #############
+########## ClientConnection/Server messages #############
 ###############################################
 **/
+
+class Client: public Message
+{
+	DEF_MSG(Client,MSG_CLIENT_INFO)
+public:
+	Client();
+
+	void clear_flag(uint32_t flag);
+	bool check_flag(uint32_t flag);
+	void set_flag(uint32_t flag);
+
+	uint32_t get_id();
+	void set_id(uint32_t id);
+
+	void set_name(const std::string & name);
+	std::string get_name();
+
+protected:
+	Property<uint32_t>		m_flags;
+	Property<uint32_t>		m_id;
+	Property<std::string>	m_name;
+};
 
 enum EQueryType
 {
@@ -219,5 +244,3 @@ public:
 		query_type = add_property<uint32_t>("qt");
 	}
 };
-
-

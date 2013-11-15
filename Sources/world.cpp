@@ -2,7 +2,7 @@
 
 #include "world.h"
 #include "tile_chunk.h"
-#include "net\client.h"
+#include "net\user_client.h"
 #include "game_objects\go_sprite.h"
 
 
@@ -13,7 +13,9 @@ World::World(clan::DisplayWindow &display_window)
 
 	m_window = display_window;
 	m_game_time = clan::GameTime(20,60);
-	m_client = new Client();
+
+	m_client_con = new ClientConnection();
+
 	m_gom = nullptr;
 	m_player = nullptr;
 }
@@ -34,7 +36,7 @@ void World::init_level(const std::string & level)
 bool World::init()
 {
 	Message::register_messages();
-	register_property_types();
+	PropertyContainer::register_properties();
 
 	m_canvas = clan::Canvas(m_window);
 
@@ -45,15 +47,15 @@ bool World::init()
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &World::on_key_up);
 	m_key_down = m_window.get_ic().get_keyboard().sig_key_down().connect(this, &World::on_key_down);
 	
-	
-	m_client->set_name("Skell");
-	
-	m_net_slots.connect(m_client->sig_connected(),this, &World::on_connected);
-	m_net_slots.connect(m_client->sig_disconnected(),this, &World::on_disconnected);
-	m_net_slots.connect(m_client->sig_event_received(),this, &World::on_net_event);
+	m_net_slots.connect(m_client_con->sig_connected(),this, &World::on_connected);
+	m_net_slots.connect(m_client_con->sig_disconnected(),this, &World::on_disconnected);
+	m_net_slots.connect(m_client_con->sig_event_received(),this, &World::on_net_event);
 
-	clan::log_event("system", "Client trying to connect");
-	m_client->connect("localhost","27015");
+	clan::log_event("system", "ClientConnection trying to connect");
+	m_client_con->connect("62.80.252.115","27015");
+
+	m_client = new Client();
+	m_client->set_name("Skell");
 	
 	return true;
 }
@@ -61,9 +63,10 @@ bool World::init()
 void World::on_connected()
 {
 	clan::log_event("net_event","Connected to server.");
+
 	msg_auth.name = m_client->get_name();
 	msg_auth.timestamp = m_game_time.get_current_time_ms();
-	m_client->send_message(msg_auth);
+	m_client_con->send_message(msg_auth);
 }
 
 void World::on_net_event(const clan::NetGameEvent & e)
@@ -83,12 +86,12 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 			MSG_Query q;
 			q.query_type = EQT_SERVER_INFO;
-			m_client->send_message(q);
+			m_client_con->send_message(q);
 		}
 		else
 		{
 			clan::log_event("net_event",m.msg);
-			m_client->disconnect();
+			m_client_con->disconnect();
 		}
 	}
 	else if(type==MSGS_SERVER_INFO)
@@ -99,9 +102,31 @@ void World::on_net_event(const clan::NetGameEvent & e)
 		{
 			init_level(m.get_property<std::string>("name"));
 			clan::log_event("net_event","Servers maximum client count: '%1'",m.max_client_count);
-		}	
+
+			uint32_t cl_id = m_client->get_id();
+			m_clients = new Client[m.max_client_count];
+			m_players = new GOSprite * [m.max_client_count];
+			m_clients[cl_id].set_id(cl_id);
+			m_clients[cl_id].set_name(m_client->get_name());
+
+			delete m_client;
+			m_client = &m_clients[cl_id];
+		}
 		else
 			throw clan::Exception("Server didn't set property 'name' or 'max_client_count'.");
+	}
+	else if(type==MSG_CLIENT_INFO)
+	{
+		Client m;
+		m.net_deserialize(e);
+		m_clients[m.get_id()].net_deserialize(e);
+	}
+	else if(type==MSGC_INPUT)
+	{
+		MSGC_Input m;
+		m.net_deserialize(e);
+
+		m_players[m.id]->on_message(m);
 	}
 	else if(type==MSGS_GAME_OBJECT_ACTION)
 	{
@@ -118,6 +143,8 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 				if(o->get_guid()==m_client->get_id())
 					m_player = spr;
+
+				m_players[spr->get_guid()]=spr;
 
 				spr->load(m_canvas,m_resources);
 			}
@@ -183,7 +210,7 @@ bool World::resume()
 
 bool World::exit()
 {
-	m_client->disconnect();
+	m_client_con->disconnect();
 	delete m_gom;
 	m_key_up.destroy();
 	m_key_down.destroy();
@@ -197,29 +224,30 @@ void World::on_key_up(const clan::InputEvent & e)
 
 	else if(m_player)
 	{
+		msg.id = m_client->get_id();
 		if(e.id == clan::keycode_a)
 		{
 			msg.keys = msg.keys& (~EUIKT_MOVE_LEFT);
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 		else if(e.id == clan::keycode_d)
 		{
 			msg.keys = msg.keys& (~EUIKT_MOVE_RIGHT);
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 		else if(e.id == clan::keycode_w)
 		{
 			msg.keys = msg.keys& (~EUIKT_MOVE_UP);
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 		else if(e.id == clan::keycode_s)
 		{
 			msg.keys = msg.keys& (~EUIKT_MOVE_DOWN);
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 	}
 
@@ -230,29 +258,30 @@ void World::on_key_down(const clan::InputEvent & e)
 {	
 	if(m_player)
 	{
+		msg.id = m_client->get_id();
 		if(e.id == clan::keycode_a)
 		{
 			msg.keys=msg.keys|EUIKT_MOVE_LEFT;
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 		else if(e.id == clan::keycode_d)
 		{
 			msg.keys=msg.keys|EUIKT_MOVE_RIGHT;
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 		else if(e.id == clan::keycode_w)
 		{
 			msg.keys=msg.keys|EUIKT_MOVE_UP;
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 		else if(e.id == clan::keycode_s)
 		{
 			msg.keys=msg.keys|EUIKT_MOVE_DOWN;
 			m_player->on_message(msg);
-			m_client->send_message(msg);
+			m_client_con->send_message(msg,false);
 		}
 	}
 

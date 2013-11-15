@@ -9,22 +9,22 @@
 
 bool Server::init(uint32_t max_clients, const std::string & port)
 {
-	register_property_types();
+	PropertyContainer::register_properties();
 	Message::register_messages();
 
 	m_gom = new GameObjectManager();
-	m_gom->register_game_object<GOSprite>();
 
 	m_max_clients = max_clients;
 	
-	m_clients = new ServerClient[m_max_clients];
+	m_client_cons = new ServerClientConnection[m_max_clients];
+	m_clients =		new Client[m_max_clients];
 	m_player_objects = new GOSprite * [m_max_clients];
 
 	loopi(m_max_clients)
 	{
 		//m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
-		m_clients[i].m_id = i;
-		m_clients[i].init();
+		m_clients[i].set_id(i);
+		m_client_cons[i].init(&m_clients[i]);
 	}
 
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
@@ -41,7 +41,7 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	return true;
 }
 
-void Server::create_all_game_objects(ServerClient * client)
+void Server::create_all_game_objects(ServerClientConnection * client)
 {
 	
 }
@@ -56,11 +56,11 @@ void Server::on_client_connected(clan::NetGameConnection *connection)
 {
 	loopi(m_max_clients)
 	{
-		if(!m_clients[i].is_connected())
+		if(!m_client_cons[i].is_connected())
 		{
-			m_clients[i].init();
-			m_clients[i].connect(connection);
-			connection->set_data("cl_ptr",&m_clients[i]);
+			m_client_cons[i].init(&m_clients[i]);
+			m_client_cons[i].connect(connection);
+			connection->set_data("cl_ptr",&m_client_cons[i]);
 
 			clan::log_event("net_event","User connected, id '%1'.",i);
 			return;
@@ -73,13 +73,13 @@ void Server::on_client_connected(clan::NetGameConnection *connection)
 
 void Server::on_client_disconnected(clan::NetGameConnection *connection, const std::string &message)
 {
-	ServerClient* client = ServerClient::get_client(connection);
-
-	if(client)
+	ServerClientConnection* con = ServerClientConnection::get_client(connection);
+	Client* client = con->get_client();
+	if(con)
 	{
-		clan::log_event("net_event","Client disconnected: id '%1'.",client->get_id());
+		clan::log_event("net_event","UserClient disconnected: id '%1'.",client->get_id());
 		connection->set_data("cl_ptr",nullptr);
-		client->disconnect();
+		con->disconnect();
 
 		int32_t id = client->get_id();
 
@@ -93,7 +93,7 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 }
 
 
-void Server::on_auth(const clan::NetGameEvent &e, ServerClient * client)
+void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 {
 	uint32_t type = e.get_argument(0).to_uinteger();
 
@@ -107,41 +107,42 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClient * client)
 
 		if(m.name.get().size()<33&&m.name.get().size()>2)
 		{
-			client->set_name(m.name);
-			client->set_flag(ECF_LOGGED_IN);
+			con->get_client()->set_name(m.name);
+			con->get_client()->set_flag(ECF_LOGGED_IN);
 
-			clan::StringFormat fmt("Client with user name '%1' connected, id '%2'.");
-			fmt.set_arg(0,client->get_name());
-			fmt.set_arg(1,client->get_id());
+			clan::StringFormat fmt("UserClient with user name '%1' connected, id '%2'.");
+			fmt.set_arg(0,con->get_client()->get_name());
+			fmt.set_arg(1,con->get_client()->get_id());
 
 			msg.auth_sucessful	= true;
-			msg.id				= client->get_id();
+			msg.id				= con->get_client()->get_id();
 			msg.msg				= fmt.get_result();
 
 			clan::log_event("net_event",msg.msg);
 
-			client->send_message(msg);
+			con->send_message(msg);
 		}
 		else
 		{
 			msg.auth_sucessful	= false;
 			msg.msg				= "Nick name should be from 3 to 32 symbols length.";
 			
-			client->send_message(msg);
-			client->get_connection()->disconnect();/// disconnect doesn't happen before you send another msg.
+			con->send_message(msg);
+			con->get_connection()->disconnect();/// disconnect doesn't happen before you send another msg.
 			
 			clan::log_event("net_event",msg.msg);
 		}
 	}
 	else
 	{
-		client->get_connection()->disconnect();
+		con->get_connection()->disconnect();
 		clan::log_event("net_event", "Expected auth event from client, but client sent event of type: %1", type);
 	}
 }
 
-void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
+void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection * con)
 {
+	Client * client = con->get_client();
 	uint32_t type = e.get_argument(0).to_uinteger();
 
 	if(type==MSGC_INPUT)
@@ -151,6 +152,12 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 
 		GOSprite * spr=m_player_objects[client->get_id()];
 		spr->on_message(m);
+		
+		loopi(m_max_clients)
+		{
+			if(m_client_cons[i].is_connected() && i!=client->get_id() && client->check_flag(ECF_LOGGED_IN))
+				m_client_cons[i].send_message(m,false);
+		}
 	}
 	else if(type==MSG_QUERY)
 	{
@@ -164,7 +171,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 			si.map_name = "Level/Level.map";
 			si.max_client_count = m_max_clients;
 
-			client->send_message(si);
+			con->send_message(si);
 			
 			MSGS_GameObjectAction msg;
 			msg.action_type = EGOAT_CREATE;
@@ -176,13 +183,13 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 
 			loopi(m_max_clients)
 			{
-				if(m_clients[i].is_connected() && i!=client->get_id())
+				if(m_client_cons[i].is_connected() && i!=client->get_id())
 				{
 					MSGS_GameObjectAction c;
 					c.action_type = EGOAT_CREATE;
 					c.guid = i;
 					c.object_type = EGOT_SPRITE;
-					client->send_message(c);
+					con->send_message(c);
 				}
 			}
 		}
@@ -203,22 +210,24 @@ void Server::send_message(const Message & msg)
 
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)
 {
-	clan::log_event("events", "Client sent event: %1", e.to_string());
+	clan::log_event("events", "UserClient sent event: %1", e.to_string());
 
-	ServerClient *client = ServerClient::get_client(connection);
-	if(client)
+	ServerClientConnection * con = ServerClientConnection::get_client(connection);
+	Client* client = con->get_client();
+
+	if(con)
 	{
 		bool handled_event = false;
 
 		if (!client->check_flag(ECF_LOGGED_IN))	// User has not logged in, so route events to login dispatcher
 		{
 			// Route login events
-			handled_event = m_login_events.dispatch(e, client);
+			handled_event = m_login_events.dispatch(e, con);
 		}
 		else
 		{
 			// Route game events
-			handled_event = m_game_events.dispatch(e, client);
+			handled_event = m_game_events.dispatch(e, con);
 		}
 
 		if (!handled_event)
@@ -234,9 +243,9 @@ void Server::exit()
 	m_net_server.stop();
 }
 
-ServerClient & Server::get_client(uint32_t id)
+ServerClientConnection & Server::get_client(uint32_t id)
 {
-	return m_clients[id];
+	return m_client_cons[id];
 }
 
 uint32_t Server::get_max_clients()
