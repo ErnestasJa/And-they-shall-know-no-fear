@@ -22,6 +22,7 @@ enum MESSAGE_TYPE
 	MSGS_AUTH_STATUS,
 	MSGS_CLIENT_PUNISHMENT,
 	MSGS_GAME_OBJECT_ACTION,
+	MSGS_SERVER_INFO,
 
 	///client/server
 	MSG_QUERY,	///query, query response are a bit abstract message types to avoid too many message classes
@@ -163,6 +164,23 @@ public:
 	}
 };
 
+class MSG_Server_Info: public Message
+{
+	DEF_MSG(MSG_Server_Info, MSGS_SERVER_INFO)
+public:
+	Property<std::string> map_name;
+	Property<uint32_t> max_client_count;
+
+	MSG_Server_Info()
+	{
+		map_name = add_property<std::string>("name");
+		max_client_count = add_property<uint32_t>("max_client_count");
+		
+		//map name, client count
+		//world server
+	}
+};
+
 /**
 ###############################################
 ########## Client/Server messages #############
@@ -172,9 +190,7 @@ public:
 enum EQueryType
 {
 	///client asks server
-	EQT_MAP_INFO=1,
-	EQT_PLAYER_INFO,
-	EQT_SERVER_INFO,
+	EQT_SERVER_INFO=1,
 
 	//server asks client
 
@@ -203,3 +219,5 @@ public:
 		query_type = add_property<uint32_t>("qt");
 	}
 };
+
+
