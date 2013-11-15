@@ -37,6 +37,7 @@
     <ClCompile Include="Sources\net\user_client.cpp">
       <Filter>net</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\yn_dialogue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -89,6 +90,7 @@
     <ClInclude Include="Sources\net\user_client.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\yn_dialogue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />

@@ -5,8 +5,6 @@
 #include <ClanLib/application.h>
 #include <ClanLib/display.h>
 
-
-
 Menu::Menu(App * app, clan::DisplayWindow & wnd)
 {
 	m_app = app;
@@ -14,9 +12,6 @@ Menu::Menu(App * app, clan::DisplayWindow & wnd)
 	m_canvas = clan::Canvas(m_window);
 	m_run = true;
 }
-
-
-
 
 bool Menu::init()
 {
@@ -45,21 +40,9 @@ bool Menu::init()
 	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
 	button_exit->set_text("Exit");
 
+	m_exit_window = new YNDialogue(c, "You are about to quit!");
 
-	m_exit_window = new clan::Window(c);
-	m_exit_window->set_geometry(clan::Rect( 300, 460, clan::Size(200,140)));
-	m_exit_window->set_visible(false);
-	m_exit_window->func_close().set(this, &Menu::Close_exit_YN_window);;
-	
-	button_exit_Y = new clan::PushButton(m_exit_window);
-	button_exit_Y->set_geometry(clan::Rect( 20, 65, clan::Size(60, 30)));
-	button_exit_Y->func_clicked().set(this, &Menu::on_button_clicked, button_exit_Y);
-	button_exit_Y->set_text("TAIP");
-
-	button_exit_N = new clan::PushButton(m_exit_window);
-	button_exit_N->set_geometry(clan::Rect( 120, 65, clan::Size(60, 30)));
-	button_exit_N->func_clicked().set(this, &Menu::on_button_clicked, button_exit_N);
-	button_exit_N->set_text("NE");
+	confirmWindowClosedEventSlot = m_exit_window->confirmation().connect(this, &Menu::CloseConfirmed);
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
@@ -71,7 +54,6 @@ bool Menu::run()
 {
 	if(m_run)
 	{
-	
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 
 		///render gui
@@ -89,13 +71,11 @@ bool Menu::run()
 void Menu::WindowCloseEventHandler()
 {
 	m_run = false;
-	
 }
 
-bool Menu::Close_exit_YN_window()
+void Menu::CloseConfirmed(bool close)
 {
-    m_exit_window->set_visible(false);
-	return  m_exit_window->is_visible();
+	m_run = !close;
 }
 
 bool Menu::pause()
@@ -130,7 +110,6 @@ void Menu::on_key_up(const clan::InputEvent & e)
 		m_run = false;
 }
 
-
 void Menu::on_button_clicked(clan::PushButton *button)
 {
 	if(button==button_editor)
@@ -163,14 +142,7 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	}
 	else if(button==button_exit)
 	{
-		m_exit_window->set_visible(true);
+		m_exit_window->toggle_visibility();
 	}
-	else if(button==button_exit_Y)
-	{
-		m_run = false;;
-	}
-	else if(button==button_exit_N)
-	{
-		m_exit_window->set_visible(false);
-	}
+
 }

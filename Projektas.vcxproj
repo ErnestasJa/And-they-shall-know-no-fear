@@ -172,6 +172,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Sources\yn_dialogue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Sources\net\message.h" />
     <ClInclude Include="Sources\precomp.h" />
     <ClInclude Include="Sources\properties\iproperty.h" />
+    <ClInclude Include="Sources\yn_dialogue.h" />
     <ClInclude Include="Sources\sprite_frame_selection.h" />
     <ClInclude Include="Sources\properties\property.h" />
     <ClInclude Include="Sources\properties\property_container.h" />
