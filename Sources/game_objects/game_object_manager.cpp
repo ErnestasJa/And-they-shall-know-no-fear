@@ -2,8 +2,6 @@
 #include "game_objects.h"
 #include "game_object_manager.h"
 
-uint32_t GameObjectManager::globally_unique_id_counter = 0;
-
 GameObjectManager::GameObjectManager()
 {
 	register_game_object<GOSprite>();
@@ -12,13 +10,6 @@ GameObjectManager::GameObjectManager()
 GameObjectManager::~GameObjectManager()
 {
 
-}
-
-uint32_t GameObjectManager::generate_guid()
-{
-	const uint32_t guid = GameObjectManager::globally_unique_id_counter;
-	GameObjectManager::globally_unique_id_counter++;
-	return guid;
 }
 
 std::vector<GameObject*> & GameObjectManager::get_game_objects()
