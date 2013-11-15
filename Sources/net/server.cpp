@@ -155,15 +155,16 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 	else if(type==MSG_QUERY)
 	{
 		MSG_Query q;
-		MSG_QueryResponse qr;
+		MSG_Server_Info si;
 
 		q.net_deserialize(e);
 
-		if(q.query_type==EQT_MAP_INFO)
+		if(q.query_type==EQT_SERVER_INFO)
 		{
-			qr.query_type=EQT_MAP_INFO;
-			qr.add_property<std::string>("name","Level/Level.map");
-			client->send_message(qr);
+			si.map_name = "Level/Level.map";
+			si.max_client_count = m_max_clients;
+
+			client->send_message(si);
 			
 			MSGS_GameObjectAction msg;
 			msg.action_type = EGOAT_CREATE;
@@ -184,10 +185,6 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 					client->send_message(c);
 				}
 			}
-		}
-		else if(q.query_type==EQT_PLAYER_INFO)
-		{
-
 		}
 	}
 	else

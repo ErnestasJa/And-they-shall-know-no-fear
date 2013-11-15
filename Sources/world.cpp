@@ -82,7 +82,7 @@ void World::on_net_event(const clan::NetGameEvent & e)
 			clan::log_event("net_event",m.msg);
 
 			MSG_Query q;
-			q.query_type = EQT_MAP_INFO;
+			q.query_type = EQT_SERVER_INFO;
 			m_client->send_message(q);
 		}
 		else
@@ -91,17 +91,17 @@ void World::on_net_event(const clan::NetGameEvent & e)
 			m_client->disconnect();
 		}
 	}
-	else if(type==MSG_QUERY_RESPONSE)
+	else if(type==MSGS_SERVER_INFO)
 	{
-		MSG_QueryResponse m;
+		MSG_Server_Info m;
 		m.net_deserialize(e);
-		if(m.query_type==EQT_MAP_INFO)
+		if(m.has_property("name",EPT_STRING) && m.has_property("max_client_count",EPT_UINT32))
 		{
-			if(m.has_property("name",EPT_STRING))
-				init_level(m.get_property<std::string>("name"));
-			else
-				throw clan::Exception("Server didn't set property 'name'.");
-		}
+			init_level(m.get_property<std::string>("name"));
+			clan::log_event("net_event","Servers maximum client count: '%1'",m.max_client_count);
+		}	
+		else
+			throw clan::Exception("Server didn't set property 'name' or 'max_client_count'.");
 	}
 	else if(type==MSGS_GAME_OBJECT_ACTION)
 	{
