@@ -224,6 +224,7 @@ void World::on_key_up(const clan::InputEvent & e)
 			m_client->send_message(msg);
 		}
 	}
+
 	clan::Console::write_line("Released: %1", e.id);
 }
 

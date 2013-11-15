@@ -42,7 +42,6 @@ void serialize_type<clan::vec2f>(clan::NetGameEventValue & v, const clan::vec2f 
 	v.add_member(vec);
 }
 
-
 template <> void deserialize_type(const clan::NetGameEventValue & v, bool & data){data = v.to_boolean();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, int32_t & data){data = v.to_integer();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, uint32_t & data){data = v.to_uinteger();}
@@ -50,7 +49,6 @@ template <> void deserialize_type(const clan::NetGameEventValue & v, float & dat
 template <> void deserialize_type(const clan::NetGameEventValue & v, clan::vec2 & data){data.x = v.get_member(0).to_integer(); data.y = v.get_member(1).to_integer();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, clan::vec2f & data){data.x = v.get_member(0).to_number(); data.y = v.get_member(1).to_number();}
 template <> void deserialize_type(const clan::NetGameEventValue & v, std::string & data){data = v.to_string();}
-
 
 ///property serialization to file
 template <>

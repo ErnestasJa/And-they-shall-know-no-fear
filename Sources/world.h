@@ -23,9 +23,9 @@ protected:
 	///event funcs
 	void on_key_up(const clan::InputEvent & e);
 	void on_key_down(const clan::InputEvent & e);
+
 	///game specific funcs
 	void init_level(const std::string & level);
-
 
 protected:
 	///net
@@ -34,6 +34,7 @@ protected:
 	void on_connected();
 	void on_net_event(const clan::NetGameEvent & e);
 	void on_disconnected();
+
 protected:
 	bool m_run;
 	clan::Slot m_key_up;

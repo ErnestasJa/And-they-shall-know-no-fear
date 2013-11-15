@@ -11,6 +11,7 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 {
 	register_property_types();
 	Message::register_messages();
+
 	m_gom = new GameObjectManager();
 	m_gom->register_game_object<GOSprite>();
 
@@ -25,7 +26,6 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 		m_clients[i].init();
 	}
 
-
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
 	m_slots.connect(m_net_server.sig_client_disconnected(), this, &Server::on_client_disconnected);
 	m_slots.connect(m_net_server.sig_event_received(), this, &Server::on_event);
@@ -36,8 +36,6 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_net_server.start(port);
 
 	m_game_time = clan::GameTime();
-
-	
 
 	return true;
 }

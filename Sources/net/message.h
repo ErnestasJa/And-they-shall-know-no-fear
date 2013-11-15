@@ -18,13 +18,13 @@ enum MESSAGE_TYPE
 	MSGC_INPUT,
 	MSGC_AUTH,
 
-	//server 
+	//server
 	MSGS_AUTH_STATUS,
 	MSGS_CLIENT_PUNISHMENT,
 	MSGS_GAME_OBJECT_ACTION,
 
 	///client/server
-	MSG_QUERY, ///query, query response are a bit abstract message types to avoid too many message classes
+	MSG_QUERY,	///query, query response are a bit abstract message types to avoid too many message classes
 	MSG_QUERY_RESPONSE,
 };
 
@@ -174,6 +174,7 @@ enum EQueryType
 	///client asks server
 	EQT_MAP_INFO=1,
 	EQT_PLAYER_INFO,
+	EQT_SERVER_INFO,
 
 	//server asks client
 

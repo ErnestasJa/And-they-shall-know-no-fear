@@ -94,7 +94,6 @@ void PropertyContainer::deserialize(clan::File & file)
 
 void PropertyContainer::net_serialize(clan::NetGameEvent & e, bool only_changed) const
 {
-	
 	if(only_changed)
 	{
 		int32_t i = 0;

@@ -13,7 +13,6 @@ protected:
 	std::vector<IProperty*> m_props;
 
 public:
-
 	PropertyContainer();
 	virtual ~PropertyContainer();
 
@@ -35,14 +34,16 @@ public:
 
 	virtual void net_serialize(clan::NetGameEvent & e, bool only_changed = true) const;
 	virtual void net_deserialize(const clan::NetGameEvent & e, uint32_t start_at_argument=1);
+
 ///factory methods
 private:
 	typedef IProperty * (*prop_create_func)(const std::string &);
 	static std::map<uint32_t, prop_create_func> m_prop_create;
-public:
 
+public:
 	template <class T>
-	static bool register_property(){
+	static bool register_property()
+	{
 		m_prop_create[T::get_property_type_id()]=&T::create;
 		return true;
 	}

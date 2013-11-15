@@ -160,7 +160,7 @@ public:
 	{
 		e.add_member(m_data->name);
 		serialize_type<T>(e,m_data->data);
-		m_data->flags|= EPF_UNCHANGED; ///#FIX ME: pasikeitus reiksmei tik pirmas kas serializuos sia savybe matys ja kaip pasikeitusia.
+		m_data->flags |= EPF_UNCHANGED; ///#FIX ME: pasikeitus reiksmei tik pirmas kas serializuos sia savybe matys ja kaip pasikeitusia.
 	}
 
 	virtual void net_value_deserialize(const clan::NetGameEventValue & e)

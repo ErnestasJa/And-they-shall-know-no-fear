@@ -33,8 +33,6 @@ public:
 
 	void send_message(const Message & msg);
 
-
-
 public:
 	///event
 	clan::Signal_v1< const clan::NetGameEvent & > & sig_event_received();

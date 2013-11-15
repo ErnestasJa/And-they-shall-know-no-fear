@@ -5,7 +5,6 @@ class ServerClient
 {
 friend class Server;
 protected:
-
 	clan::NetGameConnection * m_connection;
 
 	uint32_t	m_id;
