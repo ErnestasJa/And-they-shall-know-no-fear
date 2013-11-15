@@ -4,7 +4,7 @@
 #include "world.h"
 #include "editor.h"
 #include "app.h"
-
+#include "yn_dialogue.h"
 
 class Menu: public State
 {
@@ -19,16 +19,17 @@ protected:
 	clan::GUIWindowManagerDirect m_window_manager;
 
 	//gui
-	clan::Window *m_exit_window;
-	clan::PushButton * button_world, *button_editor, *button_exit, *button_exit_Y, *button_exit_N;
-	clan::GUIComponent * c;
+	clan::PushButton *button_world, *button_editor, *button_exit;
+	YNDialogue *m_exit_window;
+	clan::GUIComponent *c;
 
 	void WindowCloseEventHandler();
-	bool Close_exit_YN_window();
+	void CloseConfirmed(bool);
 	bool m_run;
 
 	clan::Slot m_key_up;
 	clan::Slot windowClosedEventSlot;
+	clan::Slot confirmWindowClosedEventSlot;
 public:
 
 	Menu(App * app, clan::DisplayWindow & wnd);
