@@ -177,7 +177,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClient * client)
 		
 			loopi(m_max_clients)
 			{
-				if(m_clients[i].is_connected()&&i!=client->get_id())
+				if(m_clients[i].is_connected() && i!=client->get_id())
 				{
 					MSGS_GameObjectAction c;
 					c.action_type = EGOAT_CREATE;
