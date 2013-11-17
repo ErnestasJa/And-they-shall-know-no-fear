@@ -163,8 +163,6 @@ void PropertyContainer::net_deserialize(const clan::NetGameEventValue & e)
 		IProperty * p = PropertyContainer::create_property(type,std::string());
 		p->net_value_deserialize(v);
 
-		clan::Console::write_line("Deserialized property with name='%1', type='%2'",p->get_name(),p->get_type());
-
 		if(this->has_property(p->get_name(), p->get_type()))
 		{
 			this->get_property(p->get_name())->set(p);

@@ -51,6 +51,7 @@ bool ServerClientConnection::is_connected()
 
 void ServerClientConnection::disconnect()
 {
+	m_client = nullptr;
 	m_connection = nullptr;
 }
 

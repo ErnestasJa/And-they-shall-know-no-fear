@@ -23,7 +23,6 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	loopi(m_max_clients)
 	{
 		//m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
-		m_clients[i].set_id(i);
 		m_client_cons[i].init(&m_clients[i]);
 	}
 
@@ -66,6 +65,8 @@ void Server::on_client_connected(clan::NetGameConnection *connection)
 			m_client_cons[i].connect(connection);
 			connection->set_data("cl_ptr",&m_client_cons[i]);
 
+			m_clients[i].set_id(i);
+
 			clan::log_event("net_event","User connected, id '%1'.",i);
 			return;
 		}
@@ -79,20 +80,23 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 {
 	ServerClientConnection* con = ServerClientConnection::get_client(connection);
 	Client* client = con->get_client();
+
+	clan::log_event("net_event","UserClient disconnected: id '%1'.",client->get_id());
 	if(con)
 	{
-		clan::log_event("net_event","UserClient disconnected: id '%1'.",client->get_id());
 		connection->set_data("cl_ptr",nullptr);
 		con->disconnect();
 
 		int32_t id = client->get_id();
-
+		
 		MSGS_GameObjectAction msg;
 		msg.action_type = EGOAT_REMOVE;
 		msg.guid = id;
 		msg.object_type = EGOT_SPRITE; /// realiai tipas nereikalingas
 
 		send_message(msg);
+
+		m_clients[id] = Client(); ///reset client data
 	}
 }
 

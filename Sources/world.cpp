@@ -253,8 +253,6 @@ void World::on_key_up(const clan::InputEvent & e)
 			m_client_con->send_message(msg,false);
 		}
 	}
-
-	clan::Console::write_line("Released: %1", e.id);
 }
 
 void World::on_key_down(const clan::InputEvent & e)
@@ -287,6 +285,4 @@ void World::on_key_down(const clan::InputEvent & e)
 			m_client_con->send_message(msg,false);
 		}
 	}
-
-	clan::Console::write_line("Pressed: %1", e.id);
 }
