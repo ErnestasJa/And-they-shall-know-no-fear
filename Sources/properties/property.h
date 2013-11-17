@@ -14,11 +14,11 @@ struct PropertyData
 	T data;
 	uint32_t flags;
 
-	PropertyData(const std::string & pname, T pdata, uint32_t flags)
+	PropertyData(const std::string & pname, T pdata, uint32_t pflags)
 	{
-		name=pname;
-		data=pdata;
-		flags=flags;
+		this->name=pname;
+		this->data=pdata;
+		this->flags=pflags;
 	}
 
 	PropertyData(const std::string & pname, T pdata)
@@ -38,6 +38,7 @@ struct PropertyData
 template <class T>
 class Property: public IProperty
 {
+	friend class PropertyContainer;
 public:
 	static IProperty * create(const std::string & name);
 	static uint32_t get_property_type_id(){return get_type_id<T>();}

@@ -16,6 +16,8 @@ public:
 	PropertyContainer();
 	virtual ~PropertyContainer();
 
+	void		load_properties(const PropertyContainer & p);
+
 	void		add_property(IProperty * p);
 	bool		has_property(const std::string & name);
 	bool		has_property(const std::string & name, uint32_t type);
@@ -25,6 +27,7 @@ public:
 	
 	template <class T> Property<T> add_property(const Property<T> & prop);
 	template <class T> Property<T> add_property(const std::string & name, const T & data);
+	template <class T> Property<T> add_property(const std::string & name, const T & data, const uint32_t flags);
 	template <class T> Property<T> add_property(const std::string & name);
 	template <class T> Property<T> get_property(const std::string & name);
 
@@ -32,8 +35,15 @@ public:
 	virtual void serialize(clan::File & file) const;
 	virtual void deserialize(clan::File & file);
 
-	virtual void net_serialize(clan::NetGameEvent & e, bool only_changed = true) const;
-	virtual void net_deserialize(const clan::NetGameEvent & e, uint32_t start_at_argument=1);
+	virtual void net_serialize(clan::NetGameEventValue & e, bool only_changed = true) const;
+	virtual void net_deserialize(const clan::NetGameEventValue & e);
+
+public:
+
+	bool operator !=(const PropertyContainer & o) const
+	{
+		return this!=&o; ///FIX ME: fast, but will it give good results?
+	}
 
 ///factory methods
 private:
@@ -63,6 +73,7 @@ public:
 		throw clan::Exception(fmt.get_result());
 	}
 };
+
 
 template <class T>
 Property<T> PropertyContainer::get_property(const std::string & name)
@@ -145,3 +156,26 @@ Property<T> PropertyContainer::add_property(const std::string & name, const T & 
 	return *r;
 }
 
+
+template <class T>
+Property<T> PropertyContainer::add_property(const std::string & name, const T & data, const uint32_t flags)
+{
+	Property<T> * r;
+	auto it = std::find_if(m_props.begin(), m_props.end(), [&name](IProperty * o){return o->get_name()==name;});
+
+	if(it!=m_props.end())
+	{
+		r = static_cast< Property<T> *>(*it);
+
+		if(r->get_type()!=get_type_id<T>())
+			throw clan::Exception("Another property already exists with the same name but different type");
+		
+		r->set(data); //not sure if data should be replaced or just set
+		r->m_data->flags|=flags; ///FIX ME: ?????
+		return *r;
+	}
+
+	r = new Property<T>(name,data,flags);
+	m_props.push_back(r);
+	return *r;
+}

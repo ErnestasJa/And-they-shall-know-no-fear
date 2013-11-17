@@ -19,7 +19,8 @@ X(uint32_t,		EPT_UINT32)\
 X(float,		EPT_FLOAT)\
 X(clan::vec2,	EPT_VEC2)\
 X(clan::vec2f,	EPT_VEC2F)\
-X(std::string,	EPT_STRING)
+X(std::string,	EPT_STRING)\
+X(PropertyContainer, EPT_PROPERTY_CONTAINER)
 
 #define X(type,type_enum) template <> uint32_t get_type_id<type>();
 TYPE_LIST
@@ -35,6 +36,7 @@ void serialize_type(clan::NetGameEventValue & v, const T & data)
 template <> void serialize_type<bool>(clan::NetGameEventValue & e, const bool & data);
 template <> void serialize_type<clan::vec2>(clan::NetGameEventValue & e, const clan::vec2 & data);
 template <> void serialize_type<clan::vec2f>(clan::NetGameEventValue & e, const clan::vec2f & data);
+template <> void serialize_type<PropertyContainer>(clan::NetGameEventValue & e, const PropertyContainer & data);
 
 template <class T>
 void deserialize_type(const clan::NetGameEventValue & v, T & data);

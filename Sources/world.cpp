@@ -77,11 +77,12 @@ void World::on_net_event(const clan::NetGameEvent & e)
 	if(type==MSGS_AUTH_STATUS)
 	{
 		MSGS_AuthStatus m;
-		m.net_deserialize(e);
+		m.net_deserialize(e.get_argument(1));
 
 		if(m.auth_sucessful)
 		{
 			m_client->set_id(m.id);
+			msg.id = m_client->get_id();
 			clan::log_event("net_event",m.msg);
 
 			MSG_Query q;
@@ -97,7 +98,7 @@ void World::on_net_event(const clan::NetGameEvent & e)
 	else if(type==MSGS_SERVER_INFO)
 	{
 		MSG_Server_Info m;
-		m.net_deserialize(e);
+		m.net_deserialize(e.get_argument(1));
 		if(m.has_property("name",EPT_STRING) && m.has_property("max_client_count",EPT_UINT32))
 		{
 			init_level(m.get_property<std::string>("name"));
@@ -118,24 +119,27 @@ void World::on_net_event(const clan::NetGameEvent & e)
 	else if(type==MSG_CLIENT_INFO)
 	{
 		Client m;
-		m.net_deserialize(e);
-		m_clients[m.get_id()].net_deserialize(e);
+		m.net_deserialize(e.get_argument(1));
+		m_clients[m.get_id()].net_deserialize(e.get_argument(1));
+
+		clan::log_event("net_event","Got user info: name='%1', id='%2'", m.get_name(), m.get_id());
 	}
 	else if(type==MSGC_INPUT)
 	{
 		MSGC_Input m;
-		m.net_deserialize(e);
-
+		m.net_deserialize(e.get_argument(1));
 		m_players[m.id]->on_message(m);
 	}
 	else if(type==MSGS_GAME_OBJECT_ACTION)
 	{
 		MSGS_GameObjectAction m;
-		m.net_deserialize(e);
+		m.net_deserialize(e.get_argument(1));
 		
 		if(m.action_type==EGOAT_CREATE)
 		{
 			GameObject * o = m_gom->add_game_object(m.object_type,m.guid);
+
+			o->load_properties(m.object_properties);
 
 			if(o->get_type()==EGOT_SPRITE)
 			{
@@ -224,7 +228,6 @@ void World::on_key_up(const clan::InputEvent & e)
 
 	else if(m_player)
 	{
-		msg.id = m_client->get_id();
 		if(e.id == clan::keycode_a)
 		{
 			msg.keys = msg.keys& (~EUIKT_MOVE_LEFT);
@@ -258,7 +261,7 @@ void World::on_key_down(const clan::InputEvent & e)
 {	
 	if(m_player)
 	{
-		msg.id = m_client->get_id();
+		
 		if(e.id == clan::keycode_a)
 		{
 			msg.keys=msg.keys|EUIKT_MOVE_LEFT;

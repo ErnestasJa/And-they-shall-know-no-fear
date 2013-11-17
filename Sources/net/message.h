@@ -27,7 +27,8 @@ enum MESSAGE_TYPE
 	///client/server
 	MSG_QUERY,	///query, query response are a bit abstract message types to avoid too many message classes
 	MSG_QUERY_RESPONSE,
-	MSG_CLIENT_INFO
+	MSG_CLIENT_INFO,
+	MSG_GAME_OBJECT
 };
 
 #define DEF_MSG(CLASSNAME,ENUM) public: static uint32_t msg_type(){return ENUM;} static Message * create(){return new CLASSNAME();} virtual uint32_t get_type()const{return CLASSNAME::msg_type();}
@@ -85,8 +86,8 @@ public:
 	
 	MSGC_Input()
 	{
-		id = add_property<uint32_t>("id");
-		keys = add_property<uint32_t>("keys",0);
+		id = add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);
+		keys = add_property<uint32_t>("keys",0,EPF_ALWAYS_SEND);
 	}
 };
 
@@ -148,6 +149,7 @@ public:
 enum EGameObjectActionType
 {
 	EGOAT_CREATE = 0,
+	EGOAT_UPDATE,
 	EGOAT_REMOVE
 };
 
@@ -158,12 +160,14 @@ public:
 	Property<uint32_t> action_type;
 	Property<uint32_t> guid;
 	Property<uint32_t> object_type;
+	Property<PropertyContainer> object_properties;
 
 	MSGS_GameObjectAction()
 	{
 		action_type = add_property<uint32_t>("at");
 		guid = add_property<uint32_t>("guid");
 		object_type = add_property<uint32_t>("ot");
+		object_properties = add_property<PropertyContainer>("op");
 	}
 };
 
@@ -171,8 +175,8 @@ class MSG_Server_Info: public Message
 {
 	DEF_MSG(MSG_Server_Info, MSGS_SERVER_INFO)
 public:
-	Property<std::string> map_name;
-	Property<uint32_t> max_client_count;
+	Property<std::string>	map_name;
+	Property<uint32_t>		max_client_count;
 
 	MSG_Server_Info()
 	{

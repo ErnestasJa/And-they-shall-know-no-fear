@@ -48,7 +48,11 @@ void Server::create_all_game_objects(ServerClientConnection * client)
 
 bool Server::run()
 {
-	//m_game_time.update();
+	m_game_time.update();
+
+	if(m_gom)
+		m_gom->update_game_objects(m_game_time);
+
 	return true;
 }
 
@@ -100,7 +104,7 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 	if(type==MSGC_AUTH)
 	{
 		MSGC_Auth m;
-		m.net_deserialize(e);
+		m.net_deserialize(e.get_argument(1));
 
 		MSGS_AuthStatus msg;
 		std::string str;
@@ -111,8 +115,8 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 			con->get_client()->set_flag(ECF_LOGGED_IN);
 
 			clan::StringFormat fmt("UserClient with user name '%1' connected, id '%2'.");
-			fmt.set_arg(0,con->get_client()->get_name());
-			fmt.set_arg(1,con->get_client()->get_id());
+			fmt.set_arg(1,con->get_client()->get_name());
+			fmt.set_arg(2,con->get_client()->get_id());
 
 			msg.auth_sucessful	= true;
 			msg.id				= con->get_client()->get_id();
@@ -148,7 +152,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 	if(type==MSGC_INPUT)
 	{
 		MSGC_Input m;
-		m.net_deserialize(e);
+		m.net_deserialize(e.get_argument(1));
 
 		GOSprite * spr=m_player_objects[client->get_id()];
 		spr->on_message(m);
@@ -156,7 +160,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 		loopi(m_max_clients)
 		{
 			if(m_client_cons[i].is_connected() && i!=client->get_id() && client->check_flag(ECF_LOGGED_IN))
-				m_client_cons[i].send_message(m,false);
+				m_client_cons[i].send_message(m);
 		}
 	}
 	else if(type==MSG_QUERY)
@@ -164,7 +168,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 		MSG_Query q;
 		MSG_Server_Info si;
 
-		q.net_deserialize(e);
+		q.net_deserialize(e.get_argument(1));
 
 		if(q.query_type==EQT_SERVER_INFO)
 		{
@@ -173,14 +177,16 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 
 			con->send_message(si);
 			
+			m_player_objects[client->get_id()]=static_cast<GOSprite*>(m_gom->add_game_object(EGOT_SPRITE,client->get_id()));
+
 			MSGS_GameObjectAction msg;
 			msg.action_type = EGOAT_CREATE;
 			msg.guid = client->get_id();
 			msg.object_type = EGOT_SPRITE;
-			send_message(msg); ///visiem prisijungusiem zaidejam sukuriame sio zaidejo objekta
+			msg.object_properties = *m_player_objects[client->get_id()];
+			send_message(msg);///visiem prisijungusiem zaidejam sukuriame sio zaidejo objekta
 
-			m_player_objects[client->get_id()]=static_cast<GOSprite*>(m_gom->add_game_object(EGOT_SPRITE,client->get_id()));
-
+			
 			loopi(m_max_clients)
 			{
 				if(m_client_cons[i].is_connected() && i!=client->get_id())
@@ -189,6 +195,9 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					c.action_type = EGOAT_CREATE;
 					c.guid = i;
 					c.object_type = EGOT_SPRITE;
+					c.object_properties = *m_player_objects[i];
+					
+					con->send_message(m_clients[i]);
 					con->send_message(c);
 				}
 			}
@@ -202,9 +211,12 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 
 void Server::send_message(const Message & msg)
 {
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+	msg.net_serialize(val);
+
 	clan::NetGameEvent e("msg");
 	e.add_argument(msg.get_type());
-	msg.net_serialize(e);
+	e.add_argument(val);
 	m_net_server.send_event(e);
 }
 

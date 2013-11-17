@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "message.h"
+#include "game_objects/game_objects.h"
 
 std::map<uint32_t, Message::msg_create_func>  Message::m_msg_create;
 

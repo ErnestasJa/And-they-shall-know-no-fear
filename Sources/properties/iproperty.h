@@ -3,6 +3,7 @@
 enum EPropertyFlag
 {
 	EPF_UNCHANGED = BIT(0),
+	EPF_ALWAYS_SEND = BIT(1),
 };
 
 
