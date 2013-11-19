@@ -40,7 +40,7 @@ void editor::init_gui()
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
 	m_sprite_selection_window->set_visible(false);
 	
-	m_sprite_frame_selection = new SpriteFrameSelection(m_sprite_selection_window);
+	m_sprite_frame_selection = new SpriteFrameSelection(m_sprite_selection_window, m_game_time);
 
 	m_frame_select = m_sprite_frame_selection->func_frame_selected().connect(this,&editor::on_frame_select);
 
@@ -57,9 +57,9 @@ void editor::init_gui_layer_dropbox(clan::Window * root, const clan::Rect pos)
 	m_combo_menu_layer.insert_separator(i);
 	for(i++;i<GROUND_LAYER_COUNT+OBJECT_LAYER_COUNT+1;i++)
 		m_combo_menu_layer.insert_item("Object "+clan::StringHelp::uint_to_text(i),i-1,i);
+
 	m_combo_layer->set_popup_menu(m_combo_menu_layer);
 	m_combo_layer->set_text("Select layer");
-
 	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
 }
 
@@ -252,6 +252,7 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 	clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
 
 	TileChunk c=m_tile_map.get_chunk(chunk_pos);
+
 	if(c.is_null()) 
 		c = m_tile_map.add_chunk(chunk_pos);
 

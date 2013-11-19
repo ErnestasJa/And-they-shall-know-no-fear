@@ -1,9 +1,10 @@
 #include "precomp.h"
 #include "sprite_frame_selection.h"
 
-SpriteFrameSelection::SpriteFrameSelection(clan::Window * root):clan::GUIComponent(root)
+SpriteFrameSelection::SpriteFrameSelection(clan::Window * root, clan::GameTime & time):clan::GUIComponent(root)
 {
 	set_constant_repaint(true);
+	m_game_time = time;
 
 	func_render().set(this, &SpriteFrameSelection::render);
 	func_process_message().set(this, &SpriteFrameSelection::on_message);
@@ -29,7 +30,7 @@ void SpriteFrameSelection::set_sprite(clan::Sprite & s)
 
 void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect)
 {
-	m_pos+=m_pan;
+	m_pos+=m_scroll;
 	clamp_pos();
 
 	int32_t w=this->get_content_box().get_width(),h=this->get_content_box().get_height();
@@ -52,19 +53,33 @@ void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 	if (input_msg)
 	{
 		clan::InputEvent &e = input_msg->input_event;
-		if (e.type == clan::InputEvent::pointer_moved)
-		{
-			edge_pan(e.mouse_pos);
-		}
 
-		if (e.device.get_type() == clan::InputDevice::pointer && e.type == clan::InputEvent::released && e.id == clan::mouse_left )
+		if(e.device.get_type() == clan::InputDevice::pointer)
 		{
-			clan::vec2 ats = m_pos + e.mouse_pos;
-			ats.x/=32;
-			ats.y/=32;
+			if (e.type == clan::InputEvent::pressed && e.id == clan::mouse_middle)
+			{
+				m_drag_offset = e.mouse_pos;
+			}
+			else if (e.type == clan::InputEvent::released && e.id == clan::mouse_middle)
+			{
+				m_scroll=clan::vec2();
+			}
+			else if (e.type == clan::InputEvent::pointer_moved)
+			{
+				if (e.device.get_keycode(clan::mouse_middle))
+					m_scroll=(e.mouse_pos-m_drag_offset)/m_game_time.get_time_elapsed_ms();
+			}
 
-			m_selected_frame = ats.y*32 + ats.x;
-			m_sig.invoke(m_selected_frame);
+			if ( e.type == clan::InputEvent::released && e.id == clan::mouse_left )
+			{
+				clan::vec2 ats = m_pos + e.mouse_pos;
+				ats.x/=32;
+				ats.y/=32;
+
+				m_selected_frame = ats.y*32 + ats.x;
+				m_sig.invoke(m_selected_frame);
+			}
+
 		}
 	}
 }
@@ -78,17 +93,4 @@ void SpriteFrameSelection::clamp_pos()
 
 	if(m_pos.x>1024-w) m_pos.x = 1024-w;
 	if(m_pos.y>1024-h) m_pos.y = 1024-h;
-}
-
-void SpriteFrameSelection::edge_pan(const clan::vec2 & pos)
-{
-	int32_t sens=15;
-
-	if (pos.x < 30) m_pan.x=-sens;
-	else if (pos.x > this->get_content_box().get_width()-10) m_pan.x=sens;
-	else m_pan.x=0;
-
-	if (pos.y < 30) m_pan.y=-sens;
-	else if (pos.y > this->get_content_box().get_height()-10) m_pan.y=sens;
-	else m_pan.y=0;
 }
