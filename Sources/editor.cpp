@@ -25,7 +25,8 @@ void editor::init_gui()
 
 	m_editor_window = new clan::Window(m_gui_root);
 	m_editor_window->set_geometry(clan::Rect(50,100,clan::Size(150,200)));
-	m_editor_window->set_visible(false);
+	m_editor_window->set_visible(true);
+	m_editor_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_editor_window);
 
 	init_gui_layer_dropbox(m_editor_window, clan::Rect(10, 30, clan::Size(80, 25)));
 
@@ -39,7 +40,8 @@ void editor::init_gui()
 	m_sprite_selection_window = new clan::Window(m_gui_root);
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
 	m_sprite_selection_window->set_visible(false);
-	
+	m_sprite_selection_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_sprite_selection_window);
+
 	m_sprite_frame_selection = new SpriteFrameSelection(m_sprite_selection_window, m_game_time);
 
 	m_frame_select = m_sprite_frame_selection->func_frame_selected().connect(this,&editor::on_frame_select);
@@ -272,4 +274,10 @@ void editor::on_button_clicked(clan::PushButton * btn)
 		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
 	}
+}
+
+bool editor::on_close_wnd(clan::GUIComponent* wnd)
+{
+	wnd->set_visible(false);
+	return true;
 }

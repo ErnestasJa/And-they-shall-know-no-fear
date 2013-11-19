@@ -24,6 +24,7 @@ protected:
 	void on_button_clicked(clan::PushButton * btn);
 	void on_frame_select(int32_t frame);
 	void on_layer_select(int32_t layer);
+	bool on_close_wnd(clan::GUIComponent * wnd);
 
 	///game specific funcs
 	void init_level();
