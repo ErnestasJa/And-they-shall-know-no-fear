@@ -33,6 +33,7 @@ protected:
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis(bool t, bool c, bool w);
 	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
+	std::string open_file();
 
 protected:
 	bool m_run;
@@ -62,7 +63,7 @@ protected:
 	
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
-	clan::PushButton			*m_button_sprite_frame;
+	clan::PushButton			*m_button_sprite_frame, *m_button_select_resource_file;
 	clan::ComboBox				*m_combo_layer;
 	clan::PopupMenu				m_combo_menu_layer;
 	clan::CheckBox				*m_checkbox_t, *m_checkbox_c, *m_checkbox_o;

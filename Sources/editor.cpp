@@ -3,6 +3,7 @@
 #include "tile_chunk.h"
 #include "sprite_frame_selection.h"
 
+
 editor::editor(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
@@ -16,18 +17,33 @@ editor::~editor()
 {
 
 }
+std::string editor::open_file()
+{
+	std::string failo_vardas;
+	clan::OpenFileDialog * dialog = new clan::OpenFileDialog(m_gui_root);
+	dialog->set_initial_directory(clan::Directory::get_current());
+	dialog->show();
+	return clan::PathHelp::make_relative(clan::Directory::get_current (),dialog->get_filename(),clan::PathHelp::path_type_file);
+}
 
 void editor::init_gui()
 {
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
+	
 
 	m_editor_window = new clan::Window(m_gui_root);
-	m_editor_window->set_geometry(clan::Rect(50,100,clan::Size(150,200)));
-	m_editor_window->set_visible(false);
+	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-150,0,clan::Size(150,200)));
+	m_editor_window->set_visible(true);
 
+	
 	init_gui_layer_dropbox(m_editor_window, clan::Rect(10, 30, clan::Size(80, 25)));
+
+	m_button_select_resource_file=new clan::PushButton(m_editor_window);
+	m_button_select_resource_file->set_geometry(clan::Rect( 10, 110, clan::Size(80, 25)));
+	m_button_select_resource_file->set_text("Select resource file");
+	m_button_select_resource_file->func_clicked().set(this, &editor::on_button_clicked, m_button_select_resource_file);
 
 	m_button_sprite_frame = new clan::PushButton(m_editor_window);
 	m_button_sprite_frame->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
@@ -270,5 +286,9 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	{
 		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
+	}
+	if(btn==m_button_select_resource_file)	
+	{
+		clan::Console::write_line(open_file());
 	}
 }
