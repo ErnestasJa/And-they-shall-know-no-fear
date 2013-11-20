@@ -1,5 +1,4 @@
 #include "precomp.h"
-#include <iostream>
 #include "properties\property.h"
 #include "properties\property_container.h"
 
@@ -32,6 +31,21 @@ TEST_F(PropertyTests, CheckExistance) {
 
   ASSERT_TRUE(p.has_property("x"));
   ASSERT_FALSE(p.has_property("y"));
+}
+
+
+TEST_F(PropertyTests, NumericValueSetGetCheck) {
+  PropertyContainer p;
+
+  p.add_property<uint32_t>("x",15);
+  p.add_property<uint32_t>("y")=20;
+  auto z = p.add_property<uint32_t>("z");
+  z=25;
+
+  ASSERT_EQ(15,p.get_property<uint32_t>("x"));
+  ASSERT_EQ(20,p.get_property<uint32_t>("y"));
+  ASSERT_EQ(25,z);
+  ASSERT_EQ(25,p.get_property<uint32_t>("z"));
 }
 
 int main(int argc, char **argv) {
