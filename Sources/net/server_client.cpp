@@ -5,6 +5,7 @@
 
 ServerClientConnection::ServerClientConnection()
 {
+	m_connection = nullptr;
 }
 
 ServerClientConnection::~ServerClientConnection()
@@ -14,7 +15,6 @@ ServerClientConnection::~ServerClientConnection()
 
 void ServerClientConnection::init(Client * client)
 {
-	m_connection = nullptr;
 	m_client = client;
 }
 
@@ -31,6 +31,11 @@ void ServerClientConnection::send_message(const Message & msg, bool only_changed
 	clan::NetGameEvent e("msg");
 	e.add_argument(msg.get_type());
 	e.add_argument(val);
+	m_connection->send_event(e);
+}
+
+void ServerClientConnection::send_event(const clan::NetGameEvent & e)
+{
 	m_connection->send_event(e);
 }
 

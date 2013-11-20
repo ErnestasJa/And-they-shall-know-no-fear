@@ -129,7 +129,11 @@ public:
 	///operator overloads
 	Property<T> operator = (const Property<T> & p)
 	{
-		m_data = p.m_data;
+		if(!m_data)
+			m_data = p.m_data;
+		else
+			set(p);
+
 		return *this;
 	}
 

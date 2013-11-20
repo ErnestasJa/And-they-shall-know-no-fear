@@ -120,9 +120,9 @@ public:
 
 	MSGS_AuthStatus()
 	{
-		auth_sucessful = add_property<bool>("as");
-		id = add_property<uint32_t>("id");
-		msg = add_property<std::string>("name");
+		auth_sucessful	= add_property<bool>("as");
+		id				= add_property<uint32_t>("id");
+		msg				= add_property<std::string>("name");
 	}
 };
 

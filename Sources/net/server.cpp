@@ -61,11 +61,10 @@ void Server::on_client_connected(clan::NetGameConnection *connection)
 	{
 		if(!m_client_cons[i].is_connected())
 		{
+			m_clients[i].set_id(i);
 			m_client_cons[i].init(&m_clients[i]);
 			m_client_cons[i].connect(connection);
 			connection->set_data("cl_ptr",&m_client_cons[i]);
-
-			m_clients[i].set_id(i);
 
 			clan::log_event("net_event","User connected, id '%1'.",i);
 			return;
@@ -81,7 +80,7 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 	ServerClientConnection* con = ServerClientConnection::get_client(connection);
 	Client* client = con->get_client();
 
-	clan::log_event("net_event","UserClient disconnected: id '%1'.",client->get_id());
+	clan::log_event("net_event","Client disconnected: id '%1'.",client->get_id());
 	if(con)
 	{
 		connection->set_data("cl_ptr",nullptr);
@@ -115,10 +114,11 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 
 		if(m.name.get().size()<33&&m.name.get().size()>2)
 		{
-			con->get_client()->set_name(m.name);
-			con->get_client()->set_flag(ECF_LOGGED_IN);
+			Client * client = con->get_client();
+			client->set_name(m.name);
+			client->set_flag(ECF_LOGGED_IN);
 
-			clan::StringFormat fmt("UserClient with user name '%1' connected, id '%2'.");
+			clan::StringFormat fmt("Client with user name '%1' connected, id '%2'.");
 			fmt.set_arg(1,con->get_client()->get_name());
 			fmt.set_arg(2,con->get_client()->get_id());
 
@@ -157,6 +157,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 	{
 		MSGC_Input m;
 		m.net_deserialize(e.get_argument(1));
+		//m.id = client->get_id();
 
 		GOSprite * spr=m_player_objects[client->get_id()];
 		spr->on_message(m);
@@ -180,20 +181,26 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			si.max_client_count = m_max_clients;
 
 			con->send_message(si);
+			send_message(*client);
+
+			loopi(m_max_clients && client->get_id() != i && m_client_cons[i].is_connected())
+			{
+				con->send_message(m_clients[i]);
+			}
 			
 			m_player_objects[client->get_id()]=static_cast<GOSprite*>(m_gom->add_game_object(EGOT_SPRITE,client->get_id()));
 
-			MSGS_GameObjectAction msg;
-			msg.action_type = EGOAT_CREATE;
-			msg.guid = client->get_id();
-			msg.object_type = EGOT_SPRITE;
-			msg.object_properties = *m_player_objects[client->get_id()];
-			send_message(msg);///visiem prisijungusiem zaidejam sukuriame sio zaidejo objekta
+			MSGS_GameObjectAction cc;
+			cc.action_type = EGOAT_CREATE;
+			cc.guid = client->get_id();
+			cc.object_type = EGOT_SPRITE;
+			cc.object_properties = *m_player_objects[client->get_id()];
 
-			
+			send_message(cc, ECF_LOGGED_IN);
+
 			loopi(m_max_clients)
 			{
-				if(m_client_cons[i].is_connected() && i!=client->get_id())
+				if(i != client->get_id() && m_client_cons[i].is_connected() && m_clients[i].check_flag(ECF_LOGGED_IN))
 				{
 					MSGS_GameObjectAction c;
 					c.action_type = EGOAT_CREATE;
@@ -201,7 +208,6 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					c.object_type = EGOT_SPRITE;
 					c.object_properties = *m_player_objects[i];
 					
-					con->send_message(m_clients[i]);
 					con->send_message(c);
 				}
 			}
@@ -224,9 +230,27 @@ void Server::send_message(const Message & msg)
 	m_net_server.send_event(e);
 }
 
+void Server::send_message(const Message & msg, uint32_t client_flags)
+{
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+	msg.net_serialize(val);
+
+	clan::NetGameEvent e("msg");
+	e.add_argument(msg.get_type());
+	e.add_argument(val);
+
+	loopi(m_max_clients)
+	{
+		if(m_client_cons[i].is_connected() && m_clients[i].check_flag(client_flags))
+		{
+			m_client_cons[i].send_event(e);
+		}
+	}
+}
+
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)
 {
-	clan::log_event("events", "UserClient sent event: %1", e.to_string());
+	clan::log_event("events", "Client sent event: %1", e.to_string());
 
 	ServerClientConnection * con = ServerClientConnection::get_client(connection);
 	Client* client = con->get_client();

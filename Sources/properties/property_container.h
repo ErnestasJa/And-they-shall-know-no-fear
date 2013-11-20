@@ -35,7 +35,7 @@ public:
 	virtual void serialize(clan::File & file) const;
 	virtual void deserialize(clan::File & file);
 
-	virtual void net_serialize(clan::NetGameEventValue & e, bool only_changed = true) const;
+	virtual void net_serialize(clan::NetGameEventValue & e, bool only_changed = false) const;
 	virtual void net_deserialize(const clan::NetGameEventValue & e);
 
 public:

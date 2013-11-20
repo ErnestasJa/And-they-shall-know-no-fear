@@ -55,10 +55,12 @@ protected:
 	MSGC_Input msg;
 	MSGC_Auth msg_auth;
 
+	uint32_t	m_client_id;
+	std::string	m_client_name;
+	uint32_t	m_max_clients;
+
+
 	GameObjectManager * m_gom;
-
-	
-
 	ClientConnection * m_client_con;
 	Client * m_client; ///NOT SURE ABOUT THIS ONE
 	Client * m_clients;

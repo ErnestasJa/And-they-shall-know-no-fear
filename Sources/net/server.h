@@ -41,6 +41,7 @@ public:
 public:
 	void create_all_game_objects(ServerClientConnection * client); /// implement this, then refactor the fuck out of everything
 	void send_message(const Message & msg);
+	void send_message(const Message & msg, uint32_t client_flags); /// send message if flags are set.
 public:
 	bool init(uint32_t max_users, const std::string & port);
 	bool run();

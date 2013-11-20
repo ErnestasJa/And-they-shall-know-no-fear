@@ -17,6 +17,7 @@ editor::~editor()
 {
 
 }
+
 std::string editor::open_file()
 {
 	std::string failo_vardas;

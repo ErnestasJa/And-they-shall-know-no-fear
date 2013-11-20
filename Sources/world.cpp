@@ -16,8 +16,12 @@ World::World(clan::DisplayWindow &display_window)
 
 	m_client_con = new ClientConnection();
 
-	m_gom = nullptr;
-	m_player = nullptr;
+	m_client	= nullptr;
+	m_gom		= nullptr;
+	m_player	= nullptr;
+
+	m_max_clients = 0;
+	m_client_id = 0;
 }
 
 World::~World()
@@ -54,8 +58,7 @@ bool World::init()
 	clan::log_event("system", "ClientConnection trying to connect");
 	m_client_con->connect("62.80.252.115","27015");
 
-	m_client = new Client();
-	m_client->set_name("Skell");
+	m_client_name = "Skell";
 	
 	return true;
 }
@@ -64,7 +67,7 @@ void World::on_connected()
 {
 	clan::log_event("net_event","Connected to server.");
 
-	msg_auth.name = m_client->get_name();
+	msg_auth.name = m_client_name;
 	msg_auth.timestamp = m_game_time.get_current_time_ms();
 	m_client_con->send_message(msg_auth);
 }
@@ -81,9 +84,8 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 		if(m.auth_sucessful)
 		{
-			m_client->set_id(m.id);
-			msg.id = m_client->get_id();
-			clan::log_event("net_event",m.msg);
+			m_client_id = m.id;
+			msg.id		= m.id;
 
 			MSG_Query q;
 			q.query_type = EQT_SERVER_INFO;
@@ -99,67 +101,70 @@ void World::on_net_event(const clan::NetGameEvent & e)
 	{
 		MSG_Server_Info m;
 		m.net_deserialize(e.get_argument(1));
-		if(m.has_property("name",EPT_STRING) && m.has_property("max_client_count",EPT_UINT32))
-		{
-			init_level(m.get_property<std::string>("name"));
-			clan::log_event("net_event","Servers maximum client count: '%1'",m.max_client_count);
+		
+		m_max_clients = m.max_client_count;
+		init_level(m.get_property<std::string>("name"));
 
-			uint32_t cl_id = m_client->get_id();
-			m_clients = new Client[m.max_client_count];
-			m_players = new GOSprite * [m.max_client_count];
-			m_clients[cl_id].set_id(cl_id);
-			m_clients[cl_id].set_name(m_client->get_name());
-
-			delete m_client;
-			m_client = &m_clients[cl_id];
-		}
-		else
-			throw clan::Exception("Server didn't set property 'name' or 'max_client_count'.");
+		m_clients = new Client[m_max_clients];
+		m_players = new GOSprite * [m_max_clients];
 	}
 	else if(type==MSG_CLIENT_INFO)
 	{
 		Client m;
 		m.net_deserialize(e.get_argument(1));
+
+		clan::StringFormat fmt("Invalid client id: '%1'.");
+		fmt.set_arg(1,m.get_id());
+
+		if(m.get_id()<0||m.get_id()>=m_max_clients)
+			throw clan::Exception(fmt.get_result());
+
 		m_clients[m.get_id()].net_deserialize(e.get_argument(1));
+
+		if(m.get_id()==m_client_id)
+			m_client = &m_clients[m_client_id];
 
 		clan::log_event("net_event","Got user info: name='%1', id='%2'", m.get_name(), m.get_id());
 	}
-	else if(type==MSGC_INPUT)
+	if(m_client)
 	{
-		MSGC_Input m;
-		m.net_deserialize(e.get_argument(1));
-		m_players[m.id]->on_message(m);
-	}
-	else if(type==MSGS_GAME_OBJECT_ACTION)
-	{
-		MSGS_GameObjectAction m;
-		m.net_deserialize(e.get_argument(1));
-		
-		if(m.action_type==EGOAT_CREATE)
+		if(type==MSGC_INPUT)
 		{
-			GameObject * o = m_gom->add_game_object(m.object_type,m.guid);
-
-			o->load_properties(m.object_properties);
-
-			if(o->get_type()==EGOT_SPRITE)
-			{
-				GOSprite * spr = static_cast<GOSprite*>(o);
-
-				if(o->get_guid()==m_client->get_id())
-					m_player = spr;
-
-				m_players[spr->get_guid()]=spr;
-
-				spr->load(m_canvas,m_resources);
-			}
+			MSGC_Input m;
+			m.net_deserialize(e.get_argument(1));
+			m_players[m.id]->on_message(m);
 		}
-		else if(m.action_type==EGOAT_REMOVE)
+		else if(type==MSGS_GAME_OBJECT_ACTION)
 		{
-			m_gom->remove_game_object(m.guid);
-
-			if(m.guid==m_client->get_id())
+			MSGS_GameObjectAction m;
+			m.net_deserialize(e.get_argument(1));
+		
+			if(m.action_type==EGOAT_CREATE)
 			{
-				m_player = nullptr;
+				GameObject * o = m_gom->add_game_object(m.object_type,m.guid);
+
+				o->load_properties(m.object_properties);
+
+				if(o->get_type()==EGOT_SPRITE)
+				{
+					GOSprite * spr = static_cast<GOSprite*>(o);
+
+					if(o->get_guid()==m_client->get_id())
+						m_player = spr;
+
+					m_players[spr->get_guid()]=spr;
+
+					spr->load(m_canvas,m_resources);
+				}
+			}
+			else if(m.action_type==EGOAT_REMOVE)
+			{
+				m_gom->remove_game_object(m.guid);
+
+				if(m.guid==m_client->get_id())
+				{
+					m_player = nullptr;
+				}
 			}
 		}
 	}

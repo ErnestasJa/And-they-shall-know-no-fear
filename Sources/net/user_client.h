@@ -16,7 +16,7 @@ public:
 	clan::Signal_v0 & sig_connected();
 	clan::Signal_v0 & sig_disconnected();
 
-	void send_message(const Message & msg, bool only_changed = true);
+	void send_message(const Message & msg, bool only_changed = false);
 
 public:
 	///event

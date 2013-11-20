@@ -38,7 +38,7 @@ bool Message::register_messages()
 /// Client
 Client::Client()
 {
-	m_id = add_property<uint32_t>("id");
+	m_id = add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);
 	m_flags = add_property<uint32_t>("flags",0);
 	m_name  = add_property<std::string>("name");
 }
