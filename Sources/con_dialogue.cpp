@@ -10,7 +10,7 @@ ConDialogue::ConDialogue(clan::GUIComponent * root):clan::GUIComponent(root)
 	m_connection_window->set_geometry(clan::Rect( 250, 250, clan::Size(200,335) ));
 	m_connection_window->set_title("Please provide information");
 	m_connection_window->func_close().set(this, &ConDialogue::close_window);
-	m_connection_window->set_visible(true); //DEBUG
+	m_connection_window->set_visible(false);
 
 	//
 
@@ -52,7 +52,7 @@ ConDialogue::ConDialogue(clan::GUIComponent * root):clan::GUIComponent(root)
 	m_button_reset = new clan::PushButton(m_connection_window);
 	m_button_reset->set_geometry(clan::Rect( 105, 285, clan::Size(75, 30) ));
 	m_button_reset->func_clicked().set(this, &ConDialogue::on_button_clicked, m_button_reset);
-	m_button_reset->set_text("Reset");
+	m_button_reset->set_text("Close");
 
 }
 
