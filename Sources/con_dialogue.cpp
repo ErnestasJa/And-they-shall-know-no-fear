@@ -23,7 +23,7 @@ ConDialogue::ConDialogue(clan::GUIComponent * root):clan::GUIComponent(root)
 
 	m_lable = new clan::Label(m_connection_window);
 	m_lable->set_geometry(clan::Rect(20, 90, clan::Size(160, 30) )); 
-	m_lable->set_text("Servers port:");
+	m_lable->set_text("Server port:");
 	m_line_port = new clan::LineEdit(m_connection_window);
 	m_line_port->set_geometry(clan::Rect(20, 120, clan::Size(160, 20) ));
 	m_line_port->set_text("27015");
