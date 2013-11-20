@@ -18,33 +18,18 @@ editor::~editor()
 
 }
 
-std::string editor::open_file()
-{
-	std::string failo_vardas;
-	clan::OpenFileDialog * dialog = new clan::OpenFileDialog(m_gui_root);
-	dialog->set_initial_directory(clan::Directory::get_current());
-	dialog->show();
-	return clan::PathHelp::make_relative(clan::Directory::get_current (),dialog->get_filename(),clan::PathHelp::path_type_file);
-}
-
 void editor::init_gui()
 {
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	
-
 	m_editor_window = new clan::Window(m_gui_root);
 	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-150,0,clan::Size(150,200)));
 	m_editor_window->set_visible(true);
 	m_editor_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_editor_window);
 	
 	init_gui_layer_dropbox(m_editor_window, clan::Rect(10, 30, clan::Size(80, 25)));
-
-	m_button_select_resource_file=new clan::PushButton(m_editor_window);
-	m_button_select_resource_file->set_geometry(clan::Rect( 10, 110, clan::Size(80, 25)));
-	m_button_select_resource_file->set_text("Select resource file");
-	m_button_select_resource_file->func_clicked().set(this, &editor::on_button_clicked, m_button_select_resource_file);
 
 	m_button_sprite_frame = new clan::PushButton(m_editor_window);
 	m_button_sprite_frame->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
@@ -57,6 +42,11 @@ void editor::init_gui()
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
 	m_sprite_selection_window->set_visible(false);
 	m_sprite_selection_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_sprite_selection_window);
+
+	m_button_select_resource_file=new clan::PushButton(m_editor_window);
+	m_button_select_resource_file->set_geometry(clan::Rect( 10, 110, clan::Size(80, 25)));
+	m_button_select_resource_file->set_text("Select resource");
+	m_button_select_resource_file->func_clicked().set(this, &editor::on_button_clicked, m_button_select_resource_file);
 
 	m_sprite_frame_selection = new SpriteFrameSelection(m_sprite_selection_window, m_game_time);
 
@@ -215,6 +205,26 @@ void editor::on_layer_select(int32_t layer)
 	m_selected_layer = layer;
 }
 
+void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
+{
+	clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
+	clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
+	clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
+
+	TileChunk c=m_tile_map.get_chunk(chunk_pos);
+
+	if(c.is_null()) 
+		c = m_tile_map.add_chunk(chunk_pos);
+
+	if(remove)
+			c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
+	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
+	{
+		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+		c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_frame;
+	}
+}
+
 void editor::on_input(const clan::InputEvent & e)
 {
 	switch(e.device.get_type())
@@ -263,26 +273,6 @@ void editor::on_input(const clan::InputEvent & e)
 	}
 }
 
-void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
-{
-	clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
-	clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
-	clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
-
-	TileChunk c=m_tile_map.get_chunk(chunk_pos);
-
-	if(c.is_null()) 
-		c = m_tile_map.add_chunk(chunk_pos);
-
-	if(remove)
-			c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
-	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
-	{
-		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
-		c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_frame;
-	}
-}
-
 void editor::on_button_clicked(clan::PushButton * btn)
 {
 	if(btn==m_button_sprite_frame)
@@ -300,4 +290,12 @@ bool editor::on_close_wnd(clan::GUIComponent* wnd)
 {
 	wnd->set_visible(false);
 	return true;
+}
+
+std::string editor::open_file()
+{
+	clan::OpenFileDialog *dialog = new clan::OpenFileDialog(m_gui_root);
+	dialog->set_initial_directory(clan::Directory::get_current());
+	dialog->show();
+	return clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
 }

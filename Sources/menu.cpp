@@ -41,13 +41,32 @@ bool Menu::init()
 	button_exit->set_text("Exit");
 
 	m_exit_window = new YNDialogue(c, "You are about to quit!");
+	m_con_window = new ConDialogue(c);
 
 	confirmWindowClosedEventSlot = m_exit_window->confirmation().connect(this, &Menu::CloseConfirmed);
+	connectAttemptEventSlot = m_con_window->submit_connection().connect(this, &Menu::ConnectAttempt);
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
 
 	return true;
+}
+
+void Menu::ConnectAttempt(std::string ip, std::string port, std::string password, std::string username)
+{//DEBUG NOT FINISHED! connect params with world
+	clan::Console::write_line("ip:%1\nport:%2\npassword:%3\nname:%4\n",ip,port,password,username);//DEBUG
+	
+	State * s = new World(m_window);
+	if(s->init())
+	{
+		m_app->get_states().push(s);
+		pause();
+	}
+	else
+	{
+		s->exit();
+		delete s;
+	}
 }
 
 bool Menu::run()
@@ -128,17 +147,7 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	}
 	else if(button==button_world)
 	{
-		State * s = new World(m_window);
-		if(s->init())
-		{
-			m_app->get_states().push(s);
-			pause();
-		}
-		else
-		{
-			s->exit();
-			delete s;
-		}
+		m_con_window->toggle_visibility();
 	}
 	else if(button==button_exit)
 	{

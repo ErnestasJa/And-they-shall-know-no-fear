@@ -149,6 +149,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Sources\con_dialogue.cpp" />
     <ClCompile Include="Sources\editor.cpp" />
     <ClCompile Include="Sources\game_objects\game_object.cpp" />
     <ClCompile Include="Sources\game_objects\game_object_manager.cpp" />
@@ -176,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
+    <ClInclude Include="Sources\con_dialogue.h" />
     <ClInclude Include="Sources\editor.h" />
     <ClInclude Include="Sources\game_objects\game_object.h" />
     <ClInclude Include="Sources\game_objects\game_objects.h" />

@@ -5,6 +5,7 @@
 #include "editor.h"
 #include "app.h"
 #include "yn_dialogue.h"
+#include "con_dialogue.h"
 
 class Menu: public State
 {
@@ -21,15 +22,18 @@ protected:
 	//gui
 	clan::PushButton *button_world, *button_editor, *button_exit;
 	YNDialogue *m_exit_window;
+	ConDialogue *m_con_window;
 	clan::GUIComponent *c;
 
 	void WindowCloseEventHandler();
 	void CloseConfirmed(bool);
+	void ConnectAttempt(std::string, std::string, std::string, std::string);
+
 	bool m_run;
 
 	clan::Slot m_key_up;
-	clan::Slot windowClosedEventSlot;
-	clan::Slot confirmWindowClosedEventSlot;
+	clan::Slot windowClosedEventSlot, confirmWindowClosedEventSlot;
+	clan::Slot connectAttemptEventSlot;
 public:
 
 	Menu(App * app, clan::DisplayWindow & wnd);
