@@ -13,11 +13,12 @@ protected:
 	clan::Signal_v1<bool> m_sig;
 
 public:
-	YNDialogue(clan::GUIComponent * root, std::string message);
+	YNDialogue(clan::GUIComponent *, std::string);
 	virtual ~YNDialogue();
 	clan::Signal_v1<bool> & YNDialogue::confirmation();
-	void render(clan::Canvas & c);
-	void on_button_clicked(clan::PushButton *button);
+	void render(clan::Canvas &);
+	void on_button_clicked(clan::PushButton *);
 	void toggle_visibility();
 	bool close_window();
+
 };
