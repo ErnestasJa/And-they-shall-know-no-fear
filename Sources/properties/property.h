@@ -137,6 +137,11 @@ public:
 		return *this;
 	}
 
+	bool operator == (const Property<T> & p) const
+	{
+		return m_data->data == p.m_data->data;
+	}
+
 	Property<T> operator = (const T & data)
 	{
 		set(data);

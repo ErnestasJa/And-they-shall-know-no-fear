@@ -4,54 +4,85 @@
 
 #include "gtest/gtest.h"
 
-class PropertyTests : public ::testing::Test {
+class PropertyTests : public ::testing::Test
+{
 protected:
 
 protected:
-  PropertyTests() {
+	PropertyTests()
+	{
+		PropertyContainer::register_properties();
+	}
 
-  }
-
-  virtual ~PropertyTests() {
+	virtual ~PropertyTests()
+	{
     
-  }
+	}
 
-  virtual void SetUp() {
+	virtual void SetUp()
+	{
 
-  }
+	}
 
-  virtual void TearDown() {
+	virtual void TearDown()
+	{
    
-  }
+	}
 };
 
-TEST_F(PropertyTests, CheckExistance) {
-  PropertyContainer p;
-  p.add_property<uint32_t>("x");
+TEST_F(PropertyTests, TestExistance)
+{
+	PropertyContainer p;
+	p.add_property<uint32_t>("x");
 
-  ASSERT_TRUE(p.has_property("x"));
-  ASSERT_FALSE(p.has_property("y"));
+	ASSERT_TRUE(p.has_property("x"));
+	ASSERT_TRUE(p.has_property("x",EPT_UINT32));
+	ASSERT_FALSE(p.has_property("y"));
 }
 
+TEST_F(PropertyTests, TestSerialization) 
+{
+	
+	PropertyContainer p,c;
 
-TEST_F(PropertyTests, NumericValueSetGetCheck) {
-  PropertyContainer p;
+	p.add_property<uint32_t>("x", 15);
+	p.add_property<std::string>("y", "hello world!");
 
-  p.add_property<uint32_t>("x",15);
-  p.add_property<uint32_t>("y")=20;
-  auto z = p.add_property<uint32_t>("z");
-  z=25;
+	clan::File f("test.dat",clan::File::create_always,clan::File::access_write);
+	p.serialize(f);
+	f.close();
+  
+	clan::File f2("test.dat",clan::File::open_existing,clan::File::access_read);
+	c.deserialize(f2);
+	f2.close();
 
-  ASSERT_EQ(15,p.get_property<uint32_t>("x"));
-  ASSERT_EQ(20,p.get_property<uint32_t>("y"));
-  ASSERT_EQ(25,z);
-  ASSERT_EQ(25,p.get_property<uint32_t>("z"));
+	c.get_property<uint32_t>("x");
+	c.get_property<std::string>("y");
+
+	ASSERT_EQ(p.get_property<uint32_t>("x"),c.get_property<uint32_t>("x"));
+	ASSERT_EQ(p.get_property<std::string>("y"),c.get_property<std::string>("y"));
 }
 
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  int ret = RUN_ALL_TESTS();
+TEST_F(PropertyTests, NumericValueSetGetTest)
+{
+	PropertyContainer p;
 
-  std::getwchar();
-  return ret;
+	p.add_property<uint32_t>("x",15);
+	p.add_property<uint32_t>("y")=20;
+	auto z = p.add_property<uint32_t>("z");
+	z=25;
+
+	ASSERT_EQ(15,p.get_property<uint32_t>("x"));
+	ASSERT_EQ(20,p.get_property<uint32_t>("y"));
+	ASSERT_EQ(25,z);
+	ASSERT_EQ(25,p.get_property<uint32_t>("z"));
+}
+
+int main(int argc, char **argv)
+{
+	::testing::InitGoogleTest(&argc, argv);
+	int ret = RUN_ALL_TESTS();
+
+	std::getwchar();
+	return ret;
 }
