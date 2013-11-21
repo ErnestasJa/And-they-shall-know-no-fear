@@ -47,3 +47,10 @@ void serialize_type(clan::File & f, const T & data);
 
 template <class T>
 void deserialize_type(clan::File & f, T & data);
+
+///data <-> xml
+template <class T>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const T & data);
+
+template <class T>
+void deserialize_type(clan::DomElement & n, T & data);

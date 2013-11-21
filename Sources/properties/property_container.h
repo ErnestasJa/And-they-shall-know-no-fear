@@ -37,9 +37,11 @@ public:
 
 	virtual void net_serialize(clan::NetGameEventValue & e, bool only_changed = false) const;
 	virtual void net_deserialize(const clan::NetGameEventValue & e);
+	
+	virtual void xml_serialize(clan::DomDocument & doc, clan::DomElement & e) const;
+	virtual void xml_deserialize(clan::DomElement & e);
 
 public:
-
 	bool operator !=(const PropertyContainer & o) const
 	{
 		return this!=&o; ///FIX ME: fast, but will it give good results?
@@ -89,7 +91,7 @@ Property<T> PropertyContainer::get_property(const std::string & name)
 	}
 
 	///for now let's just throw exception
-	throw clan::Exception("Tried to get non-existing property");
+	throw clan::Exception("Tried to get non-existing property : " + name);
 }
 
 template <class T>

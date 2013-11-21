@@ -57,6 +57,7 @@ template <> void deserialize_type(const clan::NetGameEventValue & v, PropertyCon
 {
 	data.net_deserialize(v);
 }
+
 ///property serialization to file
 template <>
 void serialize_type(clan::File & f, const bool & data)
@@ -157,4 +158,108 @@ template <>
 void deserialize_type(clan::File & f, PropertyContainer & data)
 {
 	data.deserialize(f);
+}
+
+
+///property serialization to xml
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const bool & data)
+{
+	n.set_attribute("data",clan::StringHelp::bool_to_text(data));
+}
+
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const int32_t & data)
+{
+	n.set_attribute("data",clan::StringHelp::int_to_text(data));
+}
+
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const uint32_t & data)
+{
+	n.set_attribute("data",clan::StringHelp::uint_to_text(data));
+}
+
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const float & data)
+{
+	n.set_attribute("data",clan::StringHelp::float_to_text(data));
+}
+
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const clan::vec2 & data)
+{
+	n.set_attribute("x",clan::StringHelp::int_to_text(data.x));
+	n.set_attribute("y",clan::StringHelp::int_to_text(data.y));
+}
+
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const clan::vec2f & data)
+{
+	n.set_attribute("x",clan::StringHelp::float_to_text(data.x));
+	n.set_attribute("y",clan::StringHelp::float_to_text(data.y));
+}
+
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const std::string & data)
+{
+	n.set_attribute("data",data);
+}
+
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const PropertyContainer & data)
+{
+	data.xml_serialize(f,n);
+}
+
+
+///property xml deserialization
+template <>
+void deserialize_type(clan::DomElement & n, bool & data)
+{
+	data = clan::StringHelp::text_to_bool(n.get_attribute("data"));
+}
+
+template <>
+void deserialize_type(clan::DomElement & n, int32_t & data)
+{
+	data = clan::StringHelp::text_to_int(n.get_attribute("data"));
+}
+
+template <>
+void deserialize_type(clan::DomElement & n, uint32_t & data)
+{
+	data = clan::StringHelp::text_to_uint(n.get_attribute("data"));
+}
+
+template <>
+void deserialize_type(clan::DomElement & n, float & data)
+{
+	data = clan::StringHelp::text_to_float(n.get_attribute("data"));
+}
+
+template <>
+void deserialize_type(clan::DomElement & n, clan::vec2 & data)
+{
+	data.x=clan::StringHelp::text_to_int(n.get_attribute("x"));
+	data.y=clan::StringHelp::text_to_int(n.get_attribute("y"));
+}
+
+template <>
+void deserialize_type(clan::DomElement & n, clan::vec2f & data)
+{
+	data.x=clan::StringHelp::text_to_float(n.get_attribute("x"));
+	data.y=clan::StringHelp::text_to_float(n.get_attribute("y"));
+}
+
+template <>
+void deserialize_type(clan::DomElement & n, std::string & data)
+{
+	data = n.get_attribute("data");
+}
+
+template <>
+void deserialize_type(clan::DomElement & n, PropertyContainer & data)
+{
+	data.xml_deserialize(n);
 }
