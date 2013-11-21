@@ -178,6 +178,7 @@
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
     <ClInclude Include="Sources\con_dialogue.h" />
+    <ClInclude Include="Sources\con_info.h" />
     <ClInclude Include="Sources\editor.h" />
     <ClInclude Include="Sources\game_objects\game_object.h" />
     <ClInclude Include="Sources\game_objects\game_objects.h" />

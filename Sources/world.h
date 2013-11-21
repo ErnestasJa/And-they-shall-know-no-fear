@@ -2,6 +2,7 @@
 
 #include "state.h"
 #include "tile_map.h"
+#include "con_info.h"
 #include "game_objects\game_objects.h"
 #include "game_objects\game_object_manager.h"
 
@@ -19,6 +20,8 @@ public:
 
 	bool pause();
 	bool resume();
+
+	void set_info(const ConnectionInfo &);//DEBUG 
 
 protected:
 	///event funcs
@@ -56,7 +59,8 @@ protected:
 	MSGC_Auth msg_auth;
 
 	uint32_t	m_client_id;
-	std::string	m_client_name;
+	std::string	m_server_ip, m_server_port, m_server_pass, m_client_name;
+	ConnectionInfo	m_con_info;
 	uint32_t	m_max_clients;
 
 

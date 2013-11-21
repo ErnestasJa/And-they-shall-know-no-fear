@@ -52,11 +52,12 @@ bool Menu::init()
 	return true;
 }
 
-void Menu::ConnectAttempt(std::string ip, std::string port, std::string password, std::string username)
+void Menu::ConnectAttempt(const ConnectionInfo &info)
 {//DEBUG NOT FINISHED! connect params with world
-	clan::Console::write_line("ip:%1\nport:%2\npassword:%3\nname:%4\n",ip,port,password,username);//DEBUG
 	
 	State * s = new World(m_window);
+	static_cast<World*>(s)->set_info(info);
+
 	if(s->init())
 	{
 		m_app->get_states().push(s);

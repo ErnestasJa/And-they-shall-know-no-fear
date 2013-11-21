@@ -1,5 +1,4 @@
 #include "precomp.h"
-
 #include "world.h"
 #include "tile_chunk.h"
 #include "net\user_client.h"
@@ -55,12 +54,23 @@ bool World::init()
 	m_net_slots.connect(m_client_con->sig_disconnected(),this, &World::on_disconnected);
 	m_net_slots.connect(m_client_con->sig_event_received(),this, &World::on_net_event);
 
-	clan::log_event("system", "ClientConnection trying to connect");
-	m_client_con->connect("62.80.252.115","27015");
+	clan::log_event("system", "ClientConnection trying to connect to %1:%2 as %3",m_server_ip,m_server_port,m_client_name);
+	m_client_con->connect(m_server_ip, m_server_port);
 
-	m_client_name = "Skell";
+	//DEBUG
+	//m_client_name = "Skell"; 
+	//remember nub "62.80.252.115","27015"
+	//password isn't used
 	
 	return true;
+}
+
+void World::set_info(const ConnectionInfo & info)
+{
+	m_server_ip = info.ip;
+	m_server_port = info.port; 
+	m_server_pass = info.pass; 
+	m_client_name = info.name;
 }
 
 void World::on_connected()
@@ -198,7 +208,6 @@ bool World::run()
 
 	return m_run;
 }
-
 
 bool World::pause()
 {

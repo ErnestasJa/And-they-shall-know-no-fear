@@ -30,10 +30,10 @@ ConDialogue::ConDialogue(clan::GUIComponent * root):clan::GUIComponent(root)
 
 	m_lable = new clan::Label(m_connection_window);
 	m_lable->set_geometry(clan::Rect(20, 150, clan::Size(160, 30) )); 
-	m_lable->set_text("Servers password:");
-	m_line_password = new clan::LineEdit(m_connection_window);
-	m_line_password->set_geometry(clan::Rect(20, 180, clan::Size(160, 20) ));
-	m_line_password->set_text("Neperkandamas kodas");
+	m_lable->set_text("Server password:");
+	m_line_pass = new clan::LineEdit(m_connection_window);
+	m_line_pass->set_geometry(clan::Rect(20, 180, clan::Size(160, 20) ));
+	m_line_pass->set_text("Neperkandamas kodas");
 
 	m_lable = new clan::Label(m_connection_window);
 	m_lable->set_geometry(clan::Rect(20, 220, clan::Size(160, 30) )); 
@@ -71,12 +71,12 @@ void ConDialogue::on_button_clicked(clan::PushButton *button)
 {
 	if(button==m_button_connect)
 	{
-		m_sig.invoke(
-			m_line_IP->get_text(),
-			m_line_port->get_text(),
-			m_line_password->get_text(),
-			m_line_name->get_text()
-			);
+		m_info.ip=m_line_IP->get_text();
+		m_info.port=m_line_port->get_text();
+		m_info.pass=m_line_pass->get_text();
+		m_info.name=m_line_name->get_text();
+
+		m_sig.invoke(m_info);
 	}
 	else if(button==m_button_reset)
 	{
@@ -89,7 +89,7 @@ void ConDialogue::toggle_visibility()
 	m_connection_window->set_visible(!m_connection_window->is_visible());
 }
 
-clan::Signal_v4<std::string, std::string, std::string, std::string> & ConDialogue::submit_connection()
+clan::Signal_v1<const ConnectionInfo&> & ConDialogue::submit_connection()
 {
 	return m_sig;
 } 

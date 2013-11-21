@@ -6,6 +6,7 @@
 #include "app.h"
 #include "yn_dialogue.h"
 #include "con_dialogue.h"
+#include "con_info.h"
 
 class Menu: public State
 {
@@ -27,7 +28,7 @@ protected:
 
 	void WindowCloseEventHandler();
 	void CloseConfirmed(bool);
-	void ConnectAttempt(std::string, std::string, std::string, std::string);
+	void ConnectAttempt(const ConnectionInfo&);
 
 	bool m_run;
 

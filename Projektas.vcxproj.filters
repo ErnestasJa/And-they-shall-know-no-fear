@@ -93,6 +93,7 @@
     </ClInclude>
     <ClInclude Include="Sources\yn_dialogue.h" />
     <ClInclude Include="Sources\con_dialogue.h" />
+    <ClInclude Include="Sources\con_info.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />
