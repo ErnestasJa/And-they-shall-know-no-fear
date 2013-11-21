@@ -53,4 +53,4 @@ template <class T>
 void serialize_type(clan::DomDocument & f, clan::DomElement & n, const T & data);
 
 template <class T>
-void deserialize_type(clan::DomElement & f, T & data);
+void deserialize_type(clan::DomElement & n, T & data);

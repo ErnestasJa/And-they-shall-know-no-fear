@@ -192,7 +192,7 @@ public:
 		serialize_type<T>(doc,e,m_data->data);
 	}
 
-	virtual void xml_deserialize(const clan::DomElement & e)
+	virtual void xml_deserialize(clan::DomElement & e)
 	{
 		m_data->name = e.get_attribute("name");
 		m_data->flags = e.get_attribute_int("flags");

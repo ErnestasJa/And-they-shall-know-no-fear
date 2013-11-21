@@ -191,7 +191,7 @@ void PropertyContainer::xml_serialize(clan::DomDocument & doc, clan::DomElement 
 	}
 }
 
-void PropertyContainer::xml_deserialize(const clan::DomElement & e)
+void PropertyContainer::xml_deserialize(clan::DomElement & e)
 {
 	uint32_t size = e.get_attribute_int("property_count");
 
