@@ -62,7 +62,8 @@ IProperty * PropertyContainer::get_property(const std::string & name)
 	if(it!=m_props.end())
 		return (*it);
 
-	throw clan::Exception("Tried to get non-existing property");
+	
+	throw clan::Exception("Tried to get non-existing property : " + name);
 }
 
 bool PropertyContainer::remove_property(const std::string & name)
@@ -178,20 +179,24 @@ void PropertyContainer::net_deserialize(const clan::NetGameEventValue & e)
 void PropertyContainer::xml_serialize(clan::DomDocument & doc, clan::DomElement & e) const
 {
 	clan::DomElement epc(doc,"property_containter");
-	
-	e.set_attribute_int("property_count",m_props.size());
 
-	e.append_child(epc);
+	if(e.is_null())
+		doc.append_child(epc);
+	else
+		e.append_child(epc);
+
+	epc.set_attribute_int("property_count",m_props.size());
 
 	for(auto it = m_props.begin(); it != m_props.end(); it++)
 	{
 		clan::DomElement prop(doc,"property");
 		prop.set_attribute_int("type",(*it)->get_type());
-		(*it)->xml_serialize(doc,e);
+		(*it)->xml_serialize(doc,prop);
+		epc.append_child(prop);
 	}
 }
 
-void PropertyContainer::xml_deserialize(const clan::DomElement & e)
+void PropertyContainer::xml_deserialize(clan::DomElement & e)
 {
 	uint32_t size = e.get_attribute_int("property_count");
 
@@ -203,9 +208,7 @@ void PropertyContainer::xml_deserialize(const clan::DomElement & e)
 
 		uint32_t type = el.get_attribute_int("type");
 		IProperty * p = PropertyContainer::create_property(type,std::string());
-		p->xml_deserialize(e);
-
-		clan::Console::write_line("Deserialized property with name='%1', type='%2'",p->get_name(),p->get_type());
+		p->xml_deserialize(el);
 
 		if(this->has_property(p->get_name(), p->get_type()))
 		{

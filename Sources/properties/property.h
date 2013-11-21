@@ -189,10 +189,12 @@ public:
 	{
 		e.set_attribute("name",m_data->name);
 		e.set_attribute_int("flags",m_data->flags);
+
+		clan::Console::write_line("Deserialized property with name='%1', type='%2'",m_data->name, get_type());
 		serialize_type<T>(doc,e,m_data->data);
 	}
 
-	virtual void xml_deserialize(const clan::DomElement & e)
+	virtual void xml_deserialize(clan::DomElement & e)
 	{
 		m_data->name = e.get_attribute("name");
 		m_data->flags = e.get_attribute_int("flags");

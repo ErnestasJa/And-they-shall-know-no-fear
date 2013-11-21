@@ -39,7 +39,7 @@ public:
 	virtual void net_deserialize(const clan::NetGameEventValue & e);
 	
 	virtual void xml_serialize(clan::DomDocument & doc, clan::DomElement & e) const;
-	virtual void xml_deserialize(const clan::DomElement & e);
+	virtual void xml_deserialize(clan::DomElement & e);
 
 public:
 	bool operator !=(const PropertyContainer & o) const
@@ -91,7 +91,7 @@ Property<T> PropertyContainer::get_property(const std::string & name)
 	}
 
 	///for now let's just throw exception
-	throw clan::Exception("Tried to get non-existing property");
+	throw clan::Exception("Tried to get non-existing property : " + name);
 }
 
 template <class T>
