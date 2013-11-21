@@ -61,10 +61,13 @@ TEST_F(PropertyTests, TestSerialization)
 
 TEST_F(PropertyTests, TestXmlSerialization) 
 {
-	PropertyContainer p,c;
+	PropertyContainer p,c,p3;
+	p3.add_property<uint32_t>("next_level_property", 12345);
+	p3.add_property<std::string>("right", "here");
 
 	p.add_property<uint32_t>("x", 15);
 	p.add_property<std::string>("y", "hello world!");
+	p.add_property<PropertyContainer>("other props")=p3;
 
 	clan::File f("test_xml.dat",clan::File::create_always,clan::File::access_write);
 	clan::DomDocument d;
@@ -77,6 +80,12 @@ TEST_F(PropertyTests, TestXmlSerialization)
 	d2.load(f2);
 	c.xml_deserialize(d2.get_first_child().to_element());
 	f2.close();
+
+
+	PropertyContainer pc = c.get_property<PropertyContainer>("other props");
+	
+	ASSERT_TRUE(pc.has_property("next_level_property"));
+	ASSERT_TRUE(pc.has_property("right"));
 
 	ASSERT_EQ(p.get_property<uint32_t>("x"),c.get_property<uint32_t>("x"));
 	ASSERT_EQ(p.get_property<std::string>("y"),c.get_property<std::string>("y"));

@@ -179,9 +179,13 @@ void PropertyContainer::net_deserialize(const clan::NetGameEventValue & e)
 void PropertyContainer::xml_serialize(clan::DomDocument & doc, clan::DomElement & e) const
 {
 	clan::DomElement epc(doc,"property_containter");
-	doc.append_child(epc);
-	epc.set_attribute_int("property_count",m_props.size());
 
+	if(e.is_null())
+		doc.append_child(epc);
+	else
+		e.append_child(epc);
+
+	epc.set_attribute_int("property_count",m_props.size());
 
 	for(auto it = m_props.begin(); it != m_props.end(); it++)
 	{
@@ -205,8 +209,6 @@ void PropertyContainer::xml_deserialize(clan::DomElement & e)
 		uint32_t type = el.get_attribute_int("type");
 		IProperty * p = PropertyContainer::create_property(type,std::string());
 		p->xml_deserialize(el);
-
-		clan::Console::write_line("Deserialized property with name='%1', type='%2'",p->get_name(),p->get_type());
 
 		if(this->has_property(p->get_name(), p->get_type()))
 		{
