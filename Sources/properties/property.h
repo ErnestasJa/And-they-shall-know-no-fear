@@ -155,12 +155,14 @@ public:
 	virtual void serialize(clan::File & f) const
 	{
 		f.write_string_a(m_data->name);
+		f.write_uint32(m_data->flags);
 		serialize_type<T>(f,m_data->data);
 	}
 
 	virtual void deserialize(clan::File & f)
 	{
 		m_data->name = f.read_string_a();
+		m_data->flags = f.read_uint32();
 		deserialize_type<T>(f,m_data->data);
 	}
 
@@ -169,6 +171,7 @@ public:
 	virtual void net_value_serialize(clan::NetGameEventValue & e) const
 	{
 		e.add_member(m_data->name);
+		e.add_member(m_data->flags);
 		serialize_type<T>(e,m_data->data);
 		m_data->flags |= EPF_UNCHANGED; ///#FIX ME: pasikeitus reiksmei tik pirmas kas serializuos sia savybe matys ja kaip pasikeitusia.
 	}
@@ -176,7 +179,8 @@ public:
 	virtual void net_value_deserialize(const clan::NetGameEventValue & e)
 	{
 		m_data->name = e.get_member(1).to_string();
-		deserialize_type<T>(e.get_member(2),m_data->data);
+		m_data->flags = e.get_member(2).to_uinteger();
+		deserialize_type<T>(e.get_member(3),m_data->data);
 	}
 };
 

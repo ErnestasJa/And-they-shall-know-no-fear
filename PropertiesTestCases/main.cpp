@@ -42,7 +42,6 @@ TEST_F(PropertyTests, TestExistance)
 
 TEST_F(PropertyTests, TestSerialization) 
 {
-	
 	PropertyContainer p,c;
 
 	p.add_property<uint32_t>("x", 15);
@@ -62,6 +61,7 @@ TEST_F(PropertyTests, TestSerialization)
 	ASSERT_EQ(p.get_property<uint32_t>("x"),c.get_property<uint32_t>("x"));
 	ASSERT_EQ(p.get_property<std::string>("y"),c.get_property<std::string>("y"));
 }
+
 
 TEST_F(PropertyTests, NumericValueSetGetTest)
 {
