@@ -39,7 +39,6 @@ public:
 	virtual void net_deserialize(const clan::NetGameEventValue & e);
 
 public:
-
 	bool operator !=(const PropertyContainer & o) const
 	{
 		return this!=&o; ///FIX ME: fast, but will it give good results?

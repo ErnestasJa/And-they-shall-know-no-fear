@@ -57,6 +57,7 @@ template <> void deserialize_type(const clan::NetGameEventValue & v, PropertyCon
 {
 	data.net_deserialize(v);
 }
+
 ///property serialization to file
 template <>
 void serialize_type(clan::File & f, const bool & data)
