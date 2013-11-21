@@ -159,3 +159,18 @@ void deserialize_type(clan::File & f, PropertyContainer & data)
 {
 	data.deserialize(f);
 }
+
+
+///property serialization to xml
+template <>
+void serialize_type(clan::DomDocument & f, clan::DomElement & n, const bool & data)
+{
+	n.set_attribute("data",clan::StringHelp::bool_to_text(data));
+}
+
+///property xml deserialization
+template <>
+void deserialize_type(clan::DomElement & n, bool & data)
+{
+	data = clan::StringHelp::text_to_bool(n.get_attribute("data"));
+}

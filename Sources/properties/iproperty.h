@@ -23,4 +23,6 @@ public:
 	virtual void deserialize(clan::File & f)=0;
 	virtual void net_value_serialize(clan::NetGameEventValue & e) const=0;
 	virtual void net_value_deserialize(const clan::NetGameEventValue & e)=0;
+	virtual void xml_serialize(clan::DomDocument & doc, clan::DomElement & e) const=0;
+	virtual void xml_deserialize(const clan::DomElement & e)=0;
 };
