@@ -91,7 +91,7 @@ Property<T> PropertyContainer::get_property(const std::string & name)
 	}
 
 	///for now let's just throw exception
-	throw clan::Exception("Tried to get non-existing property");
+	throw clan::Exception("Tried to get non-existing property : " + name);
 }
 
 template <class T>
