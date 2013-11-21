@@ -62,6 +62,7 @@ TEST_F(PropertyTests, TestSerialization)
 	ASSERT_EQ(p.get_property<std::string>("y"),c.get_property<std::string>("y"));
 }
 
+
 TEST_F(PropertyTests, NumericValueSetGetTest)
 {
 	PropertyContainer p;
@@ -75,28 +76,6 @@ TEST_F(PropertyTests, NumericValueSetGetTest)
 	ASSERT_EQ(20,p.get_property<uint32_t>("y"));
 	ASSERT_EQ(25,z);
 	ASSERT_EQ(25,p.get_property<uint32_t>("z"));
-}
-
-TEST_F(PropertyTests, SharedPropertyTest)
-{
-	PropertyContainer p,p2;
-
-	p.add_property<uint32_t>("x",15);
-	p.add_property<uint32_t>("y")=20;
-
-	p2 = p;
-
-	auto z = p.add_property<uint32_t>("z");
-	z=25;
-
-	ASSERT_TRUE(p.has_property("x"));
-	ASSERT_TRUE(p.has_property("y"));
-	ASSERT_FALSE(p.has_property("z"));
-
-	ASSERT_EQ(15,p2.get_property<uint32_t>("x"));
-	ASSERT_EQ(20,p2.get_property<uint32_t>("y"));
-	ASSERT_EQ(25,z);
-	ASSERT_EQ(25,p2.get_property<uint32_t>("z"));
 }
 
 int main(int argc, char **argv)
