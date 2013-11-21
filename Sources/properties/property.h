@@ -182,6 +182,22 @@ public:
 		m_data->flags = e.get_member(2).to_uinteger();
 		deserialize_type<T>(e.get_member(3),m_data->data);
 	}
+
+///xml serilization
+public:
+	virtual void xml_serialize(clan::DomDocument & doc, clan::DomElement & e) const
+	{
+		e.set_attribute("name",m_data->name);
+		e.set_attribute_int("flags",m_data->flags);
+		serialize_type<T>(doc,e,m_data->data);
+	}
+
+	virtual void xml_deserialize(const clan::DomElement & e)
+	{
+		m_data->name = e.get_attribute("name");
+		m_data->flags = e.get_attribute_int("flags");
+		deserialize_type<T>(e,m_data->data);
+	}
 };
 
 template <class T> 
