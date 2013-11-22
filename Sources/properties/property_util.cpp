@@ -261,5 +261,5 @@ void deserialize_type(clan::DomElement & n, std::string & data)
 template <>
 void deserialize_type(clan::DomElement & n, PropertyContainer & data)
 {
-	data.xml_deserialize(n);
+	data.xml_deserialize(n.get_first_child_element());
 }
