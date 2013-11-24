@@ -25,7 +25,7 @@ bool Message::register_messages()
 
 	//server
 	register_message<MSGS_AuthStatus>();
-	register_message<MSGS_ClientPunishment>();
+	register_message<MSGS_ClientDisconnect>();
 	register_message<MSGS_GameObjectAction>();
 	
 	///cient/server
@@ -38,9 +38,9 @@ bool Message::register_messages()
 /// Client
 Client::Client()
 {
-	m_id = add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);
-	m_flags = add_property<uint32_t>("flags",0);
-	m_name  = add_property<std::string>("name");
+	m_id	= add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);
+	m_flags = add_property<uint32_t>("flags",0,EPF_ALWAYS_SEND);
+	m_name  = add_property<std::string>("name","",EPF_ALWAYS_SEND);
 }
 
 void Client::clear_flag(uint32_t flag)

@@ -20,7 +20,7 @@ enum MESSAGE_TYPE
 
 	//server
 	MSGS_AUTH_STATUS,
-	MSGS_CLIENT_PUNISHMENT,
+	MSGS_CLIENT_DISCONNECT,
 	MSGS_GAME_OBJECT_ACTION,
 	MSGS_SERVER_INFO,
 
@@ -127,22 +127,25 @@ public:
 };
 
 
-enum EClientPunishmentType
+enum EClientDisconnectType
 {
 	ECPT_KICK = 0,
 	ECPT_BAN,
 };
 
-class MSGS_ClientPunishment: public Message
+///Needs better name?
+class MSGS_ClientDisconnect: public Message
 {
-	DEF_MSG(MSGS_ClientPunishment,MSGS_CLIENT_PUNISHMENT)
+	DEF_MSG(MSGS_ClientDisconnect,MSGS_CLIENT_DISCONNECT)
 public:
 	Property<uint32_t> id, type;
+	Property<std::string> msg;
 
-	MSGS_ClientPunishment()
+	MSGS_ClientDisconnect()
 	{
-		id = add_property<uint32_t>("id");
-		type = add_property<uint32_t>("type");
+		id	=	add_property<uint32_t>("id");
+		type=	add_property<uint32_t>("type");
+		msg =	add_property<std::string>("name");
 	}
 };
 
