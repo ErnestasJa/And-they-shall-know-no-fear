@@ -183,7 +183,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			con->send_message(si);
 			send_message(*client);
 
-			loopi(m_max_clients && client->get_id() != i && m_client_cons[i].is_connected())
+			loopi(i<m_max_clients && client->get_id() != i && m_client_cons[i].is_connected())
 			{
 				con->send_message(m_clients[i]);
 			}

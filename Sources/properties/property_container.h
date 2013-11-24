@@ -5,12 +5,23 @@ class IProperty;
 template <class T>
 class Property;
 
-///Every function that may fail will throw clan::Exception
+
+/**
+Properties can be added only through inherited class and should only be added at class initialization/construction.
+(De)serializing of properties always happens in the same order, new properties cannot be introduced via deserialization.
+**/
+
 class PropertyContainer
 {
 ///property container
 protected:
 	std::vector<IProperty*> m_props;
+
+	void							add_property(IProperty * p);
+	template <class T> Property<T>	add_property(const Property<T> & prop);
+	template <class T> Property<T>	add_property(const std::string & name, const T & data);
+	template <class T> Property<T>	add_property(const std::string & name, const T & data, const uint32_t flags);
+	template <class T> Property<T>	add_property(const std::string & name);
 
 public:
 	PropertyContainer();
@@ -18,17 +29,12 @@ public:
 
 	void		load_properties(const PropertyContainer & p);
 
-	void		add_property(IProperty * p);
 	bool		has_property(const std::string & name);
 	bool		has_property(const std::string & name, uint32_t type);
 	IProperty*  get_property(const std::string & name); ///no throw
 	IProperty*  get_last_used(); ///no throw
 	bool		remove_property(const std::string & name);
 	
-	template <class T> Property<T> add_property(const Property<T> & prop);
-	template <class T> Property<T> add_property(const std::string & name, const T & data);
-	template <class T> Property<T> add_property(const std::string & name, const T & data, const uint32_t flags);
-	template <class T> Property<T> add_property(const std::string & name);
 	template <class T> Property<T> get_property(const std::string & name);
 
 public:
@@ -69,7 +75,7 @@ public:
 		if(it != m_prop_create.end())
 			return it->second(name);
 		
-		clan::StringFormat fmt("Property type id=%1 is not valid type id for property creation");
+		static clan::StringFormat fmt("Property type id=%1 is not valid type id for property creation");
 		fmt.set_arg(1,type);
 
 		throw clan::Exception(fmt.get_result());

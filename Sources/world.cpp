@@ -147,6 +147,8 @@ void World::on_net_event(const clan::NetGameEvent & e)
 		else if(type==MSGS_GAME_OBJECT_ACTION)
 		{
 			MSGS_GameObjectAction m;
+			m.object_properties = WHAT_DO;
+
 			m.net_deserialize(e.get_argument(1));
 		
 			if(m.action_type==EGOAT_CREATE)

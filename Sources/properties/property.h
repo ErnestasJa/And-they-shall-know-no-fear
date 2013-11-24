@@ -178,9 +178,9 @@ public:
 
 	virtual void net_value_deserialize(const clan::NetGameEventValue & e)
 	{
-		m_data->name = e.get_member(1).to_string();
-		m_data->flags = e.get_member(2).to_uinteger();
-		deserialize_type<T>(e.get_member(3),m_data->data);
+		m_data->name = e.get_member(0).to_string();
+		m_data->flags = e.get_member(1).to_uinteger();
+		deserialize_type<T>(e.get_member(2),m_data->data);
 	}
 
 ///xml serilization
