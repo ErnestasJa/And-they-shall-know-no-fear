@@ -63,6 +63,43 @@ public:
 	static bool register_messages();
 };
 
+class MessageUtil
+{
+public:
+	static void add_message(clan::NetGameEvent & net_event, const Message & m, bool serialize_only_changed = false)
+	{
+		clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+		m.net_serialize(val,serialize_only_changed);
+
+		net_event.add_argument(m.get_type());
+		net_event.add_argument(val);
+	}
+
+	static void add_game_object(clan::NetGameEvent & net_event, const PropertyContainer & m, bool serialize_only_changed = false)
+	{
+		clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+		m.net_serialize(val,serialize_only_changed);
+
+		net_event.add_argument(MSG_GAME_OBJECT);
+		net_event.add_argument(val);
+	}
+
+	static void get_message(const clan::NetGameEvent & net_event, Message & m, uint32_t index)
+	{
+		m.net_deserialize(net_event.get_argument(index*2+1));
+	}
+
+	static void get_game_object(const clan::NetGameEvent & net_event, PropertyContainer & m, uint32_t index)
+	{
+		m.net_deserialize(net_event.get_argument(index*2+1));
+	}
+
+	static uint32_t get_message_count(const clan::NetGameEvent & net_event)
+	{
+		return net_event.get_argument_count()/2;
+	}
+};
+
 /**
 #########################################################
 ############# ClientConnection messages #################
@@ -163,14 +200,13 @@ public:
 	Property<uint32_t> action_type;
 	Property<uint32_t> guid;
 	Property<uint32_t> object_type;
-	Property<PropertyContainer> object_properties;
+	///Property<PropertyContainer> object_properties; /// not possible due to game object data being dynamic.
 
 	MSGS_GameObjectAction()
 	{
 		action_type = add_property<uint32_t>("at");
 		guid = add_property<uint32_t>("guid");
 		object_type = add_property<uint32_t>("ot");
-		object_properties = add_property<PropertyContainer>("op");
 	}
 };
 
