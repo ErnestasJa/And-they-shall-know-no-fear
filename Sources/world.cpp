@@ -166,7 +166,6 @@ void World::on_net_event(const clan::NetGameEvent & e)
 						MessageUtil::get_game_object(e,spr,1);
 					}
 
-
 					m_players[spr->get_guid()]=spr;
 
 					spr->load(m_canvas,m_resources);

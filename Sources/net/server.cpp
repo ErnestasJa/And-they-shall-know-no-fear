@@ -234,7 +234,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					c.object_type = EGOT_SPRITE;
 					
 					MessageUtil::add_message(player_obj_create_ev2,c);
-					MessageUtil::add_game_object(player_obj_create_ev2,m_player_objects[client->get_id()]);
+					MessageUtil::add_game_object(player_obj_create_ev2,m_player_objects[i]);
 
 					con->send_event(player_obj_create_ev2);
 				}
