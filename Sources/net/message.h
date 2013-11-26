@@ -39,11 +39,18 @@ class Message: public PropertyContainer
 public:
 	Property<uint32_t> timestamp; ///time in ms
 
+	Message & operator = (const Message &m)
+	{
+		for(uint32_t i = 0; i < m.m_props.size(); i++)
+			m_props[i]->set(m.m_props[i]);
+
+		return *this;
+	}
+
 	Message()
 	{
 		timestamp = add_property<uint32_t>("ts",0);
 	}
-
 ///------Message factory-------
 protected:
 	typedef Message * (*msg_create_func)();
@@ -61,6 +68,17 @@ public:
 	}
 
 	static bool register_messages();
+};
+
+class GameObject;
+class MessageUtil
+{
+public:
+	static void add_message(clan::NetGameEvent & net_event, const Message & m, bool serialize_only_changed = false);
+	static void add_game_object(clan::NetGameEvent & net_event, GameObject * m, bool serialize_only_changed = false);
+	static void get_message(const clan::NetGameEvent & net_event, Message & m, uint32_t index);
+	static void get_game_object(const clan::NetGameEvent & net_event, GameObject * m, uint32_t index);
+	static uint32_t get_message_count(const clan::NetGameEvent & net_event);
 };
 
 /**
@@ -163,14 +181,13 @@ public:
 	Property<uint32_t> action_type;
 	Property<uint32_t> guid;
 	Property<uint32_t> object_type;
-	Property<PropertyContainer> object_properties;
+	///Property<PropertyContainer> object_properties; /// not possible due to game object data being dynamic.
 
 	MSGS_GameObjectAction()
 	{
 		action_type = add_property<uint32_t>("at");
 		guid = add_property<uint32_t>("guid");
 		object_type = add_property<uint32_t>("ot");
-		object_properties = add_property<PropertyContainer>("op");
 	}
 };
 
@@ -201,17 +218,18 @@ class Client: public Message
 {
 	DEF_MSG(Client,MSG_CLIENT_INFO)
 public:
+	Client(const Client & c);
 	Client();
 
 	void clear_flag(uint32_t flag);
 	bool check_flag(uint32_t flag);
 	void set_flag(uint32_t flag);
 
-	uint32_t get_id();
+	uint32_t get_id() const;
 	void set_id(uint32_t id);
 
 	void set_name(const std::string & name);
-	std::string get_name();
+	std::string get_name() const;
 
 protected:
 	Property<uint32_t>		m_flags;

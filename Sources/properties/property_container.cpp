@@ -82,7 +82,6 @@ void PropertyContainer::serialize(clan::File & file) const
 	file.write_uint32(m_props.size());
 	for(auto it = m_props.begin(); it != m_props.end(); it++)
 	{
-		file.write_uint32((*it)->get_type());
 		(*it)->serialize(file);
 	}
 }
@@ -92,44 +91,33 @@ void PropertyContainer::deserialize(clan::File & file)
 	uint32_t size = file.read_uint32();
 	for(uint32_t i = 0; i < size; i++)
 	{
-		uint32_t type = file.read_uint32();
-		IProperty * p = PropertyContainer::create_property(type,std::string());
-		p->deserialize(file);
-
-		clan::Console::write_line("Deserialized property with name='%1', type='%2'",p->get_name(),p->get_type());
-
-		if(this->has_property(p->get_name(), p->get_type()))
-		{
-			this->get_property(p->get_name())->set(p);
-		}
-		else
-		{
-			this->add_property(p);
-		}
+		m_props[i]->deserialize(file);
 	}
 }
 
 void PropertyContainer::net_serialize(clan::NetGameEventValue & e, bool only_changed) const
 {
+	e.add_member(clan::NetGameEventValue((bool)only_changed));
+
 	if(only_changed)
 	{
-		int32_t i = 0;
+		uint8_t i = 0;
 		for(auto it = m_props.begin(); it != m_props.end(); it++)
 		{
 			const IProperty * p = (*it);
 			if( (!(p->get_flags()&EPF_UNCHANGED)) || p->get_flags()&EPF_ALWAYS_SEND ) i++;
 		}
 
-		e.add_member((uint32_t)i);
+		e.add_member((uint8_t)i);
 
-		for(auto it = m_props.begin(); it != m_props.end(); it++)
+		for(i = 0; i < m_props.size(); i++)
 		{
-			const IProperty * p = (*it);
+			const IProperty * p = m_props[i];
 
 			if((!(p->get_flags()&EPF_UNCHANGED)) || p->get_flags()&EPF_ALWAYS_SEND)
 			{
+				e.add_member((uint8_t)i);
 				clan::NetGameEventValue v(clan::NetGameEventValue::complex);
-				v.add_member(p->get_type());
 				p->net_value_serialize(v);
 				e.add_member(v);
 			}
@@ -137,13 +125,12 @@ void PropertyContainer::net_serialize(clan::NetGameEventValue & e, bool only_cha
 	}
 	else
 	{
-		e.add_member((uint32_t)m_props.size());
+		e.add_member((uint8_t)m_props.size());
 		for(auto it = m_props.begin(); it != m_props.end(); it++)
 		{
 			const IProperty * p = (*it);
 			
 			clan::NetGameEventValue v(clan::NetGameEventValue::complex);
-			v.add_member(p->get_type());
 			p->net_value_serialize(v);
 			e.add_member(v);
 		}
@@ -153,24 +140,24 @@ void PropertyContainer::net_serialize(clan::NetGameEventValue & e, bool only_cha
 
 void PropertyContainer::net_deserialize(const clan::NetGameEventValue & e)
 {
-	uint32_t size = e.get_member(0).to_uinteger();
+	bool only_changed = e.get_member(0).to_boolean();
+	uint8_t size = e.get_member(1).to_ucharacter();
 
-	for(uint32_t i = 0; i < size; i++)
+	if(only_changed)
 	{
-		const clan::NetGameEventValue & v = e.get_member(1+i);
-
-		uint32_t type = v.get_member(0).to_uinteger();
-
-		IProperty * p = PropertyContainer::create_property(type,std::string());
-		p->net_value_deserialize(v);
-
-		if(this->has_property(p->get_name(), p->get_type()))
+		for(uint32_t i = 0; i < size; i+=2)
 		{
-			this->get_property(p->get_name())->set(p);
+			uint8_t pos = e.get_member(2+i);
+			const clan::NetGameEventValue & v = e.get_member(3+i);
+			m_props[pos]->net_value_deserialize(v);
 		}
-		else
+	}
+	else
+	{
+		for(uint32_t i = 0; i < size; i++)
 		{
-			this->add_property(p);
+			const clan::NetGameEventValue & v = e.get_member(2+i);
+			m_props[i]->net_value_deserialize(v);
 		}
 	}
 }
@@ -185,12 +172,9 @@ void PropertyContainer::xml_serialize(clan::DomDocument & doc, clan::DomElement 
 	else
 		e.append_child(epc);
 
-	epc.set_attribute_int("property_count",m_props.size());
-
 	for(auto it = m_props.begin(); it != m_props.end(); it++)
 	{
 		clan::DomElement prop(doc,"property");
-		prop.set_attribute_int("type",(*it)->get_type());
 		(*it)->xml_serialize(doc,prop);
 		epc.append_child(prop);
 	}
@@ -198,25 +182,11 @@ void PropertyContainer::xml_serialize(clan::DomDocument & doc, clan::DomElement 
 
 void PropertyContainer::xml_deserialize(clan::DomElement & e)
 {
-	uint32_t size = e.get_attribute_int("property_count");
-
 	clan::DomNodeList list = e.get_child_nodes();
 
-	for(uint32_t i = 0; i < size; i++)
+	for(uint32_t i = 0; i < (uint32_t)list.get_length(); i++)
 	{
 		clan::DomElement el = list.item(i).to_element();
-
-		uint32_t type = el.get_attribute_int("type");
-		IProperty * p = PropertyContainer::create_property(type,std::string());
-		p->xml_deserialize(el);
-
-		if(this->has_property(p->get_name(), p->get_type()))
-		{
-			this->get_property(p->get_name())->set(p);
-		}
-		else
-		{
-			this->add_property(p);
-		}
+		m_props[i]->xml_deserialize(el);
 	}
 }

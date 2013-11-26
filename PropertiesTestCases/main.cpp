@@ -2,7 +2,43 @@
 #include "properties\property.h"
 #include "properties\property_container.h"
 
+#include "net\message.h"
+
 #include "gtest/gtest.h"
+
+
+class PC_OtherData: public PropertyContainer
+{
+public:
+	Property<uint32_t> w;
+	Property<std::string> z;
+
+	PC_OtherData()
+	{
+		w = add_property<uint32_t>("w");
+		z = add_property<std::string>("z", "halo");
+	}
+protected:
+
+};
+
+class PC_Data: public PropertyContainer
+{
+public:
+	Property<uint32_t> x;
+	Property<std::string> y;
+	Property<PropertyContainer> other_props;
+
+	PC_Data()
+	{
+		x = add_property<uint32_t>("x", 15);
+		y = add_property<std::string>("y", "hello world!");
+		other_props = add_property<PropertyContainer>("other_data",PC_OtherData());
+	}
+protected:
+
+};
+
 
 class PropertyTests : public ::testing::Test
 {
@@ -32,50 +68,39 @@ protected:
 
 TEST_F(PropertyTests, TestExistance)
 {
-	PropertyContainer p;
-	p.add_property<uint32_t>("x");
+	PC_Data p;
 
 	ASSERT_TRUE(p.has_property("x"));
 	ASSERT_TRUE(p.has_property("x",EPT_UINT32));
-	ASSERT_FALSE(p.has_property("y"));
+	ASSERT_TRUE(p.has_property("y"));
+	ASSERT_TRUE(p.has_property("other_data"));
+	ASSERT_FALSE(p.has_property("z"));
 }
 
 TEST_F(PropertyTests, TestSerialization) 
 {
-	PropertyContainer p,c,p3;
-	p3.add_property<uint32_t>("next_level_property", 12345);
-	p3.add_property<std::string>("right", "here");
-
-	p.add_property<uint32_t>("x", 15);
-	p.add_property<std::string>("y", "hello world!");
-	p.add_property<PropertyContainer>("other props")=p3;
+	PC_Data p, deserialized;
 
 	clan::File f("test.dat",clan::File::create_always,clan::File::access_write);
 	p.serialize(f);
 	f.close();
   
 	clan::File f2("test.dat",clan::File::open_existing,clan::File::access_read);
-	c.deserialize(f2);
+	deserialized.deserialize(f2);
 	f2.close();
 
-	PropertyContainer pc = c.get_property<PropertyContainer>("other props");
+	PropertyContainer pc = p.get_property<PropertyContainer>("other_data");
 	
-	ASSERT_TRUE(pc.has_property("next_level_property"));
-	ASSERT_TRUE(pc.has_property("right"));
+	ASSERT_TRUE(pc.has_property("w"));
+	ASSERT_TRUE(pc.has_property("z"));
 
-	ASSERT_EQ(p.get_property<uint32_t>("x"),c.get_property<uint32_t>("x"));
-	ASSERT_EQ(p.get_property<std::string>("y"),c.get_property<std::string>("y"));
+	ASSERT_EQ(p.get_property<uint32_t>("x"),deserialized.get_property<uint32_t>("x"));
+	ASSERT_EQ(p.get_property<std::string>("y"),deserialized.get_property<std::string>("y"));
 }
 
 TEST_F(PropertyTests, TestXmlSerialization) 
 {
-	PropertyContainer p,c,p3;
-	p3.add_property<uint32_t>("next_level_property", 12345);
-	p3.add_property<std::string>("right", "here");
-
-	p.add_property<uint32_t>("x", 15);
-	p.add_property<std::string>("y", "hello world!");
-	p.add_property<PropertyContainer>("other props")=p3;
+	PC_Data p, deserialized;
 
 	clan::File f("test_xml.dat",clan::File::create_always,clan::File::access_write);
 	clan::DomDocument d;
@@ -86,32 +111,24 @@ TEST_F(PropertyTests, TestXmlSerialization)
 	clan::File f2("test_xml.dat",clan::File::open_existing,clan::File::access_read);
 	clan::DomDocument d2;
 	d2.load(f2);
-	c.xml_deserialize(d2.get_first_child().to_element());
+	deserialized.xml_deserialize(d2.get_first_child().to_element());
 	f2.close();
 
-	PropertyContainer pc = c.get_property<PropertyContainer>("other props");
+	PropertyContainer pc = deserialized.get_property<PropertyContainer>("other_data");
 	
-	ASSERT_TRUE(pc.has_property("next_level_property"));
-	ASSERT_TRUE(pc.has_property("right"));
+	ASSERT_TRUE(pc.has_property("w"));
+	ASSERT_TRUE(pc.has_property("z"));
 
-	ASSERT_EQ(p.get_property<uint32_t>("x"),c.get_property<uint32_t>("x"));
-	ASSERT_EQ(p.get_property<std::string>("y"),c.get_property<std::string>("y"));
+	ASSERT_EQ(p.get_property<uint32_t>("x"),deserialized.get_property<uint32_t>("x"));
+	ASSERT_EQ(p.get_property<std::string>("y"),deserialized.get_property<std::string>("y"));
 }
 
 TEST_F(PropertyTests, TestNetSerialization) 
 {
-	PropertyContainer pc_send, p3, pc_receive;
+	PC_Data pc_send, pc_receive;
 
 	clan::NetGameEvent msg("msg");
 	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
-	
-
-	p3.add_property<uint32_t>("next_level_property", 12345);
-	p3.add_property<std::string>("right", "here");
-
-	pc_send.add_property<uint32_t>("x", 15);
-	pc_send.add_property<std::string>("y", "hello world!");
-	pc_send.add_property<PropertyContainer>("other props")=p3;
 
 	/// send, receive
 	pc_send.net_serialize(val,false);
@@ -123,11 +140,11 @@ TEST_F(PropertyTests, TestNetSerialization)
 	///test
 	ASSERT_TRUE(pc_receive.has_property("x"));
 	ASSERT_TRUE(pc_receive.has_property("y"));
-	ASSERT_TRUE(pc_receive.has_property("other props"));
+	ASSERT_TRUE(pc_receive.has_property("other_data"));
 
-	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other props");
-	ASSERT_TRUE(pc.has_property("next_level_property"));
-	ASSERT_TRUE(pc.has_property("right"));
+	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other_data");
+	ASSERT_TRUE(pc.has_property("w"));
+	ASSERT_TRUE(pc.has_property("z"));
 
 	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive.get_property<uint32_t>("x"));
 	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive.get_property<std::string>("y"));
@@ -135,18 +152,10 @@ TEST_F(PropertyTests, TestNetSerialization)
 
 TEST_F(PropertyTests, TestNetMultiEventSerialization) 
 {
-	PropertyContainer pc_send, p3, pc_receive, pc_receive2;
+	PC_Data pc_send, pc_receive, pc_receive2;
 
 	clan::NetGameEvent msg("msg"), msg2("msg");
 	clan::NetGameEventValue val(clan::NetGameEventValue::complex), val2(clan::NetGameEventValue::complex);
-	
-
-	p3.add_property<uint32_t>("next_level_property", 12345);
-	p3.add_property<std::string>("right", "here");
-
-	pc_send.add_property<uint32_t>("x", 15);
-	pc_send.add_property<std::string>("y", "hello world!");
-	pc_send.add_property<PropertyContainer>("other props")=p3;
 
 	/// send, receive
 	pc_send.net_serialize(val,false);
@@ -164,11 +173,11 @@ TEST_F(PropertyTests, TestNetMultiEventSerialization)
 	///test 1st msg
 	ASSERT_TRUE(pc_receive.has_property("x"));
 	ASSERT_TRUE(pc_receive.has_property("y"));
-	ASSERT_TRUE(pc_receive.has_property("other props"));
+	ASSERT_TRUE(pc_receive.has_property("other_data"));
 
-	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other props");
-	ASSERT_TRUE(pc.has_property("next_level_property"));
-	ASSERT_TRUE(pc.has_property("right"));
+	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other_data");
+	ASSERT_TRUE(pc.has_property("w"));
+	ASSERT_TRUE(pc.has_property("z"));
 
 	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive.get_property<uint32_t>("x"));
 	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive.get_property<std::string>("y"));
@@ -176,11 +185,11 @@ TEST_F(PropertyTests, TestNetMultiEventSerialization)
 	///test 2nd msg
 	ASSERT_TRUE(pc_receive2.has_property("x"));
 	ASSERT_TRUE(pc_receive2.has_property("y"));
-	ASSERT_TRUE(pc_receive2.has_property("other props"));
+	ASSERT_TRUE(pc_receive2.has_property("other_data"));
 
-	PropertyContainer pc2 = pc_receive2.get_property<PropertyContainer>("other props");
-	ASSERT_TRUE(pc2.has_property("next_level_property"));
-	ASSERT_TRUE(pc2.has_property("right"));
+	PropertyContainer pc2 = pc_receive2.get_property<PropertyContainer>("other_data");
+	ASSERT_TRUE(pc2.has_property("w"));
+	ASSERT_TRUE(pc2.has_property("z"));
 
 	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive2.get_property<uint32_t>("x"));
 	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive2.get_property<std::string>("y"));
@@ -188,18 +197,10 @@ TEST_F(PropertyTests, TestNetMultiEventSerialization)
 
 TEST_F(PropertyTests, TestNetMultiEventOnlyChandedPropertySerialization) 
 {
-	PropertyContainer pc_send, p3, pc_receive, pc_receive2;
+	PC_Data pc_send, pc_receive, pc_receive2;
 
 	clan::NetGameEvent msg("msg"), msg2("msg");
 	clan::NetGameEventValue val(clan::NetGameEventValue::complex), val2(clan::NetGameEventValue::complex);
-	
-
-	p3.add_property<uint32_t>("next_level_property", 12345);
-	p3.add_property<std::string>("right", "here");
-
-	pc_send.add_property<uint32_t>("x", 15);
-	pc_send.add_property<std::string>("y", "hello world!");
-	pc_send.add_property<PropertyContainer>("other props")=p3;
 
 	/// send, receive
 	pc_send.net_serialize(val,true);
@@ -217,11 +218,11 @@ TEST_F(PropertyTests, TestNetMultiEventOnlyChandedPropertySerialization)
 	///test 1st msg
 	ASSERT_TRUE(pc_receive.has_property("x"));
 	ASSERT_TRUE(pc_receive.has_property("y"));
-	ASSERT_TRUE(pc_receive.has_property("other props"));
+	ASSERT_TRUE(pc_receive.has_property("other_data"));
 
-	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other props");
-	ASSERT_TRUE(pc.has_property("next_level_property"));
-	ASSERT_TRUE(pc.has_property("right"));
+	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other_data");
+	ASSERT_TRUE(pc.has_property("w"));
+	ASSERT_TRUE(pc.has_property("z"));
 
 	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive.get_property<uint32_t>("x"));
 	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive.get_property<std::string>("y"));
@@ -229,53 +230,73 @@ TEST_F(PropertyTests, TestNetMultiEventOnlyChandedPropertySerialization)
 	///test 2nd msg
 	ASSERT_TRUE(pc_receive2.has_property("x"));
 	ASSERT_TRUE(pc_receive2.has_property("y"));
-	ASSERT_TRUE(pc_receive2.has_property("other props"));
+	ASSERT_TRUE(pc_receive2.has_property("other_data"));
 
-	PropertyContainer pc2 = pc_receive2.get_property<PropertyContainer>("other props");
-	ASSERT_TRUE(pc2.has_property("next_level_property"));
-	ASSERT_TRUE(pc2.has_property("right"));
+	PropertyContainer pc2 = pc_receive2.get_property<PropertyContainer>("other_data");
+	ASSERT_TRUE(pc2.has_property("w"));
+	ASSERT_TRUE(pc2.has_property("z"));
 
 	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive2.get_property<uint32_t>("x"));
 	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive2.get_property<std::string>("y"));
 }
 
-TEST_F(PropertyTests, NumericValueSetGetTest)
+Client*	m_clients;
+
+void check_msg(const Message & msg)
 {
-	PropertyContainer p;
+	ASSERT_EQ(&msg,&m_clients[1]);
 
-	p.add_property<uint32_t>("x",15);
-	p.add_property<uint32_t>("y")=20;
-	auto z = p.add_property<uint32_t>("z");
-	z=25;
-
-	ASSERT_EQ(15,p.get_property<uint32_t>("x"));
-	ASSERT_EQ(20,p.get_property<uint32_t>("y"));
-	ASSERT_EQ(25,z);
-	ASSERT_EQ(25,p.get_property<uint32_t>("z"));
+	ASSERT_EQ(456,msg.get_property<uint32_t>("id"));
+	ASSERT_EQ(std::string("10"),msg.get_property<std::string>("name").get());
 }
 
-TEST_F(PropertyTests, SharedPropertyTest)
+void set_msg(Client & msg)
 {
-	PropertyContainer p,p2;
+	ASSERT_EQ(&msg,&m_clients[1]);
+	msg.set_id(456);
+	msg.set_name("10");
+	msg.set_flag(0);
 
-	p.add_property<uint32_t>("x",15);
-	p.add_property<uint32_t>("y")=20;
+	ASSERT_EQ(&msg,&m_clients[1]);
 
-	p2 = p;
+	ASSERT_EQ(456,msg.get_id());
+	ASSERT_EQ(456,msg.get_property<uint32_t>("id"));
+	ASSERT_EQ(std::string("10"),msg.get_property<std::string>("name").get());
+}
 
-	auto z = p.add_property<uint32_t>("z");
-	z=25;
+TEST_F(PropertyTests, MessagePtrDereferenceTestNoReset)
+{
+	m_clients =	new Client[4];
 
-	ASSERT_TRUE(p.has_property("x"));
-	ASSERT_TRUE(p.has_property("y"));
-	ASSERT_TRUE(p.has_property("z"));
+	Client* m = &m_clients[1];
 
-	ASSERT_TRUE(p2.has_property("x"));
-	ASSERT_TRUE(p2.has_property("y"));
-	ASSERT_FALSE(p2.has_property("z"));
+	//m_clients[1]=Client();
+	set_msg(*m);
+	check_msg(*m);
+}
 
-	ASSERT_EQ(15,p2.get_property<uint32_t>("x"));
-	ASSERT_EQ(20,p2.get_property<uint32_t>("y"));
+
+TEST_F(PropertyTests, MessagePtrDereferenceTest)
+{
+	m_clients =	new Client[4];
+
+	Client* m = &m_clients[1];
+
+	m_clients[1]=Client();
+
+	set_msg(*m);
+	//check_msg(*m);
+}
+
+TEST_F(PropertyTests, NumericValueSetGetTest)
+{
+	PC_Data p;
+
+	p.x=15;
+	p.y="hello";
+
+	ASSERT_EQ(15,p.get_property<uint32_t>("x"));
+	ASSERT_EQ(std::string("hello"),p.get_property<std::string>("y").get());
 }
 
 int main(int argc, char **argv)

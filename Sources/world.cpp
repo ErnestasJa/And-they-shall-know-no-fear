@@ -147,13 +147,12 @@ void World::on_net_event(const clan::NetGameEvent & e)
 		else if(type==MSGS_GAME_OBJECT_ACTION)
 		{
 			MSGS_GameObjectAction m;
-			m.net_deserialize(e.get_argument(1));
+			MessageUtil::get_message(e,m,0);
+
 		
 			if(m.action_type==EGOAT_CREATE)
 			{
 				GameObject * o = m_gom->add_game_object(m.object_type,m.guid);
-
-				o->load_properties(m.object_properties);
 
 				if(o->get_type()==EGOT_SPRITE)
 				{
@@ -161,6 +160,11 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 					if(o->get_guid()==m_client->get_id())
 						m_player = spr;
+
+					if(MessageUtil::get_message_count(e)==2)
+					{
+						MessageUtil::get_game_object(e,spr,1);
+					}
 
 					m_players[spr->get_guid()]=spr;
 
