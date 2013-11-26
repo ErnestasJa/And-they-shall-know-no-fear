@@ -63,41 +63,15 @@ public:
 	static bool register_messages();
 };
 
+class GameObject;
 class MessageUtil
 {
 public:
-	static void add_message(clan::NetGameEvent & net_event, const Message & m, bool serialize_only_changed = false)
-	{
-		clan::NetGameEventValue val(clan::NetGameEventValue::complex);
-		m.net_serialize(val,serialize_only_changed);
-
-		net_event.add_argument(m.get_type());
-		net_event.add_argument(val);
-	}
-
-	static void add_game_object(clan::NetGameEvent & net_event, const PropertyContainer & m, bool serialize_only_changed = false)
-	{
-		clan::NetGameEventValue val(clan::NetGameEventValue::complex);
-		m.net_serialize(val,serialize_only_changed);
-
-		net_event.add_argument(MSG_GAME_OBJECT);
-		net_event.add_argument(val);
-	}
-
-	static void get_message(const clan::NetGameEvent & net_event, Message & m, uint32_t index)
-	{
-		m.net_deserialize(net_event.get_argument(index*2+1));
-	}
-
-	static void get_game_object(const clan::NetGameEvent & net_event, PropertyContainer & m, uint32_t index)
-	{
-		m.net_deserialize(net_event.get_argument(index*2+1));
-	}
-
-	static uint32_t get_message_count(const clan::NetGameEvent & net_event)
-	{
-		return net_event.get_argument_count()/2;
-	}
+	static void add_message(clan::NetGameEvent & net_event, const Message & m, bool serialize_only_changed = false);
+	static void add_game_object(clan::NetGameEvent & net_event, GameObject * m, bool serialize_only_changed = false);
+	static void get_message(const clan::NetGameEvent & net_event, Message & m, uint32_t index);
+	static void get_game_object(const clan::NetGameEvent & net_event, GameObject * m, uint32_t index);
+	static uint32_t get_message_count(const clan::NetGameEvent & net_event);
 };
 
 /**

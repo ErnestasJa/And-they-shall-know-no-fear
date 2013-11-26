@@ -4,7 +4,6 @@
 
 std::map<uint32_t, Message::msg_create_func>  Message::m_msg_create;
 
-///factory
 Message * Message::create_message(uint32_t type)
 {
 	auto it = m_msg_create.find(type);
@@ -35,7 +34,42 @@ bool Message::register_messages()
 	return true;
 }
 
-/// Client
+///-------------------------------------------
+
+void MessageUtil::add_message(clan::NetGameEvent & net_event, const Message & m, bool serialize_only_changed)
+{
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+	m.net_serialize(val,serialize_only_changed);
+
+	net_event.add_argument(m.get_type());
+	net_event.add_argument(val);
+}
+
+void MessageUtil::add_game_object(clan::NetGameEvent & net_event, GameObject * m, bool serialize_only_changed)
+{
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+	m->net_serialize(val,serialize_only_changed);
+
+	net_event.add_argument(MSG_GAME_OBJECT);
+	net_event.add_argument(val);
+}
+
+void MessageUtil::get_message(const clan::NetGameEvent & net_event, Message & m, uint32_t index)
+{
+	m.net_deserialize(net_event.get_argument(index*2+1));
+}
+
+void MessageUtil::get_game_object(const clan::NetGameEvent & net_event, GameObject * m, uint32_t index)
+{
+	m->net_deserialize(net_event.get_argument(index*2+1));
+}
+
+uint32_t MessageUtil::get_message_count(const clan::NetGameEvent & net_event)
+{
+	return net_event.get_argument_count()/2;
+}
+
+///-------------------------------------------
 Client::Client()
 {
 	m_id	= add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);

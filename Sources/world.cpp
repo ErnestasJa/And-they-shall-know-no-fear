@@ -163,7 +163,7 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 					if(MessageUtil::get_message_count(e)==2)
 					{
-						MessageUtil::get_game_object(e,*m_player,1);
+						MessageUtil::get_game_object(e,spr,1);
 					}
 
 

@@ -224,7 +224,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			cc.object_type = EGOT_SPRITE;
 
 			MessageUtil::add_message(player_obj_create_ev,cc);
-			MessageUtil::add_game_object(player_obj_create_ev,*m_player_objects[client->get_id()]);
+			MessageUtil::add_game_object(player_obj_create_ev,m_player_objects[client->get_id()]);
 			m_net_server.send_event(player_obj_create_ev);
 
 			///siam klientui siunciame kitu zaideju objektu informacija
@@ -240,7 +240,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					c.object_type = EGOT_SPRITE;
 					
 					MessageUtil::add_message(player_obj_create_ev2,c);
-					MessageUtil::add_game_object(player_obj_create_ev2,*m_player_objects[client->get_id()]);
+					MessageUtil::add_game_object(player_obj_create_ev2,m_player_objects[client->get_id()]);
 
 					con->send_event(player_obj_create_ev2);
 				}
