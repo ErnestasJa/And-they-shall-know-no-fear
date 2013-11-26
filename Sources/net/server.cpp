@@ -20,12 +20,6 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_clients =		new Client[m_max_clients];
 	m_player_objects = new GOSprite * [m_max_clients];
 
-	loopi(m_max_clients)
-	{
-		//m_player_objects[i] = (GOSprite*) m_gom->add_game_object(EGOT_SPRITE,i);
-		m_client_cons[i].init(&m_clients[i]);
-	}
-
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
 	m_slots.connect(m_net_server.sig_client_disconnected(), this, &Server::on_client_disconnected);
 	m_slots.connect(m_net_server.sig_event_received(), this, &Server::on_event);

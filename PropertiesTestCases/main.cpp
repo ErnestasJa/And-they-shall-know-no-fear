@@ -2,6 +2,8 @@
 #include "properties\property.h"
 #include "properties\property_container.h"
 
+#include "net\message.h"
+
 #include "gtest/gtest.h"
 
 
@@ -236,6 +238,49 @@ TEST_F(PropertyTests, TestNetMultiEventOnlyChandedPropertySerialization)
 
 	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive2.get_property<uint32_t>("x"));
 	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive2.get_property<std::string>("y"));
+}
+
+void set_msg(Client & msg)
+{
+	msg.set_id(456);
+	msg.set_name("10");
+	msg.set_flag(0);
+}
+
+void check_msg(const Message & msg)
+{
+	ASSERT_EQ(456,msg.get_property<uint32_t>("id"));
+	ASSERT_EQ(std::string("10"),msg.get_property<std::string>("name").get());
+}
+Client*	m_clients;
+
+TEST_F(PropertyTests, MessagePtrDereferenceTestNoReset)
+{
+	m_clients =	new Client[4];
+
+	Client* m = &m_clients[1];
+
+	//m_clients[1]=Client();
+	set_msg(*m);
+	check_msg(*m);
+
+	ASSERT_EQ(456,m->get_id());
+	ASSERT_EQ(std::string("10"),m->get_name());
+}
+
+
+TEST_F(PropertyTests, MessagePtrDereferenceTest)
+{
+	m_clients =	new Client[4];
+
+	Client* m = &m_clients[1];
+
+	m_clients[1]=Client();
+	set_msg(*m);
+	check_msg(*m);
+
+	ASSERT_EQ(456,m->get_id());
+	ASSERT_EQ(std::string("10"),m->get_name());
 }
 
 TEST_F(PropertyTests, NumericValueSetGetTest)

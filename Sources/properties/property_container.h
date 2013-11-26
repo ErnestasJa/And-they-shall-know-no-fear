@@ -24,6 +24,7 @@ protected:
 	template <class T> Property<T>	add_property(const std::string & name);
 
 public:
+
 	PropertyContainer();
 	virtual ~PropertyContainer();
 
@@ -36,6 +37,7 @@ public:
 	bool		remove_property(const std::string & name);
 	
 	template <class T> Property<T> get_property(const std::string & name);
+	template <class T> const Property<T> get_property(const std::string & name) const;
 
 public:
 	virtual void serialize(clan::File & file) const;
@@ -100,6 +102,22 @@ Property<T> PropertyContainer::get_property(const std::string & name)
 	throw clan::Exception("Tried to get non-existing property : " + name);
 }
 
+template <class T>
+const Property<T> PropertyContainer::get_property(const std::string & name) const
+{
+	auto it = std::find_if(m_props.begin(), m_props.end(), [&name](IProperty * o){return o->get_name()==name;});
+
+	if(it!=m_props.end())
+	{
+		if(get_type_id<T>()!=(*it)->get_type())
+			throw clan::Exception("Another property already exists with the same name but different type");
+
+		return (*static_cast< Property<T> *>(*it));
+	}
+
+	///for now let's just throw exception
+	throw clan::Exception("Tried to get non-existing property : " + name);
+}
 template <class T>
 Property<T> PropertyContainer::add_property(const Property<T> & prop)
 {

@@ -92,7 +92,7 @@ void Client::set_flag(uint32_t flag)
 	m_flags = m_flags | flag;
 }
 
-uint32_t Client::get_id()
+uint32_t Client::get_id() const
 {
 	return m_id;
 }
@@ -102,7 +102,7 @@ void Client::set_id(uint32_t id)
 	m_id = id;
 }
 
-std::string Client::get_name()
+std::string Client::get_name() const
 {
 	return m_name;
 }

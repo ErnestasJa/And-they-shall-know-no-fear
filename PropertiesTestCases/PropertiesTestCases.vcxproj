@@ -74,6 +74,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Sources\net\message.cpp" />
     <ClCompile Include="..\Sources\precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -84,6 +85,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Sources\net\message.h" />
     <ClInclude Include="..\Sources\precomp.h" />
     <ClInclude Include="..\Sources\properties\iproperty.h" />
     <ClInclude Include="..\Sources\properties\property.h" />

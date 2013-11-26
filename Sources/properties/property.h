@@ -90,7 +90,7 @@ public:
 		}
 	}
 
-	const T & get()
+	const T & get() const
 	{
 		return m_data->data;
 	}

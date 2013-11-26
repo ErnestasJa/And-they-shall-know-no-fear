@@ -217,11 +217,11 @@ public:
 	bool check_flag(uint32_t flag);
 	void set_flag(uint32_t flag);
 
-	uint32_t get_id();
+	uint32_t get_id() const;
 	void set_id(uint32_t id);
 
 	void set_name(const std::string & name);
-	std::string get_name();
+	std::string get_name() const;
 
 protected:
 	Property<uint32_t>		m_flags;
