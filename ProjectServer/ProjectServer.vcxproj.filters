@@ -59,18 +59,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Sources\net\server.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Sources\precomp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Sources\net\server_app.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Sources\net\message.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Sources\properties\iproperty.h">
       <Filter>Source Files\properties</Filter>
     </ClInclude>
@@ -86,12 +74,6 @@
     <ClInclude Include="..\Sources\properties\property_types.h">
       <Filter>Source Files\properties</Filter>
     </ClInclude>
-    <ClInclude Include="..\Sources\net\common.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Sources\net\server_client.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Sources\game_objects\game_object.h">
       <Filter>Source Files\game_objects</Filter>
     </ClInclude>
@@ -106,6 +88,24 @@
     </ClInclude>
     <ClInclude Include="..\Sources\game_objects\go_sprite.h">
       <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\server_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\server_app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\precomp.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

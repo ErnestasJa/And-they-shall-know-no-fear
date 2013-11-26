@@ -98,6 +98,147 @@ TEST_F(PropertyTests, TestXmlSerialization)
 	ASSERT_EQ(p.get_property<std::string>("y"),c.get_property<std::string>("y"));
 }
 
+TEST_F(PropertyTests, TestNetSerialization) 
+{
+	PropertyContainer pc_send, p3, pc_receive;
+
+	clan::NetGameEvent msg("msg");
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+	
+
+	p3.add_property<uint32_t>("next_level_property", 12345);
+	p3.add_property<std::string>("right", "here");
+
+	pc_send.add_property<uint32_t>("x", 15);
+	pc_send.add_property<std::string>("y", "hello world!");
+	pc_send.add_property<PropertyContainer>("other props")=p3;
+
+	/// send, receive
+	pc_send.net_serialize(val,false);
+	msg.add_argument(val);
+
+	clan::NetGameEventValue v = msg.get_argument(0);
+	pc_receive.net_deserialize(v);
+
+	///test
+	ASSERT_TRUE(pc_receive.has_property("x"));
+	ASSERT_TRUE(pc_receive.has_property("y"));
+	ASSERT_TRUE(pc_receive.has_property("other props"));
+
+	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other props");
+	ASSERT_TRUE(pc.has_property("next_level_property"));
+	ASSERT_TRUE(pc.has_property("right"));
+
+	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive.get_property<uint32_t>("x"));
+	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive.get_property<std::string>("y"));
+}
+
+TEST_F(PropertyTests, TestNetMultiEventSerialization) 
+{
+	PropertyContainer pc_send, p3, pc_receive, pc_receive2;
+
+	clan::NetGameEvent msg("msg"), msg2("msg");
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex), val2(clan::NetGameEventValue::complex);
+	
+
+	p3.add_property<uint32_t>("next_level_property", 12345);
+	p3.add_property<std::string>("right", "here");
+
+	pc_send.add_property<uint32_t>("x", 15);
+	pc_send.add_property<std::string>("y", "hello world!");
+	pc_send.add_property<PropertyContainer>("other props")=p3;
+
+	/// send, receive
+	pc_send.net_serialize(val,false);
+	msg.add_argument(val);
+
+	clan::NetGameEventValue v = msg.get_argument(0);
+	pc_receive.net_deserialize(v);
+
+	pc_send.net_serialize(val2,false);
+	msg2.add_argument(val2);
+
+	clan::NetGameEventValue v2 = msg2.get_argument(0);
+	pc_receive2.net_deserialize(v2);
+
+	///test 1st msg
+	ASSERT_TRUE(pc_receive.has_property("x"));
+	ASSERT_TRUE(pc_receive.has_property("y"));
+	ASSERT_TRUE(pc_receive.has_property("other props"));
+
+	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other props");
+	ASSERT_TRUE(pc.has_property("next_level_property"));
+	ASSERT_TRUE(pc.has_property("right"));
+
+	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive.get_property<uint32_t>("x"));
+	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive.get_property<std::string>("y"));
+
+	///test 2nd msg
+	ASSERT_TRUE(pc_receive2.has_property("x"));
+	ASSERT_TRUE(pc_receive2.has_property("y"));
+	ASSERT_TRUE(pc_receive2.has_property("other props"));
+
+	PropertyContainer pc2 = pc_receive2.get_property<PropertyContainer>("other props");
+	ASSERT_TRUE(pc2.has_property("next_level_property"));
+	ASSERT_TRUE(pc2.has_property("right"));
+
+	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive2.get_property<uint32_t>("x"));
+	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive2.get_property<std::string>("y"));
+}
+
+TEST_F(PropertyTests, TestNetMultiEventOnlyChandedPropertySerialization) 
+{
+	PropertyContainer pc_send, p3, pc_receive, pc_receive2;
+
+	clan::NetGameEvent msg("msg"), msg2("msg");
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex), val2(clan::NetGameEventValue::complex);
+	
+
+	p3.add_property<uint32_t>("next_level_property", 12345);
+	p3.add_property<std::string>("right", "here");
+
+	pc_send.add_property<uint32_t>("x", 15);
+	pc_send.add_property<std::string>("y", "hello world!");
+	pc_send.add_property<PropertyContainer>("other props")=p3;
+
+	/// send, receive
+	pc_send.net_serialize(val,true);
+	msg.add_argument(val);
+
+	clan::NetGameEventValue v = msg.get_argument(0);
+	pc_receive.net_deserialize(v);
+
+	pc_send.net_serialize(val2,true);
+	msg2.add_argument(val2);
+
+	clan::NetGameEventValue v2 = msg2.get_argument(0);
+	pc_receive2.net_deserialize(v2);
+
+	///test 1st msg
+	ASSERT_TRUE(pc_receive.has_property("x"));
+	ASSERT_TRUE(pc_receive.has_property("y"));
+	ASSERT_TRUE(pc_receive.has_property("other props"));
+
+	PropertyContainer pc = pc_receive.get_property<PropertyContainer>("other props");
+	ASSERT_TRUE(pc.has_property("next_level_property"));
+	ASSERT_TRUE(pc.has_property("right"));
+
+	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive.get_property<uint32_t>("x"));
+	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive.get_property<std::string>("y"));
+
+	///test 2nd msg
+	ASSERT_TRUE(pc_receive2.has_property("x"));
+	ASSERT_TRUE(pc_receive2.has_property("y"));
+	ASSERT_TRUE(pc_receive2.has_property("other props"));
+
+	PropertyContainer pc2 = pc_receive2.get_property<PropertyContainer>("other props");
+	ASSERT_TRUE(pc2.has_property("next_level_property"));
+	ASSERT_TRUE(pc2.has_property("right"));
+
+	ASSERT_EQ(pc_send.get_property<uint32_t>("x"),pc_receive2.get_property<uint32_t>("x"));
+	ASSERT_EQ(pc_send.get_property<std::string>("y"),pc_receive2.get_property<std::string>("y"));
+}
+
 TEST_F(PropertyTests, NumericValueSetGetTest)
 {
 	PropertyContainer p;

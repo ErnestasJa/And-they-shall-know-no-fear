@@ -26,7 +26,7 @@ Client * ServerClientConnection::get_client()
 void ServerClientConnection::send_message(const Message & msg, bool only_changed)
 {
 	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
-	msg.net_serialize(val);
+	msg.net_serialize(val,only_changed);
 
 	clan::NetGameEvent e("msg");
 	e.add_argument(msg.get_type());

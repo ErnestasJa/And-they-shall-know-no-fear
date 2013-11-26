@@ -17,7 +17,7 @@ public:
 public:
 	static ServerClientConnection * get_client(clan::NetGameConnection * connection);
 
-	void send_message(const Message & msg, bool only_changed = true);
+	void send_message(const Message & msg, bool only_changed = false);
 	void send_event(const clan::NetGameEvent & e);
 	void connect(clan::NetGameConnection * connection);
 	clan::NetGameConnection * get_connection();
