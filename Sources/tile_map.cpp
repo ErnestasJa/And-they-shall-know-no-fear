@@ -6,6 +6,14 @@
 
 class TileMap_Impl
 {
+	
+    protected:
+    clan::Canvas						m_canvas;
+    std::map<clan::vec2, TileChunk>		m_chunks;
+    std::map<uint8_t, clan::Sprite>     m_sprites;
+
+	clan::XMLResourceDocument m_doc;
+
     public:
 
     TileMap_Impl(clan::Canvas c)
@@ -37,6 +45,11 @@ class TileMap_Impl
     {
         m_sprites.erase(id);
     }
+
+	bool load_resource_document(const std::string & file_name)
+	{
+		m_doc = clan::XMLResourceDocument(file_name);
+	}
 
     bool is_chunk_visible(const clan::vec2 & chunk_pos, const clan::Rect & render_rect)
     {
@@ -213,11 +226,6 @@ class TileMap_Impl
 
 		return true;
 	}
-
-    protected:
-    clan::Canvas						m_canvas;
-    std::map<clan::vec2, TileChunk>		m_chunks;
-    std::map<uint8_t, clan::Sprite>     m_sprites;
 };
 
 TileMap::TileMap()
@@ -247,6 +255,11 @@ clan::Sprite TileMap::get_sprite(uint8_t id)
 void TileMap::remove_sprite(uint8_t id)
 {
     impl->remove_sprite(id);
+}
+
+bool TileMap::load_resource_document(const std::string & file_name)
+{
+
 }
 
 bool TileMap::is_chunk_visible(const clan::vec2 & chunk_pos, const clan::Rect & render_rect)

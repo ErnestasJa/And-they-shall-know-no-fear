@@ -44,9 +44,10 @@ bool World::init()
 	m_canvas = clan::Canvas(m_window);
 
 	// Setup resources
-	m_resources =   clan::XMLResourceManager::create(clan::XMLResourceDocument("resources.xml"));
+	clan::XMLResourceDocument doc("resources.xml");
+	m_resources =   clan::XMLResourceManager::create(doc);
 	m_run = true;
-	
+
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &World::on_key_up);
 	m_key_down = m_window.get_ic().get_keyboard().sig_key_down().connect(this, &World::on_key_down);
 	
