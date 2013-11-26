@@ -2,7 +2,6 @@
 - editor, add edge_pan sensitivity
 + editor, change_tile_sprite add layer selection
 + editor, change_tile_sprite add sprite removal (type set to no tile)
-- editor, add sprite sheet loading
 + editor, added sprite hold draw 
 + editor, divide draw world axis
 - editor, divide draw world into separate functions axis
@@ -14,3 +13,4 @@
 - editor, add toolbar
 - editor, show hovered tiles layer frames
 - editor, add sprite sheet loading
+- world connect, typing in text boxes

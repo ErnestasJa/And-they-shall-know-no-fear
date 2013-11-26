@@ -6,31 +6,58 @@
 
 class TileMap_Impl
 {
-    public:
+
+protected:
+
+    clan::Canvas						m_canvas;
+    std::map<clan::vec2, TileChunk>		m_chunks;
+    //std::map<uint8_t, clan::Sprite>     m_sprites; DEBUG
+	std::map<uint8_t, std::pair<std::string, clan::Sprite> >     m_sprites;
+
+public:
 
     TileMap_Impl(clan::Canvas c)
     {
         m_canvas = c;
     }
 
-    bool add_sprite(clan::Sprite spr, uint8_t id)
+	bool add_sprite(clan::Sprite spr, uint8_t id)
     {
         if(m_sprites.find(id)==m_sprites.end())
         {
-            m_sprites[id]=spr;
+			m_sprites[id].second=spr;
             return true;
         }
+		return false;
+    }
 
-        return false;
+    bool add_sprite(clan::Sprite spr, std::string path, uint8_t id)
+    {
+        if(m_sprites.find(id)==m_sprites.end())
+        {
+			std::pair<std::string,clan::Sprite> sprite_in_sheet = std::make_pair(path,spr);
+            m_sprites[id] = sprite_in_sheet;
+            return true;
+        }
+		return false;
     }
 
     clan::Sprite get_sprite(uint8_t id)
     {
         auto spr = m_sprites.find(id);
         if(spr!=m_sprites.end())
-            return spr->second;
+            return spr->second.second;
+		throw clan::Exception("get_sprite by id failed to get sprite sheet");
+    }
 
-        return clan::Sprite();
+	clan::Sprite get_sprite(std::string path)
+    {
+		for (auto i=m_sprites.begin(); i!=m_sprites.end(); ++i)
+		{
+			if(i->second.first==path)
+				return i->second.second;
+		}
+		throw clan::Exception("get_sprite by path failed to get sprite sheet");
     }
 
     void remove_sprite(uint8_t id)
@@ -143,7 +170,7 @@ class TileMap_Impl
 
 			f.close();
 		}
-		catch(clan::Exception & e)
+		catch(clan::Exception &)
 		{
 			return false;
 		}
@@ -214,10 +241,6 @@ class TileMap_Impl
 		return true;
 	}
 
-    protected:
-    clan::Canvas						m_canvas;
-    std::map<clan::vec2, TileChunk>		m_chunks;
-    std::map<uint8_t, clan::Sprite>     m_sprites;
 };
 
 TileMap::TileMap()
@@ -239,9 +262,21 @@ bool TileMap::add_sprite(clan::Sprite spr, uint8_t id)
     return false;
 }
 
+bool TileMap::add_sprite(clan::Sprite spr, std::string path, uint8_t id)
+{
+    impl->add_sprite(spr,path,id);
+
+    return false;
+}
+
 clan::Sprite TileMap::get_sprite(uint8_t id)
 {
     return impl->get_sprite(id);
+}
+
+clan::Sprite TileMap::get_sprite(std::string path)
+{
+    return impl->get_sprite(path);
 }
 
 void TileMap::remove_sprite(uint8_t id)
