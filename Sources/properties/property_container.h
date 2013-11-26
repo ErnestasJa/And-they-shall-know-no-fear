@@ -24,7 +24,6 @@ protected:
 	template <class T> Property<T>	add_property(const std::string & name);
 
 public:
-
 	PropertyContainer();
 	virtual ~PropertyContainer();
 
@@ -50,6 +49,7 @@ public:
 	virtual void xml_deserialize(clan::DomElement & e);
 
 public:
+
 	bool operator !=(const PropertyContainer & o) const
 	{
 		return this!=&o; ///FIX ME: fast, but will it give good results?

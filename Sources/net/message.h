@@ -39,11 +39,18 @@ class Message: public PropertyContainer
 public:
 	Property<uint32_t> timestamp; ///time in ms
 
+	Message & operator = (const Message &m)
+	{
+		for(uint32_t i = 0; i < m.m_props.size(); i++)
+			m_props[i]->set(m.m_props[i]);
+
+		return *this;
+	}
+
 	Message()
 	{
 		timestamp = add_property<uint32_t>("ts",0);
 	}
-
 ///------Message factory-------
 protected:
 	typedef Message * (*msg_create_func)();
@@ -211,6 +218,7 @@ class Client: public Message
 {
 	DEF_MSG(Client,MSG_CLIENT_INFO)
 public:
+	Client(const Client & c);
 	Client();
 
 	void clear_flag(uint32_t flag);

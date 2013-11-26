@@ -72,7 +72,7 @@ uint32_t MessageUtil::get_message_count(const clan::NetGameEvent & net_event)
 ///-------------------------------------------
 Client::Client()
 {
-	m_id	= add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);
+	m_id	= add_property<uint32_t>("id",1,EPF_ALWAYS_SEND);
 	m_flags = add_property<uint32_t>("flags",0,EPF_ALWAYS_SEND);
 	m_name  = add_property<std::string>("name","",EPF_ALWAYS_SEND);
 }
