@@ -50,6 +50,7 @@ protected:
 	clan::Canvas			m_canvas;
 	clan::GameTime			m_game_time;
 
+	///Kameros poslinki
 	clan::vec2 m_pos, 
 		m_pan, 
 		m_drag_offset, 
@@ -71,7 +72,10 @@ protected:
 	clan::Window				*m_sprite_selection_window, *m_editor_window;
 	SpriteFrameSelection		*m_sprite_frame_selection;
 
-	///Kameros poslinki
+
 	clan::Slot m_frame_select;
+	std::string m_selected_sprite_sheet;
 	int32_t m_selected_frame, m_selected_layer;
+
+
 };

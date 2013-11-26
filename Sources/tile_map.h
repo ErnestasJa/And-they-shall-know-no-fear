@@ -15,11 +15,12 @@ class TileMap
     bool is_null() const { return !impl; }
     void throw_if_null() { if (!impl) throw clan::Exception("TileMap is null"); }
 
-    bool			add_sprite(clan::Sprite spr, uint8_t id);
+	bool			add_sprite(clan::Sprite spr, uint8_t id);
+	bool			add_sprite(clan::Sprite spr, std::string path, uint8_t id);
     clan::Sprite	get_sprite(uint8_t id);
+	clan::Sprite	get_sprite(std::string path);
     void			remove_sprite(uint8_t id);
 
-	bool load_resource_document(const std::string & file_name);
 
     bool		is_chunk_visible(const clan::vec2 & chunk_pos, const clan::Rect & render_rect);
     TileChunk	add_chunk( const clan::vec2 & pos );

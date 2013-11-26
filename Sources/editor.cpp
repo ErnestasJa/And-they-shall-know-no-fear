@@ -209,7 +209,7 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 {
 	clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
 	clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
-	clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4",chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
+	clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4", chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
 
 	TileChunk c=m_tile_map.get_chunk(chunk_pos);
 
@@ -217,7 +217,8 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 		c = m_tile_map.add_chunk(chunk_pos);
 
 	if(remove)
-			c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
+		c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
+
 	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
 	{
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
@@ -260,7 +261,7 @@ void editor::on_input(const clan::InputEvent & e)
 			}
 			else if (e.type == clan::InputEvent::pointer_moved)
 			{
-				//edge_pan(e.mouse_pos);
+				//edge_pan(e.mouse_pos); DEBUG
 				if (e.device.get_keycode(clan::mouse_left))
 					change_tile_sprite(e.mouse_pos);
 				else if (e.device.get_keycode(clan::mouse_right))
