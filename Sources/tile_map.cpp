@@ -3,6 +3,135 @@
 #include "tile_map.h"
 #include "tile_chunk.h"
 
+enum EMapSectionType
+{
+	EMST_RESOURCE_FILE=1,
+	EMST_SPRITE_SHEETS=2,
+	EMST_MAP=3,
+};
+
+struct MS_Resource
+{
+	std::string res_file;
+
+	void read(clan::File & f)
+	{
+		res_file	= f.read_string_a();
+	}
+
+	void write(clan::File & f)
+	{
+		f.write_string_a(res_file);
+	}
+};
+
+struct MS_SpriteSheets
+{
+	std::vector<std::pair<uint8_t, std::string>> sprite_sheets;
+
+	void read(clan::File & f)
+	{
+		uint32_t count	= f.read_uint32();
+
+		for(uint32_t i = 0; i < count; i++) 
+		{
+			sprite_sheets.push_back(std::make_pair(f.read_uint8(),f.read_string_a()));
+		}
+	}
+
+	void write(clan::File & f)
+	{
+		f.write_uint32(sprite_sheets.size());
+		
+		for(uint32_t i = 0; i < sprite_sheets.size(); i++)
+		{
+			f.write_uint8(sprite_sheets[i].first);
+			f.write_string_a(sprite_sheets[i].second);
+		}
+	}
+};
+
+struct MapSection
+{
+	uint32_t type;
+	uint32_t data_start;
+	uint32_t data_bytes;
+	uint32_t next_section_ofs;
+
+	void read(clan::File & f)
+	{
+		type	= f.read_uint32();
+		data_start	= f.read_uint32();
+		data_bytes	= f.read_uint32();
+		next_section_ofs = f.read_uint32();
+	}
+
+	void write(clan::File & f)
+	{
+		f.write_uint32(type);
+		f.write_uint32(data_start);
+		f.write_uint32(data_bytes);
+		f.write_uint32(next_section_ofs);
+	}
+};
+
+struct MapHeader
+{
+	int32_t version;
+	int32_t tile_size;
+
+	int32_t tile_count;
+	int32_t tile_count_in_chunk;
+	int32_t chunk_edge_length_pixels;
+
+	int32_t ground_layer_count;
+	int32_t object_layer_count;
+
+	uint32_t section_start;
+
+	void write(clan::File & f)
+	{
+		f.write_int32(VERSION);
+
+		f.write_int32(TILE_SIZE);
+		f.write_int32(TILE_COUNT);
+		f.write_int32(TILE_COUNT_IN_CHUNK);
+		f.write_int32(CHUNK_EDGE_LENGTH_PIXELS);
+
+		f.write_int32(GROUND_LAYER_COUNT);
+		f.write_int32(OBJECT_LAYER_COUNT);
+	}
+
+	void read(clan::File & f)
+	{
+		version = f.read_int32();
+
+		tile_size	= f.read_int32();
+		tile_count	= f.read_int32();
+
+		tile_count_in_chunk = f.read_int32();
+		chunk_edge_length_pixels = f.read_int32();
+
+		ground_layer_count = f.read_int32();
+		object_layer_count = f.read_int32();
+
+		section_start = f.get_position();
+	}
+
+	bool check() ///TODO: add nice error output.
+	{
+		return version == VERSION &&
+
+		tile_size	== TILE_SIZE &&
+		tile_count	== TILE_COUNT &&
+
+		tile_count_in_chunk == TILE_COUNT_IN_CHUNK &&
+		chunk_edge_length_pixels == CHUNK_EDGE_LENGTH_PIXELS &&
+
+		ground_layer_count == GROUND_LAYER_COUNT &&
+		object_layer_count == OBJECT_LAYER_COUNT;
+	}
+};
 
 class TileMap_Impl
 {
@@ -14,6 +143,9 @@ protected:
     //std::map<uint8_t, clan::Sprite>     m_sprites; DEBUG
 	std::map<uint8_t, std::pair<std::string, clan::Sprite> >     m_sprites;
 
+	std::string					m_doc_file_name;
+	clan::XMLResourceDocument	m_doc;
+
 public:
 
     TileMap_Impl(clan::Canvas c)
@@ -21,24 +153,16 @@ public:
         m_canvas = c;
     }
 
-	bool add_sprite(clan::Sprite spr, uint8_t id)
+    bool add_sprite(std::string resource_id, uint8_t id)
     {
         if(m_sprites.find(id)==m_sprites.end())
         {
-			m_sprites[id].second=spr;
-            return true;
-        }
-		return false;
-    }
-
-    bool add_sprite(clan::Sprite spr, std::string path, uint8_t id)
-    {
-        if(m_sprites.find(id)==m_sprites.end())
-        {
-			std::pair<std::string,clan::Sprite> sprite_in_sheet = std::make_pair(path,spr);
+			clan::Sprite spr = clan::Sprite::load(m_canvas,"sprite_sheet_list/"+resource_id,m_doc);
+			std::pair<std::string,clan::Sprite> sprite_in_sheet = std::make_pair(resource_id,spr);
             m_sprites[id] = sprite_in_sheet;
             return true;
         }
+
 		return false;
     }
 
@@ -50,11 +174,11 @@ public:
 		throw clan::Exception("get_sprite by id failed to get sprite sheet");
     }
 
-	clan::Sprite get_sprite(std::string path)
+	clan::Sprite get_sprite(std::string resource_id)
     {
 		for (auto i=m_sprites.begin(); i!=m_sprites.end(); ++i)
 		{
-			if(i->second.first==path)
+			if(i->second.first==resource_id)
 				return i->second.second;
 		}
 		throw clan::Exception("get_sprite by path failed to get sprite sheet");
@@ -65,9 +189,15 @@ public:
         m_sprites.erase(id);
     }
 
-	bool load_resource_document(const std::string & file_name)
+	void load_resource_document(const std::string & file_name)
 	{
-		m_doc = clan::XMLResourceDocument(file_name);
+		m_doc_file_name = file_name;
+		m_doc = clan::XMLResourceDocument(m_doc_file_name);
+	}
+
+	clan::XMLResourceDocument get_resource_document()
+	{
+		return m_doc;
 	}
 
     bool is_chunk_visible(const clan::vec2 & chunk_pos, const clan::Rect & render_rect)
@@ -141,56 +271,11 @@ public:
 
     }
 
-	bool load(TileMap map, const std::string & file)
-	{
-		m_chunks.clear();
+	void write_map_data(clan::File & f)
+	{	
+		f.write_uint32(m_chunks.size());
 
-		try
-		{
-			clan::File f(file,clan::File::open_existing,clan::File::access_read);
-
-			if(f.is_null())
-				return false;
-
-			verify_header(f);
-
-			while(f.get_position()<f.get_size())
-			{
-				int32_t x = f.read_int32();
-				int32_t y = f.read_int32();
-
-				TileChunk c = add_chunk(map, clan::vec2(x,y));
-
-				for(int32_t i = 0; i < LAYER_COUNT; i++)
-				{
-					TileLayer & l = c.get_tile_layer(i);
-					for(int32_t j = 0; j < TILE_COUNT_IN_CHUNK; j++)
-					{
-						l.tile[j].type=f.read_uint8();
-						l.tile[j].sprite_ID=f.read_uint8();
-						l.tile[j].sprite_frame=f.read_uint16();
-					}
-				}
-			}
-
-			f.close();
-		}
-		catch(clan::Exception &)
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	bool save(const std::string & file)
-	{
-
-		clan::File f(file,clan::File::create_always,clan::File::access_write);
-
-		write_header(f);
-
-		for(std::map<clan::vec2, TileChunk>::iterator m = m_chunks.begin(); m != m_chunks.end(); m++)
+		for(auto m = m_chunks.begin(); m != m_chunks.end(); m++)
 		{
 			TileChunk c = m->second;
 
@@ -208,6 +293,138 @@ public:
 				}
 			}
 		}
+	}
+
+	void read_map_data(TileMap map, clan::File & f)
+	{
+		uint32_t chunk_count = f.read_uint32();
+
+		for(uint32_t i = 0; i < chunk_count; i++)
+		{
+			int32_t x = f.read_int32();
+			int32_t y = f.read_int32();
+
+			TileChunk c = add_chunk(map, clan::vec2(x,y));
+
+			for(int32_t i = 0; i < LAYER_COUNT; i++)
+			{
+				TileLayer & l = c.get_tile_layer(i);
+				for(int32_t j = 0; j < TILE_COUNT_IN_CHUNK; j++)
+				{
+					l.tile[j].type=f.read_uint8();
+					l.tile[j].sprite_ID=f.read_uint8();
+					l.tile[j].sprite_frame=f.read_uint16();
+				}
+			}
+		}
+	}
+
+	bool load(TileMap map, const std::string & file)
+	{
+		m_chunks.clear();
+
+		try
+		{
+			clan::File f(file,clan::File::open_existing,clan::File::access_read);
+
+			if(f.is_null())
+				return false;
+
+			MapHeader h;
+			h.read(f);
+
+			if(h.check())
+			{
+				
+				///all is fine, let's do zis
+				while(f.get_position()<f.get_size())
+				{
+					MapSection ms;
+					ms.read(f);
+
+					switch(ms.type)
+					{
+					case EMST_RESOURCE_FILE:
+						{
+							MS_Resource s;
+							s.read(f);
+							this->load_resource_document(s.res_file);
+							break;
+						}
+					case EMST_SPRITE_SHEETS:
+						{
+							MS_SpriteSheets s;
+							s.read(f);
+							
+							for(auto it = s.sprite_sheets.begin(); it != s.sprite_sheets.end(); it++)
+							{
+								
+							}
+
+							break;
+						}
+					case EMST_MAP:
+						{
+							read_map_data(map,f);
+
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				///all could have been fine, but it wasn't..
+				throw clan::Exception("Map could not be loaded.");
+
+			}
+
+			f.close();
+		}
+		catch(clan::Exception &)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	bool save(const std::string & file)
+	{
+		clan::File f(file,clan::File::create_always,clan::File::access_write);
+
+		MapHeader h;
+		h.write(f);
+		
+		uint32_t pos = f.get_position();
+
+		MapSection ms;
+
+		///write chunks
+		ms.type = EMST_MAP;
+		ms.write(f);
+		
+		write_map_data(f);
+
+		///write resource file info
+		ms.type = EMST_RESOURCE_FILE;
+		ms.write(f);
+
+		MS_Resource r;
+		r.res_file = m_doc_file_name;
+		r.write(f);
+
+		///write resource file info
+		ms.type = EMST_SPRITE_SHEETS;
+		ms.write(f);
+
+		MS_SpriteSheets ss;
+		
+		for(auto it = m_sprites.begin(); it != m_sprites.end(); it++)
+		{
+			ss.sprite_sheets.push_back(std::make_pair(it->first,it->second.first));
+		}
+		ss.write(f);
 
 		f.close();
 
@@ -259,16 +476,9 @@ TileMap::TileMap(clan::Canvas & c)
 
 TileMap::~TileMap(){}
 
-bool TileMap::add_sprite(clan::Sprite spr, uint8_t id)
+bool TileMap::add_sprite(std::string path, uint8_t id)
 {
-    impl->add_sprite(spr,id);
-
-    return false;
-}
-
-bool TileMap::add_sprite(clan::Sprite spr, std::string path, uint8_t id)
-{
-    impl->add_sprite(spr,path,id);
+    impl->add_sprite(path,id);
 
     return false;
 }
@@ -288,9 +498,14 @@ void TileMap::remove_sprite(uint8_t id)
     impl->remove_sprite(id);
 }
 
-bool TileMap::load_resource_document(const std::string & file_name)
+void TileMap::load_resource_document(const std::string & file_name)
 {
+	impl->load_resource_document(file_name);
+}
 
+clan::XMLResourceDocument TileMap::get_resource_document()
+{
+	return impl->get_resource_document();
 }
 
 bool TileMap::is_chunk_visible(const clan::vec2 & chunk_pos, const clan::Rect & render_rect)

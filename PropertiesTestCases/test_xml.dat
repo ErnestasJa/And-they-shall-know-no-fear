@@ -1,0 +1,10 @@
+<property_containter>
+	<property name="x" flags="0" data="15"/>
+	<property name="y" flags="0" data="hello world!"/>
+	<property name="other_data" flags="0">
+		<property_containter>
+			<property name="w" flags="1" data="3452816845"/>
+			<property name="z" flags="0" data="halo"/>
+		</property_containter>
+	</property>
+</property_containter>

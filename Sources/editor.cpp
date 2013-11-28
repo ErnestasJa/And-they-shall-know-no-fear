@@ -10,6 +10,7 @@ editor::editor(clan::DisplayWindow &display_window)
 	m_sprite_frame_selection = nullptr;
 	m_selected_frame = -1;
 	m_selected_layer = 0;
+	m_selected_sprite_sheet = -1;
 	m_game_time = clan::GameTime(20,60);
 }
 
@@ -29,14 +30,15 @@ void editor::init_gui()
 	m_editor_window->set_visible(true);
 	m_editor_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_editor_window);
 	
-	init_gui_layer_dropbox(m_editor_window, clan::Rect(10, 30, clan::Size(80, 25)));
+	init_gui_sprite_sheet_dropbox(m_editor_window, clan::Rect(10, 30, clan::Size(80, 25)));
+	init_gui_layer_dropbox(m_editor_window, clan::Rect(10, 60, clan::Size(80, 25)));
 
 	m_button_sprite_frame = new clan::PushButton(m_editor_window);
-	m_button_sprite_frame->set_geometry(clan::Rect( 10, 60, clan::Size(80, 25)));
+	m_button_sprite_frame->set_geometry(clan::Rect( 10, 90, clan::Size(80, 25)));
 	m_button_sprite_frame->func_clicked().set(this, &editor::on_button_clicked, m_button_sprite_frame);
 	m_button_sprite_frame->set_text("Select frame");
 
-	init_gui_axis_checkbox(m_editor_window, 10, 90, clan::Size(15, 15));
+	init_gui_axis_checkbox(m_editor_window, 10, 120, clan::Size(15, 15));
 
 	m_sprite_selection_window = new clan::Window(m_gui_root);
 	m_sprite_selection_window->set_geometry(clan::Rect(200,100,clan::Size(500,500)));
@@ -44,7 +46,7 @@ void editor::init_gui()
 	m_sprite_selection_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_sprite_selection_window);
 
 	m_button_select_resource_file=new clan::PushButton(m_editor_window);
-	m_button_select_resource_file->set_geometry(clan::Rect( 10, 110, clan::Size(80, 25)));
+	m_button_select_resource_file->set_geometry(clan::Rect( 10, 150, clan::Size(80, 25)));
 	m_button_select_resource_file->set_text("Select resource");
 	m_button_select_resource_file->func_clicked().set(this, &editor::on_button_clicked, m_button_select_resource_file);
 
@@ -71,6 +73,44 @@ void editor::init_gui_layer_dropbox(clan::Window * root, const clan::Rect pos)
 	m_combo_layer->func_item_selected().set(this,&editor::on_layer_select);
 }
 
+void editor::init_gui_sprite_sheet_dropbox(clan::Window * root, const clan::Rect pos)
+{
+	m_combo_sprite_sheet = new clan::ComboBox(root);
+	m_combo_sprite_sheet->set_geometry(pos);
+
+	
+
+	m_combo_sprite_sheet->set_popup_menu(m_combo_menu_sprite_sheet);
+	m_combo_sprite_sheet->set_text("Select sprite sheet");
+	m_combo_sprite_sheet->func_item_selected().set(this,&editor::on_sprite_sheet_select);
+}
+
+void editor::update_gui_sprite_sheet_dropbox()
+{
+	m_combo_menu_sprite_sheet.clear();
+
+	clan::XMLResourceDocument d = m_tile_map.get_resource_document();
+
+	std::vector<std::string> names = d.get_resource_names("sprite_sheet_list/"); ///gale reikalingas "/"
+
+	for(auto it = names.begin(); it != names.end(); it++)
+	{
+		std::string name = (*it);
+		clan::DomElement el = d.get_resource("sprite_sheet_list/"+name).get_element();
+
+		if(el.get_tag_name()=="sprite")
+		{
+			if (el.has_attribute("name"))
+			{
+				m_combo_menu_sprite_sheet.insert_item(el.get_attribute("name"));
+			}
+		}
+	}
+
+	m_combo_sprite_sheet->set_popup_menu(m_combo_menu_sprite_sheet);
+}
+
+
 void editor::init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size)
 {
 	m_checkbox_t = new clan::CheckBox(root);
@@ -89,8 +129,7 @@ void editor::init_gui_axis_checkbox(clan::Window * root, int left, int right, cl
 void editor::init_level()
 {
 	m_tile_map = TileMap(m_canvas);
-	m_tile_map.add_sprite(clan::Sprite::resource(m_canvas,"level_gfx",m_resources),0);
-	m_tile_map.load("Level/Level.map");
+	//m_tile_map.load("Level/Level.map");
 }
 
 bool editor::init()
@@ -109,6 +148,7 @@ bool editor::init()
 
 	init_level();
 	init_gui();
+	update_gui_sprite_sheet_dropbox();
 
 	return true;
 }
@@ -180,6 +220,7 @@ bool editor::pause()
 	m_key_up.disable();
 	return true;
 }
+
 bool editor::resume()
 {
 	State::resume();
@@ -187,6 +228,7 @@ bool editor::resume()
 	m_key_up.enable();
 	return true;
 }
+
 bool editor::exit()
 {
 	m_tile_map.save("Level/Level.map");
@@ -201,8 +243,14 @@ void editor::on_frame_select(int32_t frame)
 
 void editor::on_layer_select(int32_t layer)
 {
-	clan::Console::write_line("Selected layer:%1",layer); //DEBUG
 	m_selected_layer = layer;
+	clan::Console::write_line("Selected layer:%1",layer); //DEBUG
+}
+
+void editor::on_sprite_sheet_select(int32_t sprite_sheet)
+{
+	m_selected_sprite_sheet = sprite_sheet;
+	clan::Console::write_line("Selected sprite sheet:%1",sprite_sheet); //DEBUG
 }
 
 void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)

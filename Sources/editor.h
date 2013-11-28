@@ -24,12 +24,15 @@ protected:
 	void on_button_clicked(clan::PushButton * btn);
 	void on_frame_select(int32_t frame);
 	void on_layer_select(int32_t layer);
+	void on_sprite_sheet_select(int32_t sprite_sheet);
 	bool on_close_wnd(clan::GUIComponent * wnd);
 
-	///game specific funcs
+	///editor specific funcs
 	void init_level();
 	void init_gui();
 	void init_gui_layer_dropbox(clan::Window * root, const clan::Rect pos);
+	void init_gui_sprite_sheet_dropbox(clan::Window * root, const clan::Rect pos);
+	void update_gui_sprite_sheet_dropbox();
 	void init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size);
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis(bool t, bool c, bool w);
@@ -66,16 +69,15 @@ protected:
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
 	clan::PushButton			*m_button_sprite_frame, *m_button_select_resource_file;
-	clan::ComboBox				*m_combo_layer;
-	clan::PopupMenu				m_combo_menu_layer;
+	clan::ComboBox				*m_combo_layer, *m_combo_sprite_sheet;
+	clan::PopupMenu				m_combo_menu_layer, m_combo_menu_sprite_sheet;
 	clan::CheckBox				*m_checkbox_t, *m_checkbox_c, *m_checkbox_o;
 	clan::Window				*m_sprite_selection_window, *m_editor_window;
 	SpriteFrameSelection		*m_sprite_frame_selection;
 
 
 	clan::Slot m_frame_select;
-	std::string m_selected_sprite_sheet;
-	int32_t m_selected_frame, m_selected_layer;
+	int32_t m_selected_frame, m_selected_layer, m_selected_sprite_sheet;
 
 
 };
