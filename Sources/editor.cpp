@@ -102,7 +102,8 @@ void editor::update_gui_sprite_sheet_dropbox()
 		{
 			if (el.has_attribute("name"))
 			{
-				m_combo_menu_sprite_sheet.insert_item(el.get_attribute("name"));
+				std::string ss_name = el.get_attribute("name");
+				m_combo_menu_sprite_sheet.insert_item(ss_name);
 			}
 		}
 	}
@@ -129,7 +130,8 @@ void editor::init_gui_axis_checkbox(clan::Window * root, int left, int right, cl
 void editor::init_level()
 {
 	m_tile_map = TileMap(m_canvas);
-	//m_tile_map.load("Level/Level.map");
+	//tile_map.load_resource_document("level_resources.xml");
+	m_tile_map.load("Level/next_level.map");
 }
 
 bool editor::init()
@@ -231,7 +233,7 @@ bool editor::resume()
 
 bool editor::exit()
 {
-	m_tile_map.save("Level/Level.map");
+	m_tile_map.save("Level/next_level.map");
 	m_key_up.destroy();
 	return true;
 }
@@ -331,7 +333,8 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	}
 	if(btn==m_button_select_resource_file)	
 	{
-		clan::Console::write_line(open_file());
+		m_tile_map.load_resource_document(open_file());
+		update_gui_sprite_sheet_dropbox();
 	}
 }
 
