@@ -2,7 +2,7 @@
 
 #include "state.h"
 #include "tile_map.h"
-
+#include "yn_dialogue.h"
 
 class SpriteFrameSelection;
 class editor: public State
@@ -26,6 +26,7 @@ protected:
 	void on_layer_select(int32_t layer);
 	void on_sprite_sheet_select(int32_t sprite_sheet);
 	bool on_close_wnd(clan::GUIComponent * wnd);
+	void on_exit(bool confirm);
 
 	///editor specific funcs
 	void init_level();
@@ -68,6 +69,7 @@ protected:
 	///gui
 	clan::GUIManager				m_gui_manager;
 	clan::GUIWindowManagerDirect	m_window_manager;
+	YNDialogue						*m_save_window;
 	
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
@@ -79,7 +81,7 @@ protected:
 	SpriteFrameSelection		*m_sprite_frame_selection;
 
 
-	clan::Slot m_frame_select;
+	clan::Slot m_frame_select, m_save;
 	int32_t m_selected_frame, m_selected_layer, m_selected_sprite_sheet;
 
 
