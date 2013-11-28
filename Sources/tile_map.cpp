@@ -3,11 +3,11 @@
 #include "tile_map.h"
 #include "tile_chunk.h"
 
+///append enums to end
 enum EMapSectionType
 {
 	EMST_RESOURCE_FILE=1,
-	EMST_SPRITE_SHEETS=2,
-	EMST_MAP=3,
+	EMST_MAP,
 };
 
 struct MS_Resource
@@ -22,32 +22,6 @@ struct MS_Resource
 	void write(clan::File & f)
 	{
 		f.write_string_a(res_file);
-	}
-};
-
-struct MS_SpriteSheets
-{
-	std::vector<std::pair<uint8_t, std::string>> sprite_sheets;
-
-	void read(clan::File & f)
-	{
-		uint32_t count	= f.read_uint32();
-
-		for(uint32_t i = 0; i < count; i++) 
-		{
-			sprite_sheets.push_back(std::make_pair(f.read_uint8(),f.read_string_a()));
-		}
-	}
-
-	void write(clan::File & f)
-	{
-		f.write_uint32(sprite_sheets.size());
-		
-		for(uint32_t i = 0; i < sprite_sheets.size(); i++)
-		{
-			f.write_uint8(sprite_sheets[i].first);
-			f.write_string_a(sprite_sheets[i].second);
-		}
 	}
 };
 
@@ -193,6 +167,25 @@ public:
 	{
 		m_doc_file_name = file_name;
 		m_doc = clan::XMLResourceDocument(m_doc_file_name);
+
+		std::vector<std::string> names = m_doc.get_resource_names("sprite_sheet_list/"); ///gale reikalingas "/"
+
+		uint8_t i = 0;
+		for(auto it = names.begin(); it != names.end(); it++)
+		{
+			std::string name = (*it);
+			clan::DomElement el = m_doc.get_resource("sprite_sheet_list/"+name).get_element();
+
+			if(el.get_tag_name()=="sprite")
+			{
+				if (el.has_attribute("name"))
+				{
+					std::string ss_name = el.get_attribute("name");
+					add_sprite(ss_name, i);
+					i++;
+				}
+			}
+		}
 	}
 
 	clan::XMLResourceDocument get_resource_document()
@@ -268,7 +261,6 @@ public:
 					c.draw_chunk(m_canvas,clan::vec2(x*CHUNK_EDGE_LENGTH_PIXELS,y*CHUNK_EDGE_LENGTH_PIXELS)-pos,i,false);
 			}
 		}
-
     }
 
 	void write_map_data(clan::File & f)
@@ -351,18 +343,6 @@ public:
 							this->load_resource_document(s.res_file);
 							break;
 						}
-					case EMST_SPRITE_SHEETS:
-						{
-							MS_SpriteSheets s;
-							s.read(f);
-							
-							for(auto it = s.sprite_sheets.begin(); it != s.sprite_sheets.end(); it++)
-							{
-								
-							}
-
-							break;
-						}
 					case EMST_MAP:
 						{
 							read_map_data(map,f);
@@ -376,7 +356,6 @@ public:
 			{
 				///all could have been fine, but it wasn't..
 				throw clan::Exception("Map could not be loaded.");
-
 			}
 
 			f.close();
@@ -413,18 +392,6 @@ public:
 		MS_Resource r;
 		r.res_file = m_doc_file_name;
 		r.write(f);
-
-		///write resource file info
-		ms.type = EMST_SPRITE_SHEETS;
-		ms.write(f);
-
-		MS_SpriteSheets ss;
-		
-		for(auto it = m_sprites.begin(); it != m_sprites.end(); it++)
-		{
-			ss.sprite_sheets.push_back(std::make_pair(it->first,it->second.first));
-		}
-		ss.write(f);
 
 		f.close();
 

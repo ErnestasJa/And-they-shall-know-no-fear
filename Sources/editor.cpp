@@ -26,7 +26,7 @@ void editor::init_gui()
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	
 	m_editor_window = new clan::Window(m_gui_root);
-	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-150,0,clan::Size(150,300)));
+	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-150,0,clan::Size(150,200)));
 	m_editor_window->set_visible(true);
 	m_editor_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_editor_window);
 	
@@ -49,9 +49,6 @@ void editor::init_gui()
 	m_button_select_resource_file->set_geometry(clan::Rect( 10, 150, clan::Size(80, 25)));
 	m_button_select_resource_file->set_text("Select resource");
 	m_button_select_resource_file->func_clicked().set(this, &editor::on_button_clicked, m_button_select_resource_file);
-
-	init_gui_load_map_button(m_editor_window, clan::Rect( 10, 180, clan::Size(80, 25)));
-	init_gui_save_map_button(m_editor_window, clan::Rect( 10, 210, clan::Size(80, 25)));
 
 	m_sprite_frame_selection = new SpriteFrameSelection(m_sprite_selection_window, m_game_time);
 
@@ -88,22 +85,6 @@ void editor::init_gui_sprite_sheet_dropbox(clan::Window * root, const clan::Rect
 	m_combo_sprite_sheet->func_item_selected().set(this,&editor::on_sprite_sheet_select);
 }
 
-void editor::init_gui_load_map_button(clan::Window * root, const clan::Rect pos)
-{
-	m_button_load_map = new clan::PushButton(root);
-	m_button_load_map->set_geometry(pos);
-	m_button_load_map->func_clicked().set(this, &editor::on_button_clicked, m_button_load_map);
-	m_button_load_map->set_text("Load map");
-}
-
-void editor::init_gui_save_map_button(clan::Window * root, const clan::Rect pos)
-{
-	m_button_save_map = new clan::PushButton(root);
-	m_button_save_map->set_geometry(pos);
-	m_button_save_map->func_clicked().set(this, &editor::on_button_clicked, m_button_save_map);
-	m_button_save_map->set_text("Save map");
-}
-
 void editor::update_gui_sprite_sheet_dropbox()
 {
 	m_combo_menu_sprite_sheet.clear();
@@ -121,13 +102,15 @@ void editor::update_gui_sprite_sheet_dropbox()
 		{
 			if (el.has_attribute("name"))
 			{
-				m_combo_menu_sprite_sheet.insert_item(el.get_attribute("name"));
+				std::string ss_name = el.get_attribute("name");
+				m_combo_menu_sprite_sheet.insert_item(ss_name);
 			}
 		}
 	}
 
 	m_combo_sprite_sheet->set_popup_menu(m_combo_menu_sprite_sheet);
 }
+
 
 void editor::init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size)
 {
@@ -147,8 +130,8 @@ void editor::init_gui_axis_checkbox(clan::Window * root, int left, int right, cl
 void editor::init_level()
 {
 	m_tile_map = TileMap(m_canvas);
-	m_tile_map.load_resource_document("level_resources.xml");
-	//m_tile_map.load("Level/Level.map"); DEBUG
+	//tile_map.load_resource_document("level_resources.xml");
+	m_tile_map.load("Level/next_level.map");
 }
 
 bool editor::init()
@@ -250,7 +233,7 @@ bool editor::resume()
 
 bool editor::exit()
 {
-	m_tile_map.save("Level/Level.map");
+	m_tile_map.save("Level/next_level.map");
 	m_key_up.destroy();
 	return true;
 }
@@ -348,19 +331,11 @@ void editor::on_button_clicked(clan::PushButton * btn)
 		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
 	}
-	else if(btn==m_button_select_resource_file)	
+	if(btn==m_button_select_resource_file)	
 	{
-		clan::Console::write_line(open_file());
+		m_tile_map.load_resource_document(open_file());
+		update_gui_sprite_sheet_dropbox();
 	}
-	else if(btn==m_button_load_map)	
-	{
-		m_tile_map.load(open_file());
-	}
-	else if(btn==m_button_save_map)	
-	{
-		m_tile_map.save(save_file());
-	}
-
 }
 
 bool editor::on_close_wnd(clan::GUIComponent* wnd)
@@ -372,14 +347,6 @@ bool editor::on_close_wnd(clan::GUIComponent* wnd)
 std::string editor::open_file()
 {
 	clan::OpenFileDialog *dialog = new clan::OpenFileDialog(m_gui_root);
-	dialog->set_initial_directory(clan::Directory::get_current());
-	dialog->show();
-	return clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
-}
-
-std::string editor::save_file()
-{
-	clan::SaveFileDialog *dialog = new clan::SaveFileDialog(m_gui_root);
 	dialog->set_initial_directory(clan::Directory::get_current());
 	dialog->show();
 	return clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
