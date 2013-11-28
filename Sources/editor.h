@@ -32,12 +32,15 @@ protected:
 	void init_gui();
 	void init_gui_layer_dropbox(clan::Window * root, const clan::Rect pos);
 	void init_gui_sprite_sheet_dropbox(clan::Window * root, const clan::Rect pos);
+	void init_gui_load_map_button(clan::Window * root, const clan::Rect pos);
+	void init_gui_save_map_button(clan::Window * root, const clan::Rect pos);
 	void update_gui_sprite_sheet_dropbox();
 	void init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size);
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis(bool t, bool c, bool w);
 	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
 	std::string open_file();
+	std::string save_file();
 
 protected:
 	bool m_run;
@@ -68,7 +71,7 @@ protected:
 	
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
-	clan::PushButton			*m_button_sprite_frame, *m_button_select_resource_file;
+	clan::PushButton			*m_button_sprite_frame, *m_button_select_resource_file, *m_button_load_map, *m_button_save_map;
 	clan::ComboBox				*m_combo_layer, *m_combo_sprite_sheet;
 	clan::PopupMenu				m_combo_menu_layer, m_combo_menu_sprite_sheet;
 	clan::CheckBox				*m_checkbox_t, *m_checkbox_c, *m_checkbox_o;
