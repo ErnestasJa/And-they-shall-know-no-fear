@@ -362,7 +362,11 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	}
 	else if(btn == m_button_load_map)	
 	{
-		if(open_file(file_name))m_tile_map.load(file_name);
+		if(open_file(file_name))
+		{
+				m_tile_map.load(file_name);
+				update_gui_sprite_sheet_dropbox();
+		}
 	}
 	else if(btn == m_button_save_map)	
 	{
