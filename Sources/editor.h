@@ -41,8 +41,8 @@ protected:
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis(bool t, bool c, bool w);
 	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
-	std::string open_file();
-	std::string save_file();
+	bool editor::open_file(std::string & str);
+	bool editor::save_file(std::string & str);
 
 protected:
 	bool m_run;

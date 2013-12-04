@@ -254,7 +254,8 @@ bool editor::exit()
 
 void editor::on_exit(bool confirm)
 {
-	if (confirm) m_tile_map.save(save_file());
+	std::string file_name;
+	if (confirm && save_file(file_name))m_tile_map.save(file_name);
 	m_run = false;
 }
 
@@ -344,6 +345,7 @@ void editor::on_input(const clan::InputEvent & e)
 
 void editor::on_button_clicked(clan::PushButton * btn)
 {
+	std::string file_name;
 	if(btn==m_button_sprite_frame)
 	{
 		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
@@ -351,16 +353,20 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	}
 	else if(btn==m_button_select_resource_file)	
 	{
-		m_tile_map.load_resource_document(open_file());
-		update_gui_sprite_sheet_dropbox();
+		if(open_file(file_name))
+		{
+				m_tile_map.load_resource_document(file_name);
+				update_gui_sprite_sheet_dropbox();
+		}
+
 	}
 	else if(btn==m_button_load_map)	
 	{
-		m_tile_map.load(open_file());
+		if(open_file(file_name))m_tile_map.load(file_name);
 	}
 	else if(btn==m_button_save_map)	
 	{
-		m_tile_map.save(save_file());
+		if(save_file(file_name))m_tile_map.load(file_name);
 	}
 }
 
@@ -370,18 +376,28 @@ bool editor::on_close_wnd(clan::GUIComponent* wnd)
 	return true;
 }
 
-std::string editor::open_file()
+bool editor::open_file(std::string & str)
 {
 	clan::OpenFileDialog *dialog = new clan::OpenFileDialog(m_gui_root);
 	dialog->set_initial_directory(clan::Directory::get_current());
-	dialog->show();
-	return clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
+	bool ret = dialog->show();
+	if (ret) 
+	{
+		str=clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
+	}
+	delete dialog;
+	return ret;
 }
 
-std::string editor::save_file()
+bool editor::save_file(std::string & str)
 {
 	clan::SaveFileDialog *dialog = new clan::SaveFileDialog(m_gui_root);
 	dialog->set_initial_directory(clan::Directory::get_current());
-	dialog->show();
-	return clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
+	bool ret = dialog->show();
+	if (ret)
+	{
+		str=clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
+	}
+	delete dialog;
+	return ret;
 }
