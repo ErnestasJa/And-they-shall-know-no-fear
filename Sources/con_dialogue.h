@@ -18,6 +18,8 @@ protected:
 public:
 	ConDialogue(clan::GUIComponent * root);
 	virtual ~ConDialogue();
+
+	void set_default_values(const std::string & ip, const std::string & port, const std::string & name, const std::string & password);
 	clan::Signal_v1<const ConnectionInfo&> & submit_connection();
 	void render(clan::Canvas &);
 	void on_button_clicked(clan::PushButton *);

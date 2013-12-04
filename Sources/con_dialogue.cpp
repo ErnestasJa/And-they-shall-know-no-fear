@@ -54,7 +54,14 @@ ConDialogue::ConDialogue(clan::GUIComponent * root):clan::GUIComponent(root)
 	m_button_reset->set_geometry(clan::Rect( 105, 285, clan::Size(75, 30) ));
 	m_button_reset->func_clicked().set(this, &ConDialogue::on_button_clicked, m_button_reset);
 	m_button_reset->set_text("Close");
+}
 
+void ConDialogue::set_default_values(const std::string & ip, const std::string & port, const std::string & name, const std::string & password)
+{
+	m_line_IP->set_text(ip);
+	m_line_port->set_text(port);
+	m_line_name->set_text(name);
+	m_line_pass->set_text(password);
 }
 
 ConDialogue::~ConDialogue()
