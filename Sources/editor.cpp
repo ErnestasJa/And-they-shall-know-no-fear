@@ -288,9 +288,10 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 	if(remove)
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
 
-	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
+	else if(m_selected_frame!=-1 && m_selected_layer!=-1 && m_selected_sprite_sheet!=-1)
 	{
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+		c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
 		c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_frame;
 	}
 }
@@ -344,9 +345,9 @@ void editor::on_input(const clan::InputEvent & e)
 
 void editor::on_button_clicked(clan::PushButton * btn)
 {
-	if(btn==m_button_sprite_frame)
+	if(btn==m_button_sprite_frame && m_selected_sprite_sheet != -1)
 	{
-		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
+		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(m_selected_sprite_sheet));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
 	}
 	else if(btn==m_button_select_resource_file)	
@@ -383,5 +384,6 @@ std::string editor::save_file()
 	clan::SaveFileDialog *dialog = new clan::SaveFileDialog(m_gui_root);
 	dialog->set_initial_directory(clan::Directory::get_current());
 	dialog->show();
+
 	return clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
 }

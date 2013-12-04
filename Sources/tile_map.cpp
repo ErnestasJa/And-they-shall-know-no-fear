@@ -429,11 +429,8 @@ public:
 
 		///write chunks
 		ms.begin(EMST_MAP,f);
-			
 			write_map_data(f);
 		ms.end(f);
-
-		
 
 		f.close();
 
@@ -494,7 +491,6 @@ TileChunk TileMap::add_chunk( const clan::vec2 & pos )
 {
     return impl->add_chunk(*this,pos);
 }
-
 
 TileChunk TileMap::get_chunk(const clan::vec2 & pos)
 {
