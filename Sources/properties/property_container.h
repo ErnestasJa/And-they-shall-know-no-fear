@@ -48,7 +48,7 @@ public:
 	virtual void net_serialize(clan::NetGameEventValue & e, bool only_changed = false) const;
 	virtual void net_deserialize(const clan::NetGameEventValue & e);
 
-	virtual void xml_serialize(clan::DomDocument doc, clan::DomElement e) const;
+	virtual void xml_serialize(clan::DomDocument doc, clan::DomElement e, bool dynamic = false) const;
 	virtual void xml_deserialize(clan::DomElement e);
 
 public:

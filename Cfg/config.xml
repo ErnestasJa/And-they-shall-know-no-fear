@@ -1,0 +1,5 @@
+<!--This document is for storing application settings.-->
+<property_containter dynamic="">
+	<property name="window_title" flags="0" data="And they shall know no fear"/>
+	<property name="console_title" flags="0" data="Client console, or is it?.."/>
+</property_containter>

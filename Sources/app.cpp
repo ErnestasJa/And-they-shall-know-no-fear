@@ -16,13 +16,15 @@ int App::main(const std::vector<std::string> &args)
 	clan::SetupSound setup_sound;
 	clan::SoundOutput output(44100);
 
+	init_default_settings();
+
 	clan::DisplayWindowDescription desc;
-	desc.set_title("And they shall know no fear");
+	desc.set_title(m_window_title);
 	desc.set_size(clan::Size(1024, 720), true);
 	clan::DisplayWindow window(desc);
 
 	clan::SetupNetwork setup_network;
-	clan::ConsoleWindow console("ClientConnection console", 160, 1000);
+	clan::ConsoleWindow console(m_console_title, 160, 1000);
 	clan::ConsoleLogger logger;
 
 	clan::Slot slot_quit = window.sig_window_close().connect(this, &App::on_window_close);
@@ -53,6 +55,45 @@ int App::main(const std::vector<std::string> &args)
 	}
 
 	return 0;
+}
+
+void App::init_default_settings()
+{
+	m_window_title = add_property<std::string>("window_title","And they shall know no fear");
+	m_console_title = add_property<std::string>("console_title","Client console");
+
+	if(!clan::FileHelp::file_exists("Cfg/config.xml"))
+	{
+		try
+		{
+			clan::File f("Cfg/config.xml",clan::File::create_always,clan::File::access_write);
+			clan::DomDocument d;
+			clan::DomComment c(d,"This document is for storing application settings.");
+			d.append_child(c);
+			xml_serialize(d,d.get_first_child().to_element(),true);
+			d.save(f);
+			f.close();
+		}
+		catch(clan::Exception &)
+		{
+			
+		}
+	}
+	else
+	{
+		try
+		{
+			clan::File f("Cfg/config.xml",clan::File::open_existing,clan::File::access_read);
+			clan::DomDocument d;
+			d.load(f);
+			xml_deserialize(d.get_elements_by_tag_name("property_containter").item(0).to_element());
+			f.close();
+		}
+		catch(clan::Exception &)
+		{
+			
+		}
+	}
 }
 
 void App::on_window_close()

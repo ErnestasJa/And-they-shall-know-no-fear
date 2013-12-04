@@ -32,8 +32,6 @@ void World::init_level(const std::string & level)
 {
 	m_gom = new GameObjectManager();
 	m_tile_map = TileMap(m_canvas);
-	m_tile_map.load_resource_document("resources.xml");
-	m_tile_map.add_sprite("level_gfx",0);
 	m_tile_map.load(level);
 }
 

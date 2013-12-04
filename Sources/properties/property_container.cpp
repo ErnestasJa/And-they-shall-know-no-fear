@@ -162,7 +162,7 @@ void PropertyContainer::net_deserialize(const clan::NetGameEventValue & e)
 }
 
 
-void PropertyContainer::xml_serialize(clan::DomDocument doc, clan::DomElement e) const
+void PropertyContainer::xml_serialize(clan::DomDocument doc, clan::DomElement e, bool dynamic) const
 {
 	clan::DomElement epc(doc,"property_containter");
 
@@ -170,6 +170,9 @@ void PropertyContainer::xml_serialize(clan::DomDocument doc, clan::DomElement e)
 		doc.append_child(epc);
 	else
 		e.append_child(epc);
+
+	if(dynamic)
+		epc.set_attribute("dynamic","");
 
 	for(auto it = m_props.begin(); it != m_props.end(); it++)
 	{
@@ -183,9 +186,27 @@ void PropertyContainer::xml_deserialize(clan::DomElement e)
 {
 	clan::DomNodeList list = e.get_child_nodes();
 
-	for(uint32_t i = 0; i < (uint32_t)list.get_length(); i++)
+	if(e.has_attribute("dynamic"))
 	{
-		clan::DomElement el = list.item(i).to_element();
-		m_props[i]->xml_deserialize(el);
+		for(uint32_t i = 0; i < (uint32_t)list.get_length(); i++)
+		{
+			clan::DomElement el = list.item(i).to_element();
+			std::string name = el.get_attribute("name");
+
+			for(uint32_t j = 0; j < m_props.size(); j++)
+			if(m_props[j]->get_name()==name)
+			{
+				m_props[j]->xml_deserialize(el);
+				break;
+			}
+		}
+	}
+	else
+	{
+		for(uint32_t i = 0; i < (uint32_t)list.get_length(); i++)
+		{
+			clan::DomElement el = list.item(i).to_element();
+			m_props[i]->xml_deserialize(el);
+		}
 	}
 }
