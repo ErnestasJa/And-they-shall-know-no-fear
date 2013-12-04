@@ -385,10 +385,7 @@ bool editor::open_file(std::string & str)
 	clan::OpenFileDialog *dialog = new clan::OpenFileDialog(m_gui_root);
 	dialog->set_initial_directory(clan::Directory::get_current());
 	bool ret = dialog->show();
-	if (ret) 
-	{
-		str=clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
-	}
+	if (ret)str=clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
 	delete dialog;
 	return ret;
 }
@@ -398,10 +395,7 @@ bool editor::save_file(std::string & str)
 	clan::SaveFileDialog *dialog = new clan::SaveFileDialog(m_gui_root);
 	dialog->set_initial_directory(clan::Directory::get_current());
 	bool ret = dialog->show();
-	if (ret)
-	{
-		str=clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
-	}
+	if (ret)str=clan::PathHelp::make_relative(clan::Directory::get_current(), dialog->get_filename(), clan::PathHelp::path_type_file);
 	delete dialog;
 	return ret;
 }

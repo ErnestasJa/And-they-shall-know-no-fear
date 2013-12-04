@@ -32,9 +32,7 @@ void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect
 {
 	m_pos+=m_scroll;
 	clamp_pos();
-
 	int32_t w=this->get_content_box().get_width(),h=this->get_content_box().get_height();
-
 	this->push_cliprect(c,this->get_content_box());
 
 	for(int i = 0; i < 32; i++)
@@ -44,7 +42,11 @@ void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect
 		m_sprite.draw(c,j*32 - m_pos.x,i*32 - m_pos.y);
 	}
 
+	for(int32_t i=0; i<=w; i++)if((i+m_pos.x)%TILE_SIZE==0 ) c.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::deeppink);
+	for(int32_t i=0; i<=h; i++)if((i+m_pos.y)%TILE_SIZE==0 ) c.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::deeppink);
 	this->pop_cliprect(c);
+
+	
 }
 
 void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
