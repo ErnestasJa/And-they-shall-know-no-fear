@@ -164,7 +164,6 @@ bool editor::init()
 	m_mouse_down = m_window.get_ic().get_mouse().sig_key_down().connect(this, &editor::on_input);
 	m_mouse_move = m_window.get_ic().get_mouse().sig_pointer_move().connect(this, &editor::on_input);
 
-
 	init_level();
 	init_gui();
 	update_gui_sprite_sheet_dropbox();
@@ -207,6 +206,19 @@ void editor::draw_world_axis(bool t, bool c, bool o)
 	if(m_pos.y<=h && m_pos.y+h>=0 && o) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
 }
 
+void editor::draw_hover_box()
+{
+	int32_t w = m_window.get_viewport().get_width(), h = m_window.get_viewport().get_height();
+
+	clan::Point current = m_window.get_ic().get_mouse().get_position();
+	if(current.x+m_pos.x<TILE_SIZE) current.x-=TILE_SIZE; 
+	if(current.y+m_pos.y<TILE_SIZE) current.y-=TILE_SIZE;
+	current.x=current.x-(current.x+m_pos.x)%TILE_SIZE; 
+	current.y=current.y-(current.y+m_pos.y)%TILE_SIZE;
+	clan::Rect rect = clan::Rect(current,clan::Size(TILE_SIZE,TILE_SIZE));
+	m_canvas.draw_box(rect,clan::Colorf::green);
+}
+
 bool editor::run()
 {
 	if(m_run)
@@ -218,6 +230,7 @@ bool editor::run()
 
 		m_tile_map.render(m_pos);
 		draw_world_axis(m_checkbox_t->is_checked(),m_checkbox_c->is_checked(),m_checkbox_o->is_checked());
+		draw_hover_box();
 
 		///render gui
 		m_gui_manager.process_messages(0);
@@ -273,6 +286,7 @@ void editor::on_layer_select(int32_t layer)
 void editor::on_sprite_sheet_select(int32_t sprite_sheet)
 {
 	m_selected_sprite_sheet = sprite_sheet;
+	m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(m_selected_sprite_sheet));
 	clan::Console::write_line("Selected sprite sheet:%1",sprite_sheet); //DEBUG
 }
 
@@ -348,7 +362,7 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	std::string file_name;
 	if(btn == m_button_sprite_frame && m_selected_sprite_sheet != -1) ///FIX ME: should check for loaded res doc
 	{
-		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
+		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(m_selected_sprite_sheet));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
 	}
 	else if(btn == m_button_select_resource_file)	

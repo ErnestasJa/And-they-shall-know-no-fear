@@ -40,6 +40,7 @@ protected:
 	void init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size);
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis(bool t, bool c, bool w);
+	void draw_hover_box();
 	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
 	bool editor::open_file(std::string & str);
 	bool editor::save_file(std::string & str);

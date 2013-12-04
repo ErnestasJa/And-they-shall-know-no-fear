@@ -11,8 +11,8 @@
 + editor, move dropbox creation to a function
 - editor, add right click scroll to frame selection window
 - editor, add toolbar
-- editor, show hovered tiles layer frames
++ editor, show hovered tiles layer frames
 - editor, add sprite sheet loading
 + editor, add map loading/saving
 + menu, connect typing in text boxes
-- editor multi select
+- editor, multi select
