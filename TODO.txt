@@ -13,4 +13,6 @@
 - editor, add toolbar
 - editor, show hovered tiles layer frames
 - editor, add sprite sheet loading
++ editor, add map loading/saving
 - world connect, typing in text boxes
+- editor multi select

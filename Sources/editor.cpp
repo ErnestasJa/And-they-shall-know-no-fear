@@ -346,12 +346,12 @@ void editor::on_input(const clan::InputEvent & e)
 void editor::on_button_clicked(clan::PushButton * btn)
 {
 	std::string file_name;
-	if(btn==m_button_sprite_frame)
+	if(btn == m_button_sprite_frame && m_selected_sprite_sheet != -1) ///FIX ME: should check for loaded res doc
 	{
 		m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(0));
 		m_sprite_selection_window->set_visible(!m_sprite_selection_window->is_visible());
 	}
-	else if(btn==m_button_select_resource_file)	
+	else if(btn == m_button_select_resource_file)	
 	{
 		if(open_file(file_name))
 		{
@@ -360,7 +360,7 @@ void editor::on_button_clicked(clan::PushButton * btn)
 		}
 
 	}
-	else if(btn==m_button_load_map)	
+	else if(btn == m_button_load_map)	
 	{
 		if(open_file(file_name))
 		{
@@ -368,7 +368,7 @@ void editor::on_button_clicked(clan::PushButton * btn)
 				update_gui_sprite_sheet_dropbox();
 		}
 	}
-	else if(btn==m_button_save_map)	
+	else if(btn == m_button_save_map)	
 	{
 		if(save_file(file_name))m_tile_map.load(file_name);
 	}
