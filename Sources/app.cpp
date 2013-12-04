@@ -19,12 +19,12 @@ int App::main(const std::vector<std::string> &args)
 	init_default_settings();
 
 	clan::DisplayWindowDescription desc;
-	desc.set_title(m_window_title);
+	desc.set_title(window_title);
 	desc.set_size(clan::Size(1024, 720), true);
 	clan::DisplayWindow window(desc);
 
 	clan::SetupNetwork setup_network;
-	clan::ConsoleWindow console(m_console_title, 160, 1000);
+	clan::ConsoleWindow console(console_title, 160, 1000);
 	clan::ConsoleLogger logger;
 
 	clan::Slot slot_quit = window.sig_window_close().connect(this, &App::on_window_close);
@@ -37,9 +37,7 @@ int App::main(const std::vector<std::string> &args)
 	else
 		m_states.push(start);
 
-
 	///run
-
 	while(m_states.size()>0)
 	{
 		if(m_states.top()->is_paused())
@@ -59,8 +57,11 @@ int App::main(const std::vector<std::string> &args)
 
 void App::init_default_settings()
 {
-	m_window_title = add_property<std::string>("window_title","And they shall know no fear");
-	m_console_title = add_property<std::string>("console_title","Client console");
+	window_title = add_property<std::string>("window_title","And they shall know no fear");
+	console_title = add_property<std::string>("console_title","Client console");
+	ip = add_property<std::string>("ip","127.0.0.1");
+	port = add_property<std::string>("port","27015");
+	username = add_property<std::string>("username","Unnamed");
 
 	if(!clan::FileHelp::file_exists("Cfg/config.xml"))
 	{

@@ -1,5 +1,8 @@
 <!--This document is for storing application settings.-->
 <property_containter dynamic="">
 	<property name="window_title" flags="0" data="And they shall know no fear"/>
-	<property name="console_title" flags="0" data="Client console, or is it?.."/>
+	<property name="console_title" flags="0" data="Client console"/>
+	<property name="ip" flags="0" data="127.0.0.1"/>
+	<property name="port" flags="0" data="27015"/>
+	<property name="username" flags="0" data="Unnamed"/>
 </property_containter>

@@ -8,9 +8,12 @@ class State;
 class App: public PropertyContainer
 {
 ///settings
-protected:
-	Property<std::string> m_window_title;
-	Property<std::string> m_console_title;
+public:
+	Property<std::string> window_title;
+	Property<std::string> console_title;
+	Property<std::string> ip;
+	Property<std::string> port;
+	Property<std::string> username;
 	virtual void init_default_settings();
 
 protected:

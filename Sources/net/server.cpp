@@ -186,7 +186,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			clan::NetGameEvent ci_ev("msg");
 			clan::NetGameEvent player_obj_create_ev("msg");
 
-			si.map_name = "Level/Level.map";
+			si.map_name = "Level/next_level.map";
 			si.max_client_count = m_max_clients;
 
 			///nusiunciam siam klientui serverio informacija

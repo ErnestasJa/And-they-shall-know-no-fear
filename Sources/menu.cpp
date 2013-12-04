@@ -42,6 +42,7 @@ bool Menu::init()
 
 	m_exit_window = new YNDialogue(c, "You are about to quit!");
 	m_con_window = new ConDialogue(c);
+	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
 
 	confirmWindowClosedEventSlot = m_exit_window->confirmation().connect(this, &Menu::CloseConfirmed);
 	connectAttemptEventSlot = m_con_window->submit_connection().connect(this, &Menu::ConnectAttempt);
