@@ -11,6 +11,7 @@ ConDialogue::ConDialogue(clan::GUIComponent * root):clan::GUIComponent(root)
 	m_connection_window->set_title("Please provide information");
 	m_connection_window->func_close().set(this, &ConDialogue::close_window);
 	m_connection_window->set_visible(false);
+	m_connection_window->set_focus(false);
 
 	//
 
@@ -64,7 +65,14 @@ ConDialogue::~ConDialogue()
 bool ConDialogue::close_window()
 {
     m_connection_window->set_visible(false);
+	m_connection_window->set_focus(false);
 	return  m_connection_window->is_visible();
+}
+
+void ConDialogue::toggle_visibility()
+{
+	m_connection_window->set_visible(!m_connection_window->is_visible());
+	m_connection_window->set_focus(!m_connection_window->has_focus());
 }
 
 void ConDialogue::on_button_clicked(clan::PushButton *button)
@@ -77,16 +85,12 @@ void ConDialogue::on_button_clicked(clan::PushButton *button)
 		m_info.name=m_line_name->get_text();
 
 		m_sig.invoke(m_info);
+		toggle_visibility();
 	}
 	else if(button==m_button_reset)
 	{
-		m_connection_window->set_visible(false);
+		close_window();
 	}
-}
-
-void ConDialogue::toggle_visibility()
-{
-	m_connection_window->set_visible(!m_connection_window->is_visible());
 }
 
 clan::Signal_v1<const ConnectionInfo&> & ConDialogue::submit_connection()

@@ -5,6 +5,8 @@
 
 YNDialogue::YNDialogue(clan::GUIComponent * root, std::string message):clan::GUIComponent(root)
 {
+	
+
 
 	m_exit_window = new clan::Window(root);
 	m_exit_window->set_geometry(clan::Rect( 300, 460, clan::Size(200,120) ));
@@ -57,6 +59,7 @@ void YNDialogue::on_button_clicked(clan::PushButton *button)
 void YNDialogue::toggle_visibility()
 {
 	m_exit_window->set_visible(!m_exit_window->is_visible());
+	m_exit_window->set_focus(!m_exit_window->has_focus());
 }
 
 clan::Signal_v1<bool> & YNDialogue::confirmation()
