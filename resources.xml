@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<resources>
+
+	<image name="background">
+		<image file="Gfx/background.png"/>
+	</image>
+
+	<section name="sprite_sheet_list">
+		<sprite name="level_gfx">
+			<image file="Gfx\level\base_out_atlas.png">
+			<grid pos="0,0" size="32,32" array="32,32"/>
+			</image>
+		</sprite>	
+	</section>
+	
+	<sprite name="champ_dw">
+		<animation speed="300"/>
+		<image file="Gfx\player\char.png">
+			<grid pos="0,0" size="32,32" array="3,1"/>
+		</image>
+	</sprite>
+	
+	<sprite name="champ_rw">
+		<animation speed="300"/>
+		<image file="Gfx\player\char.png">
+		<grid pos="0,32" size="32,32" array="3,1"/>
+		</image>
+	</sprite>
+	
+	<sprite name="champ_uw">
+		<animation speed="300"/>
+		<image file="Gfx\player\char.png">
+			<grid pos="0,64" size="32,32" array="3,1"/>
+		</image>
+	</sprite>
+	
+	<sprite name="champ_lw">
+		<animation speed="300"/>
+		<image file="Gfx\player\char.png">
+			<grid pos="0,96" size="32,32" array="3,1"/>
+		</image>
+	</sprite>
+	
+</resources>

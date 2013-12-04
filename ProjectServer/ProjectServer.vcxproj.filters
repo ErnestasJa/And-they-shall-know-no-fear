@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\properties">
+      <UniqueIdentifier>{b1fc7589-5e7a-4424-9182-a5ca40fd8b2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\game_objects">
+      <UniqueIdentifier>{603adf0e-4f43-43cd-9285-3c9a800f700c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Sources\net\server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\precomp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\net\server_app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\net\message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\properties\property.cpp">
+      <Filter>Source Files\properties</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\properties\property_container.cpp">
+      <Filter>Source Files\properties</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\properties\property_util.cpp">
+      <Filter>Source Files\properties</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\net\common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\net\server_client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\game_objects\game_object.cpp">
+      <Filter>Source Files\game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\game_objects\game_object_manager.cpp">
+      <Filter>Source Files\game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\game_objects\go_sprite.cpp">
+      <Filter>Source Files\game_objects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Sources\properties\iproperty.h">
+      <Filter>Source Files\properties</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\properties\property_util.h">
+      <Filter>Source Files\properties</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\properties\property.h">
+      <Filter>Source Files\properties</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\properties\property_container.h">
+      <Filter>Source Files\properties</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\properties\property_types.h">
+      <Filter>Source Files\properties</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\game_object.h">
+      <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\game_object_manager.h">
+      <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\game_object_types.h">
+      <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\game_objects.h">
+      <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\go_sprite.h">
+      <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\server_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\net\server_app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\precomp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

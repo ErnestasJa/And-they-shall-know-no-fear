@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ProjectServer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="ProjectServer" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add directory="../Include" />
+					<Add directory="../Sources" />
+					<Add directory="$(IncludePath)" />
+				</Compiler>
+				<Linker>
+					<Add directory="../Lib/Win32" />
+					<Add directory="$(LibraryPath)" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="ProjectServer" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add directory="../Include" />
+					<Add directory="../Sources" />
+					<Add directory="$(IncludePath)" />
+				</Compiler>
+				<Linker>
+					<Add directory="../Lib/Win32" />
+					<Add directory="$(LibraryPath)" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../Sources/game_objects/game_object.cpp" />
+		<Unit filename="../Sources/game_objects/game_object.h" />
+		<Unit filename="../Sources/game_objects/game_object_manager.cpp" />
+		<Unit filename="../Sources/game_objects/game_object_manager.h" />
+		<Unit filename="../Sources/game_objects/game_object_types.h" />
+		<Unit filename="../Sources/game_objects/game_objects.h" />
+		<Unit filename="../Sources/game_objects/go_sprite.cpp" />
+		<Unit filename="../Sources/game_objects/go_sprite.h" />
+		<Unit filename="../Sources/net/common.cpp" />
+		<Unit filename="../Sources/net/common.h" />
+		<Unit filename="../Sources/net/message.cpp" />
+		<Unit filename="../Sources/net/message.h" />
+		<Unit filename="../Sources/net/server.cpp" />
+		<Unit filename="../Sources/net/server.h" />
+		<Unit filename="../Sources/net/server_app.cpp" />
+		<Unit filename="../Sources/net/server_app.h" />
+		<Unit filename="../Sources/net/server_client.cpp" />
+		<Unit filename="../Sources/net/server_client.h" />
+		<Unit filename="../Sources/precomp.cpp" />
+		<Unit filename="../Sources/precomp.h" />
+		<Unit filename="../Sources/properties/iproperty.h" />
+		<Unit filename="../Sources/properties/property.cpp" />
+		<Unit filename="../Sources/properties/property.h" />
+		<Unit filename="../Sources/properties/property_container.cpp" />
+		<Unit filename="../Sources/properties/property_container.h" />
+		<Unit filename="../Sources/properties/property_types.h" />
+		<Unit filename="../Sources/properties/property_util.cpp" />
+		<Unit filename="../Sources/properties/property_util.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

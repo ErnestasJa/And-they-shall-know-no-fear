@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="PropertiesTestCases" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="PropertiesTestCases" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add directory="../Include" />
+					<Add directory="../Sources" />
+					<Add directory="$(IncludePath)" />
+				</Compiler>
+				<Linker>
+					<Add library="gtestd.lib" />
+					<Add directory="../Lib" />
+					<Add directory="../Lib/Win32" />
+					<Add directory="$(LibraryPath)" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="PropertiesTestCases" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add directory="../Include" />
+					<Add directory="../Sources" />
+				</Compiler>
+				<Linker>
+					<Add library="gtestd.lib" />
+					<Add directory="../Lib" />
+					<Add directory="../Lib/Win32" />
+					<Add directory="$(LibraryPath)" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../Sources/net/message.cpp" />
+		<Unit filename="../Sources/net/message.h" />
+		<Unit filename="../Sources/precomp.cpp" />
+		<Unit filename="../Sources/precomp.h" />
+		<Unit filename="../Sources/properties/iproperty.h" />
+		<Unit filename="../Sources/properties/property.cpp" />
+		<Unit filename="../Sources/properties/property.h" />
+		<Unit filename="../Sources/properties/property_container.cpp" />
+		<Unit filename="../Sources/properties/property_container.h" />
+		<Unit filename="../Sources/properties/property_types.h" />
+		<Unit filename="../Sources/properties/property_util.cpp" />
+		<Unit filename="../Sources/properties/property_util.h" />
+		<Unit filename="../Sources/utility.cpp" />
+		<Unit filename="../Sources/utility.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
