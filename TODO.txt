@@ -16,3 +16,8 @@
 + editor, add map loading/saving
 + menu, connect typing in text boxes
 - editor, multi select
+
+#Net code
+-Make game manager dispatch messages to correct game objects.
+-Send game updates at some defined tickrate.
+-
