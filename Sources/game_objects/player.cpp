@@ -4,17 +4,17 @@
 #include "game_objects.h"
 
 
-GOSprite::GOSprite(uint32_t guid): GameObject(type(),guid)
+Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=0;
 }
 
-GOSprite::~GOSprite()
+Player::~Player()
 {
 
 }
 
-void GOSprite::load(clan::Canvas & canvas, clan::ResourceManager & resources)
+void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
 	m_rw = clan::Sprite::resource(canvas, "champ_rw", resources );
 	m_lw = clan::Sprite::resource(canvas, "champ_lw", resources );
@@ -26,7 +26,7 @@ void GOSprite::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 	clan::Console::write_line("is null: %1",m_sprite.is_null());
 }
 
-void GOSprite::update(const clan::GameTime & time)
+void Player::update(const clan::GameTime & time)
 {
 	if(!m_sprite.is_null())
 		m_sprite.update(time.get_time_elapsed_ms());
@@ -62,13 +62,13 @@ void GOSprite::update(const clan::GameTime & time)
 	}
 }
 
-void GOSprite::render(clan::Canvas & c, const clan::vec2 & offset)
+void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 {
 	if(!m_sprite.is_null())
 		m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
 }
 
-void GOSprite::on_message(const Message & msg)
+void Player::on_message(const Message & msg)
 {
 	if(msg.get_type()==MSGC_INPUT)
 	{

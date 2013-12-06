@@ -153,7 +153,7 @@
     <ClCompile Include="Sources\editor.cpp" />
     <ClCompile Include="Sources\game_objects\game_object.cpp" />
     <ClCompile Include="Sources\game_objects\game_object_manager.cpp" />
-    <ClCompile Include="Sources\game_objects\go_sprite.cpp" />
+    <ClCompile Include="Sources\game_objects\player.cpp" />
     <ClCompile Include="Sources\menu.cpp" />
     <ClCompile Include="Sources\net\user_client.cpp" />
     <ClCompile Include="Sources\net\common.cpp" />
@@ -184,7 +184,7 @@
     <ClInclude Include="Sources\game_objects\game_objects.h" />
     <ClInclude Include="Sources\game_objects\game_object_manager.h" />
     <ClInclude Include="Sources\game_objects\game_object_types.h" />
-    <ClInclude Include="Sources\game_objects\go_sprite.h" />
+    <ClInclude Include="Sources\game_objects\player.h" />
     <ClInclude Include="Sources\map_attributes.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\net\user_client.h" />

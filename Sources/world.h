@@ -68,6 +68,6 @@ protected:
 	ClientConnection * m_client_con;
 	Client * m_client; ///NOT SURE ABOUT THIS ONE
 	Client * m_clients;
-	GOSprite * m_player;
-	GOSprite ** m_players;
+	Player * m_player;
+	Player ** m_players;
 };

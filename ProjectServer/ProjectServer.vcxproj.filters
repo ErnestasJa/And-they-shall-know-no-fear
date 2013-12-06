@@ -48,13 +48,13 @@
     <ClCompile Include="..\Sources\net\server_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Sources\game_objects\game_object.cpp">
-      <Filter>Source Files\game_objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\Sources\game_objects\game_object_manager.cpp">
       <Filter>Source Files\game_objects</Filter>
     </ClCompile>
-    <ClCompile Include="..\Sources\game_objects\go_sprite.cpp">
+    <ClCompile Include="..\Sources\game_objects\player.cpp">
+      <Filter>Source Files\game_objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\game_objects\game_object.cpp">
       <Filter>Source Files\game_objects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,9 +74,6 @@
     <ClInclude Include="..\Sources\properties\property_types.h">
       <Filter>Source Files\properties</Filter>
     </ClInclude>
-    <ClInclude Include="..\Sources\game_objects\game_object.h">
-      <Filter>Source Files\game_objects</Filter>
-    </ClInclude>
     <ClInclude Include="..\Sources\game_objects\game_object_manager.h">
       <Filter>Source Files\game_objects</Filter>
     </ClInclude>
@@ -84,9 +81,6 @@
       <Filter>Source Files\game_objects</Filter>
     </ClInclude>
     <ClInclude Include="..\Sources\game_objects\game_objects.h">
-      <Filter>Source Files\game_objects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Sources\game_objects\go_sprite.h">
       <Filter>Source Files\game_objects</Filter>
     </ClInclude>
     <ClInclude Include="..\Sources\net\common.h">
@@ -106,6 +100,12 @@
     </ClInclude>
     <ClInclude Include="..\Sources\precomp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\player.h">
+      <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\game_object.h">
+      <Filter>Source Files\game_objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

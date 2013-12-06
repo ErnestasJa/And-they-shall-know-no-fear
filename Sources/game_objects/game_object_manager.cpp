@@ -4,7 +4,7 @@
 
 GameObjectManager::GameObjectManager()
 {
-	register_game_object<GOSprite>();
+	register_game_object<Player>();
 }
 
 GameObjectManager::~GameObjectManager()

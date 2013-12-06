@@ -3,7 +3,7 @@
 
 enum EGameObjectType
 {
-	EGOT_SPRITE = 1,
+	EGOT_PLAYER = 1,
 	EGOT_COUNT
 };
 

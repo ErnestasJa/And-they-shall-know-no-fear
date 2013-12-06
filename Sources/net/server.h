@@ -1,7 +1,7 @@
 #pragma once
 
 
-class GOSprite;
+class Player;
 class GameObjectManager;
 class ServerClientConnection;
 class Message;
@@ -13,7 +13,7 @@ protected:
 	uint32_t					m_max_clients;
 	ServerClientConnection*		m_client_cons;
 	Client*						m_clients;
-	GOSprite**					m_player_objects;
+	Player**					m_player_objects;
 
 	GameObjectManager*			m_gom;
 

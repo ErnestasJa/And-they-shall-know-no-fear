@@ -16,9 +16,6 @@
     <ClCompile Include="Sources\game_objects\game_object_manager.cpp">
       <Filter>game_objects</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\game_objects\go_sprite.cpp">
-      <Filter>game_objects</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\properties\property_container.cpp">
       <Filter>properties</Filter>
     </ClCompile>
@@ -39,6 +36,9 @@
     </ClCompile>
     <ClCompile Include="Sources\yn_dialogue.cpp" />
     <ClCompile Include="Sources\con_dialogue.cpp" />
+    <ClCompile Include="Sources\game_objects\player.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -62,9 +62,6 @@
       <Filter>game_objects</Filter>
     </ClInclude>
     <ClInclude Include="Sources\game_objects\game_object_types.h">
-      <Filter>game_objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\game_objects\go_sprite.h">
       <Filter>game_objects</Filter>
     </ClInclude>
     <ClInclude Include="Sources\properties\iproperty.h">
@@ -94,6 +91,9 @@
     <ClInclude Include="Sources\yn_dialogue.h" />
     <ClInclude Include="Sources\con_dialogue.h" />
     <ClInclude Include="Sources\con_info.h" />
+    <ClInclude Include="Sources\game_objects\player.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />

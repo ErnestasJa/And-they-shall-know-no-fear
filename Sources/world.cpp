@@ -2,7 +2,7 @@
 #include "world.h"
 #include "tile_chunk.h"
 #include "net\user_client.h"
-#include "game_objects\go_sprite.h"
+#include "game_objects\player.h"
 
 
 World::World(clan::DisplayWindow &display_window)
@@ -116,7 +116,7 @@ void World::on_net_event(const clan::NetGameEvent & e)
 		init_level(m.get_property<std::string>("name"));
 
 		m_clients = new Client[m_max_clients];
-		m_players = new GOSprite * [m_max_clients];
+		m_players = new Player * [m_max_clients];
 	}
 	else if(type==MSG_CLIENT_INFO)
 	{
@@ -154,9 +154,9 @@ void World::on_net_event(const clan::NetGameEvent & e)
 			{
 				GameObject * o = m_gom->add_game_object(m.object_type,m.guid);
 
-				if(o->get_type()==EGOT_SPRITE)
+				if(o->get_type()==EGOT_PLAYER)
 				{
-					GOSprite * spr = static_cast<GOSprite*>(o);
+					Player * spr = static_cast<Player*>(o);
 
 					if(o->get_guid()==m_client->get_id())
 						m_player = spr;

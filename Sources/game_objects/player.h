@@ -1,10 +1,10 @@
-#ifndef GO_SPRITE_H
-#define GO_SPRITE_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include "game_object.h"
 #include "game_object_types.h"
 
-class GOSprite: public GameObject
+class Player: public GameObject
 {
 protected:
 	clan::Sprite m_rw,m_lw,m_uw,m_dw;
@@ -12,11 +12,11 @@ protected:
 
 	uint32_t keys;
 public:
-	static GameObject * create(uint32_t guid){return new GOSprite(guid);};
-	static uint32_t type(){return EGOT_SPRITE;}
+	static GameObject * create(uint32_t guid){return new Player(guid);};
+	static uint32_t type(){return EGOT_PLAYER;}
 
-	GOSprite(uint32_t guid);
-	virtual ~GOSprite();
+	Player(uint32_t guid);
+	virtual ~Player();
 
 	void load(clan::Canvas & canvas, clan::ResourceManager & resources);
 

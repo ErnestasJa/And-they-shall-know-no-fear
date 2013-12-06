@@ -18,7 +18,7 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	
 	m_client_cons = new ServerClientConnection[m_max_clients];
 	m_clients =		new Client[m_max_clients];
-	m_player_objects = new GOSprite * [m_max_clients];
+	m_player_objects = new Player * [m_max_clients];
 
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
 	m_slots.connect(m_net_server.sig_client_disconnected(), this, &Server::on_client_disconnected);
@@ -85,7 +85,7 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 		MSGS_GameObjectAction msg;
 		msg.action_type = EGOAT_REMOVE;
 		msg.guid = id;
-		msg.object_type = EGOT_SPRITE; /// realiai tipas nereikalingas
+		msg.object_type = EGOT_PLAYER; /// realiai tipas nereikalingas
 
 		clan::NetGameEvent ev("msg");
 		MessageUtil::add_message(ev,msg);
@@ -161,7 +161,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 		MSGC_Input m;
 		MessageUtil::get_message(e,m,0);
 
-		GOSprite * spr=m_player_objects[client->get_id()];
+		Player * spr=m_player_objects[client->get_id()];
 		spr->on_message(m);
 
 		clan::NetGameEvent ev("msg");
@@ -209,13 +209,13 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			}
 			
 			///sukuriam sio kliento zaidimo objekta
-			m_player_objects[client->get_id()]=static_cast<GOSprite*>(m_gom->add_game_object(EGOT_SPRITE,client->get_id()));
+			m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
 
 			///persiunciam zinute visiem kad sukurtu toki objekta
 			MSGS_GameObjectAction cc;
 			cc.action_type = EGOAT_CREATE;
 			cc.guid = client->get_id();
-			cc.object_type = EGOT_SPRITE;
+			cc.object_type = EGOT_PLAYER;
 
 			MessageUtil::add_message(player_obj_create_ev,cc);
 			MessageUtil::add_game_object(player_obj_create_ev,m_player_objects[client->get_id()]);
@@ -231,7 +231,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					MSGS_GameObjectAction c;
 					c.action_type = EGOAT_CREATE;
 					c.guid = i;
-					c.object_type = EGOT_SPRITE;
+					c.object_type = EGOT_PLAYER;
 					
 					MessageUtil::add_message(player_obj_create_ev2,c);
 					MessageUtil::add_game_object(player_obj_create_ev2,m_player_objects[i]);
