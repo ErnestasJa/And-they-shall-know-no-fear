@@ -92,7 +92,7 @@ GameObject * GameObjectManager::create_game_object(uint32_t type, uint32_t guid)
 	auto it = m_go_create.find(type);
 
 	if(it != m_go_create.end())
-		return it->second(guid);
+		return it->second.first(guid);
 
 	throw clan::Exception("Cannot create object of type " + clan::StringHelp::uint_to_text(type));
 }
