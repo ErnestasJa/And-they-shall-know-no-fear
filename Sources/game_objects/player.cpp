@@ -72,7 +72,7 @@ void Player::on_message(const Message & msg)
 {
 	if(msg.get_type()==MSGC_INPUT)
 	{
-		const MSGC_Input & input = (const MSGC_Input &)msg;
+		const MSGC_Input & input = static_cast<const MSGC_Input &>(msg);
 		keys = input.keys;
 	}
 }

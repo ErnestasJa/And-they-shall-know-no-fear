@@ -66,8 +66,27 @@ void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::v
 		(*it)->render(canvas,offset);
 }
 
-///factory
+void GameObjectManager::on_message(const Message & m)
+{
+///messages that are only handled on server
+#if defined GAME_SERVER
+	if(m.get_type()==MSGC_INPUT)
+	{
+		const MSGC_Input & i = static_cast<const MSGC_Input &>(m);
+		find_game_object_by_guid(i.id)->on_message(m);
+	}
+#endif
 
+#if defined GAME_CLIENT
+	if(m.get_type()==MSGC_INPUT)
+	{
+		const MSGC_Input & i = static_cast<const MSGC_Input &>(m);
+		find_game_object_by_guid(i.id)->on_message(m);
+	}
+#endif
+}
+
+///factory
 GameObject * GameObjectManager::create_game_object(uint32_t type, uint32_t guid)
 {
 	auto it = m_go_create.find(type);
