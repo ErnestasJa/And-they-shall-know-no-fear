@@ -20,8 +20,7 @@ protected:
 	clan::NetGameServer			m_net_server;
 	clan::SlotContainer			m_slots;
 
-	clan::NetGameEventDispatcher_v1<ServerClientConnection*> m_login_events;
-	clan::NetGameEventDispatcher_v1<ServerClientConnection*> m_game_events;
+	clan::NetGameEventDispatcher_v1<ServerClientConnection*> m_auth_events, m_game_events, m_net_events, m_game_obj_sync_events;
 
 	clan::GameTime m_game_time;
 public:
@@ -32,14 +31,14 @@ public:
 
 public:
 	//events
-	void on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e);
-
-	void on_auth(const clan::NetGameEvent &e, ServerClientConnection * user);
-
-	void on_game_event(const clan::NetGameEvent &e, ServerClientConnection * user);
+	void on_event		(clan::NetGameConnection *connection, const clan::NetGameEvent &e);
+	void on_auth		(const clan::NetGameEvent &e, ServerClientConnection * user);
+	void on_game_event	(const clan::NetGameEvent &e, ServerClientConnection * user);
+	void on_game_object_sync_event(const clan::NetGameEvent &e, ServerClientConnection * user);
+	void on_net_event	(const clan::NetGameEvent &e, ServerClientConnection * user);
 
 public:
-	void create_all_game_objects(ServerClientConnection * client); /// implement this, then refactor the fuck out of everything
+	void sync_game_objects(bool sync_only_changed_props = false);
 
 public:
 	bool init(uint32_t max_users, const std::string & port);

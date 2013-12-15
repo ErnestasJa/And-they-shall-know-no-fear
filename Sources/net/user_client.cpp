@@ -28,13 +28,7 @@ clan::Signal_v1< const clan::NetGameEvent & > & ClientConnection::sig_event_rece
 	return m_net_client.sig_event_received();
 }
 
-void ClientConnection::send_message(const Message & msg, bool only_changed)
+void ClientConnection::send_event(const clan::NetGameEvent & e)
 {
-	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
-	msg.net_serialize(val);
-
-	clan::NetGameEvent e("msg");
-	e.add_argument(msg.get_type());
-	e.add_argument(val);
 	m_net_client.send_event(e);
 }

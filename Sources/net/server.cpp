@@ -24,19 +24,26 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_slots.connect(m_net_server.sig_client_disconnected(), this, &Server::on_client_disconnected);
 	m_slots.connect(m_net_server.sig_event_received(), this, &Server::on_event);
 
-	m_login_events.func_event("msg").set(this, &Server::on_auth);
-	m_game_events.func_event("msg").set(this, &Server::on_game_event);
+	m_auth_events.func_event("amsg").set(this, &Server::on_auth);
+	m_game_events.func_event("gmsg").set(this, &Server::on_game_event);
+	m_net_events.func_event ("nmsg").set(this, &Server::on_net_event);
 
 	m_net_server.start(port);
 
-	m_game_time = clan::GameTime();
+	m_game_time = clan::GameTime(33,33);
 
 	return true;
 }
 
-void Server::create_all_game_objects(ServerClientConnection * client)
+void Server::sync_game_objects(bool sync_only_changed_props)
 {
+	clan::NetGameEvent e("gosmsg");
+	for(auto it = m_gom->get_game_objects().begin(); it != m_gom->get_game_objects().end(); it++)
+	{
+		MessageUtil::add_game_object(e,(*it),sync_only_changed_props);
+	}
 	
+	m_net_server.send_event(e);
 }
 
 bool Server::run()
@@ -44,7 +51,11 @@ bool Server::run()
 	m_game_time.update();
 
 	if(m_gom)
+	{
 		m_gom->update_game_objects(m_game_time);
+		sync_game_objects();
+	}
+
 
 	return true;
 }
@@ -87,7 +98,7 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 		msg.guid = id;
 		msg.object_type = EGOT_PLAYER; /// realiai tipas nereikalingas
 
-		clan::NetGameEvent ev("msg");
+		clan::NetGameEvent ev("gmsg");
 		MessageUtil::add_message(ev,msg);
 		m_net_server.send_event(ev);
 
@@ -110,7 +121,7 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 		MSGS_AuthStatus msg;
 		std::string str;
 
-		clan::NetGameEvent ev("msg");
+		clan::NetGameEvent ev("amsg");
 
 		if(m.name.get().size()<33&&m.name.get().size()>2)
 		{
@@ -152,28 +163,29 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 
 void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection * con)
 {
+	///process every message in event
+	for(uint32_t i = 0; i < MessageUtil::get_message_count(e); i++)
+	{
+		uint32_t type = MessageUtil::get_message_type(e,i);
+		clan::log_event("net_event","Got message from server type='%1';",type);
+
+		if(type==MSGC_INPUT)
+		{
+			MSGC_Input m;
+			MessageUtil::get_message(e,m,i);
+			m_gom->find_game_object_by_guid(m.id)->on_message(m);
+		}
+		else ///maybe game object manager might handle this message
+			m_gom->on_net_event(e);
+	}
+}
+
+void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * con)
+{
 	Client * client = con->get_client();
 	uint32_t type = e.get_argument(0).to_uinteger();
 
-	if(type==MSGC_INPUT)
-	{
-		///Gavom judesius is kliento, atliekam pakeitimus serveryje ir persiunciam zinute kitiem klientam
-		MSGC_Input m;
-		MessageUtil::get_message(e,m,0);
-
-		Player * spr=m_player_objects[client->get_id()];
-		spr->on_message(m);
-
-		clan::NetGameEvent ev("msg");
-		MessageUtil::add_message(ev,m);
-
-		loopi(m_max_clients)
-		{
-			if(m_client_cons[i].is_connected() && i!=client->get_id() && client->check_flag(ECF_LOGGED_IN))
-				m_client_cons[i].send_event(ev);
-		}
-	}
-	else if(type==MSG_QUERY)
+	if(type==MSG_QUERY)
 	{
 		MSG_Query q;
 		MSG_Server_Info si;
@@ -182,9 +194,9 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 
 		if(q.query_type==EQT_SERVER_INFO)
 		{
-			clan::NetGameEvent si_ev("msg");
-			clan::NetGameEvent ci_ev("msg");
-			clan::NetGameEvent player_obj_create_ev("msg");
+			clan::NetGameEvent si_ev("nmsg");
+			clan::NetGameEvent ci_ev("nmsg");
+			clan::NetGameEvent player_obj_create_ev("gmsg");
 
 			si.map_name = "Level/next_level.map";
 			si.max_client_count = m_max_clients;
@@ -202,7 +214,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			{
 				if(client->get_id() != i && m_client_cons[i].is_connected())
 				{
-					clan::NetGameEvent ci_ev2("msg");
+					clan::NetGameEvent ci_ev2("nmsg");
 					MessageUtil::add_message(ci_ev2,m_clients[i]);
 					con->send_event(ci_ev2);
 				}
@@ -218,7 +230,6 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			cc.object_type = EGOT_PLAYER;
 
 			MessageUtil::add_message(player_obj_create_ev,cc);
-			MessageUtil::add_game_object(player_obj_create_ev,m_player_objects[client->get_id()]);
 			m_net_server.send_event(player_obj_create_ev);
 
 			///siam klientui siunciame kitu zaideju objektu informacija
@@ -226,7 +237,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			{
 				if(i != client->get_id() && m_client_cons[i].is_connected() && m_clients[i].check_flag(ECF_LOGGED_IN))
 				{
-					clan::NetGameEvent player_obj_create_ev2("msg");
+					clan::NetGameEvent player_obj_create_ev2("gmsg");
 
 					MSGS_GameObjectAction c;
 					c.action_type = EGOAT_CREATE;
@@ -234,16 +245,11 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					c.object_type = EGOT_PLAYER;
 					
 					MessageUtil::add_message(player_obj_create_ev2,c);
-					MessageUtil::add_game_object(player_obj_create_ev2,m_player_objects[i]);
 
 					con->send_event(player_obj_create_ev2);
 				}
 			}
 		}
-	}
-	else
-	{
-		clan::log_event("net_event", "Unexpected event received from client, type: %1", type);
 	}
 }
 
@@ -258,15 +264,16 @@ void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEv
 	{
 		bool handled_event = false;
 
-		if (!client->check_flag(ECF_LOGGED_IN))	// User has not logged in, so route events to login dispatcher
+		if (!client->check_flag(ECF_LOGGED_IN)&&e.get_name()=="amsg")	// User has not logged in, so route events to login dispatcher
 		{
-			// Route login events
-			handled_event = m_login_events.dispatch(e, con);
+			handled_event = m_auth_events.dispatch(e, con);
 		}
-		else
+		else 
 		{
-			// Route game events
-			handled_event = m_game_events.dispatch(e, con);
+			if(e.get_name()=="gmsg")
+				handled_event = m_game_events.dispatch(e, con);
+			else if(e.get_name()=="nmsg")
+				handled_event = m_net_events.dispatch(e, con);
 		}
 
 		if (!handled_event)

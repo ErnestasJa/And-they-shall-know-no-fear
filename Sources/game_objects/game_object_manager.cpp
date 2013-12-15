@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "game_objects.h"
 #include "game_object_manager.h"
+#include "../net/message.h"
 
 GameObjectManager::GameObjectManager()
 {
@@ -66,24 +67,32 @@ void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::v
 		(*it)->render(canvas,offset);
 }
 
-void GameObjectManager::on_message(const Message & m)
+void GameObjectManager::on_net_event(const clan::NetGameEvent & e)
 {
-///messages that are only handled on server
-#if defined GAME_SERVER
-	if(m.get_type()==MSGC_INPUT)
-	{
-		const MSGC_Input & i = static_cast<const MSGC_Input &>(m);
-		find_game_object_by_guid(i.id)->on_message(m);
-	}
-#endif
+	uint32_t type = e.get_argument(0).to_uinteger();
+	clan::log_event("net_event","Got message from server type='%1' msg='%2'.",type,e.to_string());
 
-#if defined GAME_CLIENT
-	if(m.get_type()==MSGC_INPUT)
+	if(type==MSGC_INPUT)
 	{
-		const MSGC_Input & i = static_cast<const MSGC_Input &>(m);
-		find_game_object_by_guid(i.id)->on_message(m);
+		MSGC_Input m;
+		m.net_deserialize(e.get_argument(1));
+		find_game_object_by_guid(m.id)->on_message(m);
 	}
-#endif
+
+	///messages that are only handled on server
+	#if defined GAME_SERVER
+
+	#endif
+
+	///messages that are only handled on client
+	#if defined GAME_CLIENT
+
+	#endif
+}
+
+void GameObjectManager::on_game_object_sync_event(const clan::NetGameEvent & e)
+{
+
 }
 
 ///factory

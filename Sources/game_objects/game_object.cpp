@@ -1,6 +1,8 @@
 #include "precomp.h"
+#include "net/message.h"
 #include "game_object_manager.h"
 #include "game_object.h"
+
 
 GameObject::GameObject(uint32_t type, uint32_t guid)
 {

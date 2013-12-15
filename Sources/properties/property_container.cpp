@@ -65,6 +65,11 @@ IProperty * PropertyContainer::get_property(const std::string & name)
 	throw clan::Exception("Tried to get non-existing property : " + name);
 }
 
+uint8_t	PropertyContainer::get_property_count()
+{
+	return m_props.size();
+}
+
 bool PropertyContainer::remove_property(const std::string & name)
 {
 	auto it = std::find_if(m_props.begin(), m_props.end(), [&name](IProperty * o){return o->get_name()==name;});
@@ -100,16 +105,9 @@ void PropertyContainer::net_serialize(clan::NetGameEventValue & e, bool only_cha
 
 	if(only_changed)
 	{
-		uint8_t i = 0;
-		for(auto it = m_props.begin(); it != m_props.end(); it++)
-		{
-			const IProperty * p = (*it);
-			if( (!(p->get_flags()&EPF_UNCHANGED)) || p->get_flags()&EPF_ALWAYS_SEND ) i++;
-		}
-
-		e.add_member((uint8_t)i);
-
-		for(i = 0; i < m_props.size(); i++)
+		uint8_t c=0;
+		e.add_member((uint8_t)0);
+		for(uint32_t i = 0; i < m_props.size(); i++)
 		{
 			const IProperty * p = m_props[i];
 
@@ -119,8 +117,11 @@ void PropertyContainer::net_serialize(clan::NetGameEventValue & e, bool only_cha
 				clan::NetGameEventValue v(clan::NetGameEventValue::complex);
 				p->net_value_serialize(v);
 				e.add_member(v);
+				c++;
 			}
 		}
+
+		e.set_member(0,c);
 	}
 	else
 	{
@@ -144,7 +145,7 @@ void PropertyContainer::net_deserialize(const clan::NetGameEventValue & e)
 
 	if(only_changed)
 	{
-		for(uint32_t i = 0; i < size; i+=2)
+		for(uint32_t i = 0; ( (i < size) && (i/2 < m_props.size()) ); i+=2)
 		{
 			uint8_t pos = e.get_member(2+i);
 			const clan::NetGameEventValue & v = e.get_member(3+i);

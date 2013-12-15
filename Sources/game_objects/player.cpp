@@ -1,12 +1,13 @@
 #include "precomp.h"
 #include "game_object_types.h"
 #include "game_object_manager.h"
-#include "game_objects.h"
-
+#include "game_object.h"
+#include "player.h"
+#include "../net/message.h"
 
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
-	keys=0;
+	keys=add_property<uint32_t>("keys",0);
 }
 
 Player::~Player()

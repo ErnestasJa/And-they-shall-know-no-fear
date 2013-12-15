@@ -35,8 +35,8 @@ public:
 	bool		has_property(const std::string & name);
 	bool		has_property(const std::string & name, uint32_t type);
 	IProperty*  get_property(const std::string & name); ///no throw
-	IProperty*  get_last_used(); ///no throw
 	bool		remove_property(const std::string & name);
+	uint8_t		get_property_count();
 
 	template <class T> Property<T> get_property(const std::string & name);
 	template <class T> const Property<T> get_property(const std::string & name) const;

@@ -1,6 +1,7 @@
 #include "precomp.h"
+
 #include "message.h"
-#include "game_objects/game_objects.h"
+#include "game_objects/game_object.h"
 
 std::map<uint32_t, Message::msg_create_func>  Message::m_msg_create;
 
@@ -38,19 +39,17 @@ bool Message::register_messages()
 
 void MessageUtil::add_message(clan::NetGameEvent & net_event, const Message & m, bool serialize_only_changed)
 {
+	#if defined _DEBUG
+	if(net_event.get_name()=="gosmsg")
+	{
+		clan::Exception("Messages should not be serialized to game object sync event.");
+	}
+	#endif
+
 	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
 	m.net_serialize(val,serialize_only_changed);
 
 	net_event.add_argument(m.get_type());
-	net_event.add_argument(val);
-}
-
-void MessageUtil::add_game_object(clan::NetGameEvent & net_event, GameObject * m, bool serialize_only_changed)
-{
-	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
-	m->net_serialize(val,serialize_only_changed);
-
-	net_event.add_argument(MSG_GAME_OBJECT);
 	net_event.add_argument(val);
 }
 
@@ -59,14 +58,56 @@ void MessageUtil::get_message(const clan::NetGameEvent & net_event, Message & m,
 	m.net_deserialize(net_event.get_argument(index*2+1));
 }
 
-void MessageUtil::get_game_object(const clan::NetGameEvent & net_event, GameObject * m, uint32_t index)
+uint32_t MessageUtil::get_message_type(const clan::NetGameEvent & net_event, uint32_t index)
 {
-	m->net_deserialize(net_event.get_argument(index*2+1));
+	return net_event.get_argument(index*2).to_uinteger();
 }
 
 uint32_t MessageUtil::get_message_count(const clan::NetGameEvent & net_event)
 {
 	return net_event.get_argument_count()/2;
+}
+
+void MessageUtil::add_game_object(clan::NetGameEvent & net_event, GameObject * m, bool serialize_only_changed)
+{
+	#if defined _DEBUG
+	if(net_event.get_name()!="gosmsg")
+	{
+		clan::Exception("Game objects can not be serialized to " + net_event.get_name() + " events.");
+	}
+	#endif
+
+	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
+	m->net_serialize(val,serialize_only_changed);
+
+	if(val.get_member_count()==0)
+	{
+		return;
+	}
+
+	net_event.add_argument(m->get_type());
+	net_event.add_argument(m->get_guid());
+	net_event.add_argument(val);
+}
+
+void MessageUtil::get_game_object(const clan::NetGameEvent & net_event, GameObject * m, uint32_t index)
+{
+	m->net_deserialize(net_event.get_argument(index*3+2));
+}
+
+uint32_t MessageUtil::get_game_object_guid(const clan::NetGameEvent & net_event, uint32_t index)
+{
+	return net_event.get_argument(index*3+1).to_uinteger();
+}
+
+uint32_t MessageUtil::get_game_object_type(const clan::NetGameEvent & net_event, uint32_t index)
+{
+	return net_event.get_argument(index*3).to_uinteger();
+}
+
+uint32_t MessageUtil::get_game_object_count(const clan::NetGameEvent & net_event)
+{
+	return net_event.get_argument_count()/3;
 }
 
 ///-------------------------------------------

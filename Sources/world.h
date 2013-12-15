@@ -3,6 +3,7 @@
 #include "state.h"
 #include "tile_map.h"
 #include "con_info.h"
+#include "net\message.h"
 #include "game_objects\game_objects.h"
 #include "game_objects\game_object_manager.h"
 
@@ -36,7 +37,13 @@ protected:
 	clan::SlotContainer m_net_slots;
 
 	void on_connected();
-	void on_net_event(const clan::NetGameEvent & e);
+	void on_event(const clan::NetGameEvent & e);
+
+	void on_auth_event		(const clan::NetGameEvent &e);
+	void on_game_event	(const clan::NetGameEvent &e);
+	void on_game_object_sync_event(const clan::NetGameEvent &e);
+	void on_net_event	(const clan::NetGameEvent &e);
+
 	void on_disconnected();
 
 protected:
@@ -63,10 +70,11 @@ protected:
 	ConnectionInfo	m_con_info;
 	uint32_t	m_max_clients;
 
-
 	GameObjectManager * m_gom;
 	ClientConnection * m_client_con;
-	Client * m_client; ///NOT SURE ABOUT THIS ONE
+	clan::NetGameEventDispatcher_v0 m_auth_events, m_game_events, m_game_obj_sync_events, m_net_events;
+
+	Client * m_client;
 	Client * m_clients;
 	Player * m_player;
 	Player ** m_players;

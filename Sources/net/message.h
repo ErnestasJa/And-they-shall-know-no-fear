@@ -22,6 +22,7 @@ enum MESSAGE_TYPE
 	//server
 	MSGS_AUTH_STATUS,
 	MSGS_CLIENT_DISCONNECT,
+	MSGS_GAME_STATE_UPDATE,
 	MSGS_GAME_OBJECT_ACTION,
 	MSGS_SERVER_INFO,
 
@@ -50,7 +51,7 @@ public:
 
 	Message()
 	{
-		timestamp = add_property<uint32_t>("ts",0);
+		timestamp = add_property<uint32_t>("timestamp",0);
 	}
 ///------Message factory-------
 protected:
@@ -76,10 +77,15 @@ class MessageUtil
 {
 public:
 	static void add_message(clan::NetGameEvent & net_event, const Message & m, bool serialize_only_changed = false);
-	static void add_game_object(clan::NetGameEvent & net_event, GameObject * m, bool serialize_only_changed = false);
 	static void get_message(const clan::NetGameEvent & net_event, Message & m, uint32_t index);
-	static void get_game_object(const clan::NetGameEvent & net_event, GameObject * m, uint32_t index);
+	static uint32_t get_message_type(const clan::NetGameEvent & net_event, uint32_t index);
 	static uint32_t get_message_count(const clan::NetGameEvent & net_event);
+
+	static void add_game_object(clan::NetGameEvent & net_event, GameObject * m, bool serialize_only_changed = false);
+	static void get_game_object(const clan::NetGameEvent & net_event, GameObject * m, uint32_t index);
+	static uint32_t get_game_object_guid(const clan::NetGameEvent & net_event, uint32_t index);
+	static uint32_t get_game_object_type(const clan::NetGameEvent & net_event, uint32_t index);
+	static uint32_t get_game_object_count(const clan::NetGameEvent & net_event);
 };
 
 /**
@@ -139,9 +145,9 @@ public:
 
 	MSGS_AuthStatus()
 	{
-		auth_sucessful	= add_property<bool>("as");
+		auth_sucessful	= add_property<bool>("auth_successful");
 		id				= add_property<uint32_t>("id");
-		msg				= add_property<std::string>("name");
+		msg				= add_property<std::string>("message");
 	}
 };
 
@@ -164,7 +170,19 @@ public:
 	{
 		id	=	add_property<uint32_t>("id");
 		type=	add_property<uint32_t>("type");
-		msg =	add_property<std::string>("name");
+		msg =	add_property<std::string>("message");
+	}
+};
+
+class MSGS_GameStateChange: public Message
+{
+	DEF_MSG(MSGS_GameStateChange,MSGS_GAME_STATE_UPDATE)
+public:
+	Property<uint32_t> server_frame;
+
+	MSGS_GameStateChange()
+	{
+		server_frame = add_property<uint32_t>("server_frame");
 	}
 };
 
@@ -186,9 +204,9 @@ public:
 
 	MSGS_GameObjectAction()
 	{
-		action_type = add_property<uint32_t>("at");
+		action_type = add_property<uint32_t>("action_type");
 		guid = add_property<uint32_t>("guid");
-		object_type = add_property<uint32_t>("ot");
+		object_type = add_property<uint32_t>("object_type");
 	}
 };
 
@@ -255,7 +273,7 @@ public:
 
 	MSG_Query()
 	{
-		query_type = add_property<uint32_t>("qt");
+		query_type = add_property<uint32_t>("query_type");
 	}
 };
 
@@ -267,7 +285,7 @@ public:
 
 	MSG_QueryResponse()
 	{
-		query_type = add_property<uint32_t>("qt");
+		query_type = add_property<uint32_t>("query_type");
 	}
 };
 

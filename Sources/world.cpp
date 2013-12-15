@@ -52,15 +52,15 @@ bool World::init()
 	
 	m_net_slots.connect(m_client_con->sig_connected(),this, &World::on_connected);
 	m_net_slots.connect(m_client_con->sig_disconnected(),this, &World::on_disconnected);
-	m_net_slots.connect(m_client_con->sig_event_received(),this, &World::on_net_event);
+	m_net_slots.connect(m_client_con->sig_event_received(),this, &World::on_event);
+
+	m_auth_events.func_event("amsg").set(this, &World::on_auth_event);
+	m_game_events.func_event("gmsg").set(this, &World::on_game_event);
+	m_game_obj_sync_events.func_event("gosmsg").set(this, &World::on_game_object_sync_event);
+	m_net_events.func_event ("nmsg").set(this, &World::on_net_event);
 
 	clan::log_event("system", "ClientConnection trying to connect to %1:%2 as %3",m_server_ip,m_server_port,m_client_name);
 	m_client_con->connect(m_server_ip, m_server_port);
-
-	//DEBUG
-	//m_client_name = "Skell"; 
-	//remember nub "62.80.252.115","27015"
-	//password isn't used
 	
 	return true;
 }
@@ -75,14 +75,46 @@ void World::set_info(const ConnectionInfo & info)
 
 void World::on_connected()
 {
-	clan::log_event("net_event","Connected to server.");
+	clan::NetGameEvent e("amsg");
 
 	msg_auth.name = m_client_name;
 	msg_auth.timestamp = m_game_time.get_current_time_ms();
-	m_client_con->send_message(msg_auth);
+
+	MessageUtil::add_message(e,msg_auth);
+
+	m_client_con->send_event(e);
+
+	clan::log_event("net_event","Connected to server.");
 }
 
-void World::on_net_event(const clan::NetGameEvent & e)
+void World::on_event(const clan::NetGameEvent & e)
+{
+	if(this->m_client_con)
+	{
+		bool handled_event = false;
+
+		if (e.get_name()=="amsg")	// User has not logged in, so route events to login dispatcher
+		{
+			handled_event = m_auth_events.dispatch(e);
+		}
+		else 
+		{
+			if(e.get_name()=="gmsg")
+				handled_event = m_game_events.dispatch(e);
+			else if(e.get_name()=="nmsg")
+				handled_event = m_net_events.dispatch(e);
+			else if(e.get_name()=="gosmsg")
+				handled_event = m_game_obj_sync_events.dispatch(e);
+		}
+
+		if (!handled_event)
+		{
+			clan::log_event("events", "Unhandled event: %1", e.to_string());
+		}
+	}
+}
+
+void World::on_auth_event(const clan::NetGameEvent & e)
 {
 	uint32_t type = e.get_argument(0).to_uinteger();
 	clan::log_event("net_event","Got message from server type='%1' msg='%2'.",type,e.to_string());
@@ -97,9 +129,12 @@ void World::on_net_event(const clan::NetGameEvent & e)
 			m_client_id = m.id;
 			msg.id		= m.id;
 
+			clan::NetGameEvent e("nmsg");
 			MSG_Query q;
 			q.query_type = EQT_SERVER_INFO;
-			m_client_con->send_message(q);
+			MessageUtil::add_message(e,q);
+			m_client_con->send_event(e);
+			
 		}
 		else
 		{
@@ -107,7 +142,75 @@ void World::on_net_event(const clan::NetGameEvent & e)
 			m_client_con->disconnect();
 		}
 	}
-	else if(type==MSGS_SERVER_INFO)
+}
+
+void World::on_game_event(const clan::NetGameEvent & e)
+{
+	///process every message in event
+	for(uint32_t i = 0; i < MessageUtil::get_message_count(e); i++)
+	{
+		uint32_t type = MessageUtil::get_message_type(e,i);
+		clan::log_event("net_event","Got message from server type='%1';",type);
+
+		if(type==MSGC_INPUT)
+		{
+			MSGC_Input m;
+			MessageUtil::get_message(e,m,i);
+			m_gom->find_game_object_by_guid(m.id)->on_message(m);
+		}
+		else if(type==MSGS_GAME_OBJECT_ACTION)
+		{
+			MSGS_GameObjectAction m;
+			MessageUtil::get_message(e,m,i);
+
+			if(m.action_type==EGOAT_CREATE)
+			{
+				Player * obj = static_cast<Player*>(m_gom->add_game_object(m.object_type,m.guid));
+
+				obj->load(m_canvas,m_resources);
+
+				if( m.guid == m_client->get_id() )
+					m_player = obj;
+
+				m_players[ m.guid ] = obj;
+			}
+			else if(m.action_type==EGOAT_REMOVE)
+			{
+				m_gom->remove_game_object(m.guid);
+
+				if(m.guid==m_client->get_id())
+				{
+					m_player = nullptr;
+				}
+			}
+		}
+		else ///maybe game object manager might handle this message
+			m_gom->on_net_event(e);
+	}
+}
+
+void World::on_game_object_sync_event(const clan::NetGameEvent & e)
+{
+	if(m_gom)
+	for(uint32_t i = 0; i < MessageUtil::get_game_object_count(e); i++)
+	{
+		uint32_t type = MessageUtil::get_game_object_type(e,i);
+		uint32_t guid = MessageUtil::get_game_object_guid(e,i);
+
+		GameObject * go = m_gom->find_game_object_by_guid(guid);
+
+		if(go)
+			MessageUtil::get_game_object(e,go,i);
+		//clan::log_event("net_event", "synced game object");
+	}
+}
+
+void World::on_net_event(const clan::NetGameEvent & e)
+{
+	uint32_t type = e.get_argument(0).to_uinteger();
+	clan::log_event("net_event","Got message from server type='%1' msg='%2'.",type,e.to_string());
+
+	if(type==MSGS_SERVER_INFO)
 	{
 		MSG_Server_Info m;
 		m.net_deserialize(e.get_argument(1));
@@ -135,52 +238,6 @@ void World::on_net_event(const clan::NetGameEvent & e)
 			m_client = &m_clients[m_client_id];
 
 		clan::log_event("net_event","Got user info: name='%1', id='%2'", m.get_name(), m.get_id());
-	}
-	if(m_client)
-	{
-		if(type==MSGC_INPUT)
-		{
-			MSGC_Input m;
-			m.net_deserialize(e.get_argument(1));
-			m_players[m.id]->on_message(m);
-		}
-		else if(type==MSGS_GAME_OBJECT_ACTION)
-		{
-			MSGS_GameObjectAction m;
-			MessageUtil::get_message(e,m,0);
-
-		
-			if(m.action_type==EGOAT_CREATE)
-			{
-				GameObject * o = m_gom->add_game_object(m.object_type,m.guid);
-
-				if(o->get_type()==EGOT_PLAYER)
-				{
-					Player * spr = static_cast<Player*>(o);
-
-					if(o->get_guid()==m_client->get_id())
-						m_player = spr;
-
-					if(MessageUtil::get_message_count(e)==2)
-					{
-						MessageUtil::get_game_object(e,spr,1);
-					}
-
-					m_players[spr->get_guid()]=spr;
-
-					spr->load(m_canvas,m_resources);
-				}
-			}
-			else if(m.action_type==EGOAT_REMOVE)
-			{
-				m_gom->remove_game_object(m.guid);
-
-				if(m.guid==m_client->get_id())
-				{
-					m_player = nullptr;
-				}
-			}
-		}
 	}
 }
 
@@ -248,27 +305,39 @@ void World::on_key_up(const clan::InputEvent & e)
 	{
 		if(e.id == clan::keycode_a)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_LEFT);
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
 		}
 		else if(e.id == clan::keycode_d)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_RIGHT);
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
 		}
 		else if(e.id == clan::keycode_w)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_UP);
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
 		}
 		else if(e.id == clan::keycode_s)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_DOWN);
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
 		}
 	}
 }
@@ -280,27 +349,40 @@ void World::on_key_down(const clan::InputEvent & e)
 		
 		if(e.id == clan::keycode_a)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_LEFT;
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
+
 		}
 		else if(e.id == clan::keycode_d)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_RIGHT;
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
 		}
 		else if(e.id == clan::keycode_w)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_UP;
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
 		}
 		else if(e.id == clan::keycode_s)
 		{
+			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_DOWN;
+			MessageUtil::add_message(e,msg);
+
 			m_player->on_message(msg);
-			m_client_con->send_message(msg,false);
+			m_client_con->send_event(e);
 		}
 	}
 }

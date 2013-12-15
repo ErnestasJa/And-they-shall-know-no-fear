@@ -74,6 +74,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Sources\game_objects\game_object.cpp" />
+    <ClCompile Include="..\Sources\game_objects\game_object_manager.cpp" />
+    <ClCompile Include="..\Sources\game_objects\player.cpp" />
     <ClCompile Include="..\Sources\net\message.cpp" />
     <ClCompile Include="..\Sources\precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -85,6 +88,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Sources\game_objects\game_object.h" />
+    <ClInclude Include="..\Sources\game_objects\game_objects.h" />
+    <ClInclude Include="..\Sources\game_objects\game_object_manager.h" />
+    <ClInclude Include="..\Sources\game_objects\game_object_types.h" />
+    <ClInclude Include="..\Sources\game_objects\player.h" />
     <ClInclude Include="..\Sources\net\message.h" />
     <ClInclude Include="..\Sources\precomp.h" />
     <ClInclude Include="..\Sources\properties\iproperty.h" />

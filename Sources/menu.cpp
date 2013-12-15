@@ -106,6 +106,7 @@ bool Menu::pause()
 	c->set_visible(false);
 
 	m_key_up.disable();
+	
 	return true;
 }
 

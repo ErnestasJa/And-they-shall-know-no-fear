@@ -3,7 +3,6 @@
 
 #include "properties/property.h"
 #include "properties/property_container.h"
-#include "net/message.h"
 
 /**
 Base game object class.
@@ -12,6 +11,7 @@ Derived classes should implement all pure virtual functions and have these funct
 	static GameObject * create(uint32_t guid){return new <ObjectType>(guid);};
 **/
 
+class Message;
 class GameObjectManager;
 class GameObject: public PropertyContainer
 {
