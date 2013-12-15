@@ -3,6 +3,7 @@
 #include "game_object_manager.h"
 #include "game_object.h"
 #include "player.h"
+clan::Sprite Player::m_rw, Player::m_lw, Player::m_uw, Player::m_dw;
 #include "../net/message.h"
 
 Player::Player(uint32_t guid): GameObject(type(),guid)
@@ -15,13 +16,18 @@ Player::~Player()
 
 }
 
-void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
+bool Player::preload(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
 	m_rw = clan::Sprite::resource(canvas, "champ_rw", resources );
 	m_lw = clan::Sprite::resource(canvas, "champ_lw", resources );
 	m_uw = clan::Sprite::resource(canvas, "champ_uw", resources );
 	m_dw = clan::Sprite::resource(canvas, "champ_dw", resources );
+	return true;
+}
 
+void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
+{
+	preload(canvas,resources);
 	m_sprite=m_dw;
 
 	clan::Console::write_line("is null: %1",m_sprite.is_null());

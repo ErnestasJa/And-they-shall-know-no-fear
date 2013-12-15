@@ -32,17 +32,18 @@ public:
 ///------Game object factory-------
 protected:
 	typedef GameObject * (*go_create_func)(uint32_t);
-	std::map<uint32_t, go_create_func> m_go_create;
-
+	typedef bool (*go_preload_func)(clan::Canvas & canvas ,clan::ResourceManager & resources);
+	std::map<uint32_t, std::pair<go_create_func, go_preload_func> > m_go_create;
 	GameObject * create_game_object(uint32_t type, uint32_t guid);
-public:
 
+public:
 	template <class T>
 	bool register_game_object()
 	{
-		m_go_create[T::type()]=&T::create;
+		m_go_create[T::type()]=std::make_pair(&T::create,&T::preload);
 		return true;
 	}
+
 };
 
 #endif
