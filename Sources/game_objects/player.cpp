@@ -3,8 +3,9 @@
 #include "game_object_manager.h"
 #include "game_object.h"
 #include "player.h"
-clan::Sprite Player::m_rw, Player::m_lw, Player::m_uw, Player::m_dw;
 #include "../net/message.h"
+
+clan::Sprite Player::m_rw, Player::m_lw, Player::m_uw, Player::m_dw;
 
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {

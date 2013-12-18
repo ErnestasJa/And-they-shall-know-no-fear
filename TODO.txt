@@ -18,6 +18,6 @@
 - editor, multi select
 
 #Net code
--Make game manager dispatch messages to correct game objects.
--Send game updates at some defined tickrate.
--
++Make game manager dispatch messages to correct game objects.
++Send game updates at some defined tickrate.
+-Send sync updates only to in-game clients. (send msg from client that says level has loaded).

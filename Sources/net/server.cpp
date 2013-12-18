@@ -56,7 +56,6 @@ bool Server::run()
 		sync_game_objects();
 	}
 
-
 	return true;
 }
 
