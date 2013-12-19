@@ -26,7 +26,7 @@ void editor::init_gui()
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	
 	m_editor_window = new clan::Window(m_gui_root);
-	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-150,0,clan::Size(150,250)));
+	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-150,0,clan::Size(150,300)));
 	m_editor_window->set_visible(true);
 	m_editor_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_editor_window);
 	
@@ -52,6 +52,12 @@ void editor::init_gui()
 
 	init_gui_load_map_button(m_editor_window, clan::Rect( 10, 180, clan::Size(80, 25)));
 	init_gui_save_map_button(m_editor_window, clan::Rect( 10, 210, clan::Size(80, 25)));
+
+	m_button_multi_tile=new clan::PushButton(m_editor_window);
+	m_button_multi_tile->set_geometry(clan::Rect(10, 240, clan::Size(80, 25)));
+	m_button_multi_tile->set_text("Multi tile select");
+	m_button_multi_tile->set_toggle(true);
+	m_button_multi_tile->func_clicked().set(this, &editor::on_button_clicked, m_button_multi_tile);
 
 	m_save_window = new YNDialogue(m_gui_root, "Do you want to save changes?");
 	m_save = m_save_window->confirmation().connect(this, &editor::on_exit);
@@ -206,16 +212,42 @@ void editor::draw_world_axis(bool t, bool c, bool o)
 	if(m_pos.y<=h && m_pos.y+h>=0 && o) m_canvas.draw_line(clan::LineSegment2f(clan::vec2(0,-m_pos.y),clan::vec2(w,-m_pos.y)),clan::Colorf::red);
 }
 
-void editor::draw_hover_box()
+void editor::draw_hover_box(bool draw)
 {
+	if (!draw) return;
+
 	int32_t w = m_window.get_viewport().get_width(), h = m_window.get_viewport().get_height();
 
 	clan::Point current = m_window.get_ic().get_mouse().get_position();
+
 	if(current.x+m_pos.x<TILE_SIZE) current.x-=TILE_SIZE; 
 	if(current.y+m_pos.y<TILE_SIZE) current.y-=TILE_SIZE;
+
 	current.x=current.x-(current.x+m_pos.x)%TILE_SIZE; 
 	current.y=current.y-(current.y+m_pos.y)%TILE_SIZE;
+
 	clan::Rect rect = clan::Rect(current,clan::Size(TILE_SIZE,TILE_SIZE));
+	m_canvas.draw_box(rect,clan::Colorf::green);
+}
+
+void editor::draw_selection_box(const clan::Point & pos, bool draw = false)
+{
+	if (!draw) return;
+
+	clan::Point current = m_window.get_ic().get_mouse().get_position();
+	int w = abs(current.x-pos.x), h = abs(current.y-pos.y), x,y;
+
+	if (pos.x<=current.x) x=pos.x;
+	else x=current.x;
+
+	if (pos.y<=current.y) y=pos.y;
+	else y=current.y;
+	
+	clan::Point topleft;
+	topleft.x=x;
+	topleft.y=y;
+
+	clan::Rect rect = clan::Rect(topleft,clan::Size(w,h));
 	m_canvas.draw_box(rect,clan::Colorf::green);
 }
 
@@ -230,7 +262,8 @@ bool editor::run()
 
 		m_tile_map.render(m_pos);
 		draw_world_axis(m_checkbox_t->is_checked(),m_checkbox_c->is_checked(),m_checkbox_o->is_checked());
-		draw_hover_box();
+		draw_hover_box(!m_button_multi_tile->is_pushed());
+		draw_selection_box(m_offset, m_button_multi_tile->is_pushed() && m_offset.length()!=0);
 
 		///render gui
 		m_gui_manager.process_messages(0);
@@ -328,19 +361,36 @@ void editor::on_input(const clan::InputEvent & e)
 		{
 			if(m_gui_root->get_component_at(e.mouse_pos)!=m_gui_root) break;
 
-			if (e.id == clan::mouse_left)
+			if (e.id == clan::mouse_left && e.type == clan::InputEvent::pressed)
+			{
+				m_offset = e.mouse_pos;
+				clan::Console::write_line("PRESSED mouse_left"); //DEBUG
+			}
+			else if (e.id == clan::mouse_left && e.type == clan::InputEvent::released)
+			{
+				if(m_button_multi_tile->is_pushed())
+				{
+					//submit MULTISELECT m_offset, e.mouse_pos; DEBUG
+					clan::Console::write_line("SELECTION start: [%1,%2] end: [%3,%4]", m_offset.x, m_offset.y, e.mouse_pos.x, e.mouse_pos.y); //DEBUG
+					m_button_multi_tile->set_pushed(false);
+					m_offset = clan::vec2();
+				}
+				clan::Console::write_line("RELEASED mouse_left"); //DEBUG
+			}
+			else if (e.id == clan::mouse_left)
 				change_tile_sprite(e.mouse_pos);
 			else if (e.id == clan::mouse_right)
 				change_tile_sprite(e.mouse_pos,true);
 			else if (e.id == clan::mouse_middle && e.type == clan::InputEvent::pressed)
 			{
-				m_drag_offset = e.mouse_pos;
-				clan::Console::write_line("PRESSED"); //DEBUG
+				m_offset = e.mouse_pos;
+				clan::Console::write_line("PRESSED mouse_middle"); //DEBUG
 			}
 			else if (e.id == clan::mouse_middle && e.type == clan::InputEvent::released)
 			{
 				m_scroll=clan::vec2();
-				clan::Console::write_line("RELEASED"); //DEBUG
+				m_offset=clan::vec2();
+				clan::Console::write_line("RELEASED mouse_middle"); //DEBUG
 			}
 			else if (e.type == clan::InputEvent::pointer_moved)
 			{
@@ -350,7 +400,7 @@ void editor::on_input(const clan::InputEvent & e)
 				else if (e.device.get_keycode(clan::mouse_right))
 					change_tile_sprite(e.mouse_pos,true);
 				else if (e.device.get_keycode(clan::mouse_middle))
-					m_scroll=(e.mouse_pos-m_drag_offset)/m_game_time.get_time_elapsed_ms();
+					m_scroll=(e.mouse_pos-m_offset)/m_game_time.get_time_elapsed_ms();
 			}
 			break;
 		}
@@ -369,22 +419,26 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	{
 		if(open_file(file_name))
 		{
-				m_tile_map.load_resource_document(file_name);
-				update_gui_sprite_sheet_dropbox();
+			m_tile_map.load_resource_document(file_name);
+			update_gui_sprite_sheet_dropbox();
 		}
-
 	}
 	else if(btn == m_button_load_map)	
 	{
 		if(open_file(file_name))
 		{
-				m_tile_map.load(file_name);
-				update_gui_sprite_sheet_dropbox();
+			m_tile_map.load(file_name);
+			update_gui_sprite_sheet_dropbox();
 		}
 	}
 	else if(btn == m_button_save_map)	
 	{
-		if(save_file(file_name))m_tile_map.load(file_name);
+		if(save_file(file_name))
+			m_tile_map.load(file_name);
+	}
+	else if(btn == m_button_multi_tile)
+	{
+		m_button_multi_tile->set_pushed(true);
 	}
 }
 

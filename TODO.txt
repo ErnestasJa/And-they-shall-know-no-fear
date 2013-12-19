@@ -1,21 +1,22 @@
 + tile_chunk, erase chunk
-- editor, add edge_pan sensitivity
+-- editor, add edge_pan sensitivity
 + editor, change_tile_sprite add layer selection
 + editor, change_tile_sprite add sprite removal (type set to no tile)
-+ editor, added sprite hold draw 
++ editor, added sprite hold drawing
 + editor, divide draw world axis
 - editor, divide draw world into separate functions axis
 + editor, added world axis selection
-+ editor, fix shit names
-- editor, fix not so shit names
++ editor, fix bad names
+- editor, fix not so bad names
 + editor, move dropbox creation to a function
-- editor, add right click scroll to frame selection window
++ editor, add click scroll to frame selection window
 - editor, add toolbar
 + editor, show hovered tiles layer frames
-- editor, add sprite sheet loading
++ editor, add sprite sheet loading
 + editor, add map loading/saving
 + menu, connect typing in text boxes
-- editor, multi select
+- editor, multi select bydrag
++ editor, drag box
 
 #Net code
 +Make game manager dispatch messages to correct game objects.

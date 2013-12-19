@@ -40,7 +40,8 @@ protected:
 	void init_gui_axis_checkbox(clan::Window * root, int left, int right, clan::Size size);
 	void edge_pan(const clan::vec2 & pos);
 	void draw_world_axis(bool t, bool c, bool w);
-	void draw_hover_box();
+	void draw_hover_box(bool draw);
+	void draw_selection_box(const clan::Point & pos, bool draw);
 	void change_tile_sprite(const clan::vec2 & pos, bool remove=false);
 	bool editor::open_file(std::string & str);
 	bool editor::save_file(std::string & str);
@@ -62,7 +63,7 @@ protected:
 	///Kameros poslinki
 	clan::vec2 m_pos,
 		m_pan,
-		m_drag_offset,
+		m_offset,
 		m_scroll;
 
 	///game
@@ -75,17 +76,25 @@ protected:
 
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
-	clan::PushButton			*m_button_sprite_frame, *m_button_select_resource_file, *m_button_load_map, *m_button_save_map;
-	clan::ComboBox				*m_combo_layer, *m_combo_sprite_sheet;
-	clan::PopupMenu				m_combo_menu_layer, m_combo_menu_sprite_sheet;
-	clan::CheckBox				*m_checkbox_t, *m_checkbox_c, *m_checkbox_o;
-	clan::Window				*m_sprite_selection_window, *m_editor_window;
+	clan::PushButton			*m_button_multi_tile, 
+								*m_button_sprite_frame, 
+								*m_button_select_resource_file, 
+								*m_button_load_map, 
+								*m_button_save_map;
+	clan::ComboBox				*m_combo_layer, 
+								*m_combo_sprite_sheet;
+	clan::PopupMenu				m_combo_menu_layer, 
+								m_combo_menu_sprite_sheet;
+	clan::CheckBox				*m_checkbox_t, 
+								*m_checkbox_c, 
+								*m_checkbox_o;
+	clan::Window				*m_sprite_selection_window, 
+								*m_editor_window;
 	SpriteFrameSelection		*m_sprite_frame_selection;
 
 
 	clan::Slot m_frame_select, m_save;
 	int32_t m_selected_frame, m_selected_layer, m_selected_sprite_sheet;
-
 
 };
 

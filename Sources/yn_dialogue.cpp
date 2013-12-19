@@ -5,9 +5,6 @@
 
 YNDialogue::YNDialogue(clan::GUIComponent * root, std::string message):clan::GUIComponent(root)
 {
-	
-
-
 	m_exit_window = new clan::Window(root);
 	m_exit_window->set_geometry(clan::Rect( 300, 460, clan::Size(200,120) ));
 	m_exit_window->set_title("Are you sure?");
@@ -27,7 +24,6 @@ YNDialogue::YNDialogue(clan::GUIComponent * root, std::string message):clan::GUI
 	m_button_exit_N->set_geometry(clan::Rect( 105, 70, clan::Size(75, 30) ));
 	m_button_exit_N->func_clicked().set(this, &YNDialogue::on_button_clicked, m_button_exit_N);
 	m_button_exit_N->set_text("NO");
-
 }
 
 YNDialogue::~YNDialogue()
