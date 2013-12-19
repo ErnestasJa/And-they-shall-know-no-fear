@@ -31,6 +31,7 @@ World::~World()
 void World::init_level(const std::string & level)
 {
 	m_gom = new GameObjectManager();
+	m_gom->preload(m_canvas,m_resources);
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.load(level);
 }
@@ -212,14 +213,20 @@ void World::on_net_event(const clan::NetGameEvent & e)
 
 	if(type==MSGS_SERVER_INFO)
 	{
-		MSG_Server_Info m;
-		m.net_deserialize(e.get_argument(1));
+		clan::NetGameEvent es("nmsg");
+		MSGC_Ready mr;
+		MSG_Server_Info msi;
+
+		msi.net_deserialize(e.get_argument(1));
 		
-		m_max_clients = m.max_client_count;
-		init_level(m.get_property<std::string>("name"));
+		m_max_clients = msi.max_client_count;
+		init_level(msi.get_property<std::string>("name"));
 
 		m_clients = new Client[m_max_clients];
 		m_players = new Player * [m_max_clients];
+
+		MessageUtil::add_message(es,mr);
+		m_client_con->send_event(es);
 	}
 	else if(type==MSG_CLIENT_INFO)
 	{

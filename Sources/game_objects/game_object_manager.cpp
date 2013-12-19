@@ -10,7 +10,23 @@ GameObjectManager::GameObjectManager()
 
 GameObjectManager::~GameObjectManager()
 {
+	free();
+}
 
+void GameObjectManager::preload(clan::Canvas & canvas ,clan::ResourceManager & resources)
+{
+	for(auto it = m_go_create.begin(); it != m_go_create.end(); it++)
+	{
+		(*it).second.gp(canvas,resources);
+	}
+}
+
+void GameObjectManager::free()
+{
+	for(auto it = m_go_create.begin(); it != m_go_create.end(); it++)
+	{
+		(*it).second.gf();
+	}
 }
 
 std::vector<GameObject*> & GameObjectManager::get_game_objects()
@@ -101,7 +117,7 @@ GameObject * GameObjectManager::create_game_object(uint32_t type, uint32_t guid)
 	auto it = m_go_create.find(type);
 
 	if(it != m_go_create.end())
-		return it->second.first(guid);
+		return it->second.gc(guid);
 
 	throw clan::Exception("Cannot create object of type " + clan::StringHelp::uint_to_text(type));
 }

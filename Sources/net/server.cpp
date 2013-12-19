@@ -195,7 +195,7 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 		{
 			clan::NetGameEvent si_ev("nmsg");
 			clan::NetGameEvent ci_ev("nmsg");
-			clan::NetGameEvent player_obj_create_ev("gmsg");
+			
 
 			si.map_name = "Level/next_level.map";
 			si.max_client_count = m_max_clients;
@@ -218,35 +218,39 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 					con->send_event(ci_ev2);
 				}
 			}
-			
-			///sukuriam sio kliento zaidimo objekta
-			m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
+		}
+	}
+	else if(type==MSGC_READY)
+	{
+		clan::NetGameEvent player_obj_create_ev("gmsg");
 
-			///persiunciam zinute visiem kad sukurtu toki objekta
-			MSGS_GameObjectAction cc;
-			cc.action_type = EGOAT_CREATE;
-			cc.guid = client->get_id();
-			cc.object_type = EGOT_PLAYER;
+		///sukuriam sio kliento zaidimo objekta
+		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
 
-			MessageUtil::add_message(player_obj_create_ev,cc);
-			m_net_server.send_event(player_obj_create_ev);
+		///persiunciam zinute visiem kad sukurtu toki objekta
+		MSGS_GameObjectAction cc;
+		cc.action_type = EGOAT_CREATE;
+		cc.guid = client->get_id();
+		cc.object_type = EGOT_PLAYER;
 
-			///siam klientui siunciame kitu zaideju objektu informacija
-			loopi(m_max_clients)
+		MessageUtil::add_message(player_obj_create_ev,cc);
+		m_net_server.send_event(player_obj_create_ev);
+
+		///siam klientui siunciame kitu zaideju objektu informacija
+		loopi(m_max_clients)
+		{
+			if(i != client->get_id() && m_client_cons[i].is_connected() && m_clients[i].check_flag(ECF_LOGGED_IN))
 			{
-				if(i != client->get_id() && m_client_cons[i].is_connected() && m_clients[i].check_flag(ECF_LOGGED_IN))
-				{
-					clan::NetGameEvent player_obj_create_ev2("gmsg");
+				clan::NetGameEvent player_obj_create_ev2("gmsg");
 
-					MSGS_GameObjectAction c;
-					c.action_type = EGOAT_CREATE;
-					c.guid = i;
-					c.object_type = EGOT_PLAYER;
+				MSGS_GameObjectAction c;
+				c.action_type = EGOAT_CREATE;
+				c.guid = i;
+				c.object_type = EGOT_PLAYER;
 					
-					MessageUtil::add_message(player_obj_create_ev2,c);
+				MessageUtil::add_message(player_obj_create_ev2,c);
 
-					con->send_event(player_obj_create_ev2);
-				}
+				con->send_event(player_obj_create_ev2);
 			}
 		}
 	}
