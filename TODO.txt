@@ -21,4 +21,5 @@
 #Net code
 +Make game manager dispatch messages to correct game objects.
 +Send game updates at some defined tickrate.
--Send sync updates only to in-game clients. (send msg from client that says level has loaded).
++Send sync updates only to in-game clients. (send msg from client that says level has loaded).
+-pack "gmsg" and other type messages into one event when possible just like sync event.

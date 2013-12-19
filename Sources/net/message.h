@@ -18,6 +18,7 @@ enum MESSAGE_TYPE
 	//client
 	MSGC_INPUT,
 	MSGC_AUTH,
+	MSGC_READY,
 
 	//server
 	MSGS_AUTH_STATUS,
@@ -90,7 +91,7 @@ public:
 
 /**
 #########################################################
-############# ClientConnection messages #################
+############# Client messages #################
 #########################################################
 **/
 
@@ -125,6 +126,18 @@ public:
 	MSGC_Auth()
 	{
 		name = add_property<std::string>("name");
+	}
+};
+
+/*!
+Message that is send after client (pre)loads everything it needs to begin playing.
+*/
+class MSGC_Ready: public Message
+{
+	DEF_MSG(MSGC_Ready,MSGC_READY)
+public:
+	MSGC_Ready()
+	{
 	}
 };
 
@@ -229,7 +242,7 @@ public:
 
 /**
 #########################################################
-########## ClientConnection/Server messages #############
+########## Client/Server messages #############
 #########################################################
 **/
 

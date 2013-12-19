@@ -14,6 +14,7 @@ protected:
 public:
 	static GameObject * create(uint32_t guid){return new Player(guid);};
 	static bool preload(clan::Canvas & canvas, clan::ResourceManager & resources);
+	static void free();
 	static uint32_t type(){return EGOT_PLAYER;}
 
 	Player(uint32_t guid);

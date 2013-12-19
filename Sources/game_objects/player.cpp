@@ -26,9 +26,16 @@ bool Player::preload(clan::Canvas & canvas, clan::ResourceManager & resources)
 	return true;
 }
 
+void Player::free()
+{
+	m_rw = clan::Sprite();
+	m_lw = clan::Sprite();
+	m_uw = clan::Sprite();
+	m_dw = clan::Sprite();
+}
+
 void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
-	preload(canvas,resources);
 	m_sprite=m_dw;
 
 	clan::Console::write_line("is null: %1",m_sprite.is_null());

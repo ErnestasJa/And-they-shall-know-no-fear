@@ -14,6 +14,9 @@ public:
 	GameObjectManager();
 	virtual ~GameObjectManager();
 
+	void preload(clan::Canvas & canvas ,clan::ResourceManager & resources);
+	void free();
+
 	///Creates game object and also adds it to internal list
 	GameObject * add_game_object(uint32_t type, uint32_t guid);
 	void remove_game_object(uint32_t guid);
@@ -33,16 +36,36 @@ public:
 protected:
 	typedef GameObject * (*go_create_func)(uint32_t);
 	typedef bool (*go_preload_func)(clan::Canvas & canvas ,clan::ResourceManager & resources);
-	std::map<uint32_t, std::pair<go_create_func, go_preload_func> > m_go_create;
+	typedef void (*go_free_func)();
+
+	struct go_funcs
+	{
+		go_create_func	gc;
+		go_preload_func gp;
+		go_free_func	gf;
+
+		go_funcs(){}
+
+		go_funcs(go_create_func	gc, go_preload_func gp, go_free_func gf)
+		{
+			this->gc = gc;
+			this->gp = gp;
+			this->gf = gf;
+		}
+	};
+
+	std::map<uint32_t, go_funcs > m_go_create;
 	GameObject * create_game_object(uint32_t type, uint32_t guid);
 
 public:
 	template <class T>
 	bool register_game_object()
 	{
-		m_go_create[T::type()]=std::make_pair(&T::create,&T::preload);
+		m_go_create[T::type()]=go_funcs(&T::create,&T::preload,&T::free);
 		return true;
 	}
+
+
 
 };
 

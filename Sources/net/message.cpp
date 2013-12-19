@@ -22,6 +22,7 @@ bool Message::register_messages()
 	///client
 	register_message<MSGC_Input>();
 	register_message<MSGC_Auth>();
+	register_message<MSGC_Ready>();
 
 	//server
 	register_message<MSGS_AuthStatus>();
