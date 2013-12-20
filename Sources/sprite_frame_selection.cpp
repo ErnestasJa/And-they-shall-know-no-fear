@@ -4,6 +4,7 @@
 SpriteFrameSelection::SpriteFrameSelection(clan::Window * root, clan::GameTime & time):clan::GUIComponent(root)
 {
 	set_constant_repaint(true);
+	m_render_box = false;
 	m_game_time = time;
 
 	func_render().set(this, &SpriteFrameSelection::render);
@@ -20,27 +21,6 @@ clan::Signal_v1<int32_t> & SpriteFrameSelection::func_frame_selected()
 {
 	return m_sig;
 }
-
-/*void draw_selection_box(const clan::Point & pos, bool draw)
-{
-	if (!draw) return;
-
-	clan::Point current = m_window.get_ic().get_mouse().get_position();
-	int w = abs(current.x-pos.x), h = abs(current.y-pos.y), x,y;
-
-	if (pos.x<=current.x) x=pos.x;
-	else x=current.x;
-
-	if (pos.y<=current.y) y=pos.y;
-	else y=current.y;
-	
-	clan::Point topleft;
-	topleft.x=x;
-	topleft.y=y;
-
-	clan::Rect rect = clan::Rect(topleft,clan::Size(w,h));
-	m_canvas.draw_box(rect,clan::Colorf::green);
-}*/
 
 void SpriteFrameSelection::set_sprite(clan::Sprite s)
 {
@@ -73,8 +53,8 @@ void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect
 	{
 		int box_w = abs(m_drag_offset_end.x-m_drag_offset.x), box_h = abs(m_drag_offset_end.y-m_drag_offset.y), x,y;
 
-		if (m_drag_offset_end.x<=m_drag_offset.x) x=m_drag_offset_end.x; else x=m_drag_offset.x;
-		if (m_drag_offset_end.y<=m_drag_offset.y) y=m_drag_offset_end.y; else y=m_drag_offset.y;
+		if (m_drag_offset.x<=m_drag_offset_end.x) x=m_drag_offset.x; else x=m_drag_offset_end.x;
+		if (m_drag_offset.y<=m_drag_offset_end.y) y=m_drag_offset.y; else y=m_drag_offset_end.y;
 	
 		clan::Point topleft;
 		topleft.x=x;
@@ -104,10 +84,10 @@ void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 			{
 				m_scroll=clan::vec2();
 			}
-
 			else if ( e.id == clan::mouse_right && e.type == clan::InputEvent::pressed )
 			{
 				m_drag_offset = e.mouse_pos;
+				m_drag_offset_end = e.mouse_pos;
 				m_render_box = true;
 			}
 			else if ( e.id == clan::mouse_right && e.type == clan::InputEvent::released )
@@ -124,6 +104,8 @@ void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 			{
 				if (e.device.get_keycode(clan::mouse_middle))
 					m_scroll=(e.mouse_pos-m_drag_offset)/m_game_time.get_time_elapsed_ms();
+				if (e.device.get_keycode(clan::mouse_right))
+					m_drag_offset_end = e.mouse_pos;
 			}
 
 			if ( e.type == clan::InputEvent::released && e.id == clan::mouse_left )
