@@ -10,7 +10,7 @@ protected:
 
 	int32_t			m_selected_frame;
 	clan::Signal_v1<int32_t> m_sig;
-	bool			m_render_box = false;
+	bool			m_render_box;
 
 public:
 	SpriteFrameSelection(clan::Window * root, clan::GameTime & time);

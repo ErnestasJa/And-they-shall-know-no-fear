@@ -235,7 +235,7 @@ void editor::draw_selection_box(const clan::Point & pos, bool draw = false)
 	if (!draw) return;
 
 	clan::Point current = m_window.get_ic().get_mouse().get_position();
-	int w = abs(current.x-pos.x), h = abs(current.y-pos.y), x,y;
+	int32_t w = abs(current.x-pos.x), h = abs(current.y-pos.y), x,y;
 
 	if (pos.x<=current.x) x=pos.x;
 	else x=current.x;
