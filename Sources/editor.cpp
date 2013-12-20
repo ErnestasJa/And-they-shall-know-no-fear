@@ -371,7 +371,7 @@ void editor::on_input(const clan::InputEvent & e)
 				if(m_button_multi_tile->is_pushed())
 				{
 					//submit MULTISELECT m_offset, e.mouse_pos; DEBUG
-					clan::Console::write_line("SELECTION start: [%1,%2] end: [%3,%4]", m_offset.x, m_offset.y, e.mouse_pos.x, e.mouse_pos.y); //DEBUG
+					clan::Console::write_line("SELECTION start: [%1,%2] end: [%3,%4]", m_offset.x+m_pos.x, m_offset.y+m_pos.y, e.mouse_pos.x+m_pos.x, e.mouse_pos.y+m_pos.y); //DEBUG
 					m_button_multi_tile->set_pushed(false);
 					m_offset = clan::vec2();
 				}
