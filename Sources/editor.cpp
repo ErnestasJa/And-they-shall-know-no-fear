@@ -339,6 +339,7 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
 	{
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+		c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
 		c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_frame;
 	}
 }
@@ -370,7 +371,7 @@ void editor::on_input(const clan::InputEvent & e)
 			{
 				if(m_button_multi_tile->is_pushed())
 				{
-					//submit MULTISELECT m_offset, e.mouse_pos; DEBUG
+					//submit MULTISELECT m_offset, e.mouse_pos DEBUG
 					clan::Console::write_line("SELECTION start: [%1,%2] end: [%3,%4]", m_offset.x+m_pos.x, m_offset.y+m_pos.y, e.mouse_pos.x+m_pos.x, e.mouse_pos.y+m_pos.y); //DEBUG
 					m_button_multi_tile->set_pushed(false);
 					m_offset = clan::vec2();
@@ -378,9 +379,15 @@ void editor::on_input(const clan::InputEvent & e)
 				clan::Console::write_line("RELEASED mouse_left"); //DEBUG
 			}
 			else if (e.id == clan::mouse_left)
-				change_tile_sprite(e.mouse_pos);
+			{
+				if(!m_button_multi_tile->is_pushed())
+					change_tile_sprite(e.mouse_pos);
+			}
 			else if (e.id == clan::mouse_right)
-				change_tile_sprite(e.mouse_pos,true);
+			{
+				if(!m_button_multi_tile->is_pushed())
+					change_tile_sprite(e.mouse_pos,true);
+			}
 			else if (e.id == clan::mouse_middle && e.type == clan::InputEvent::pressed)
 			{
 				m_offset = e.mouse_pos;
@@ -396,9 +403,15 @@ void editor::on_input(const clan::InputEvent & e)
 			{
 				//edge_pan(e.mouse_pos); DEBUG
 				if (e.device.get_keycode(clan::mouse_left))
-					change_tile_sprite(e.mouse_pos);
+				{
+					if(!m_button_multi_tile->is_pushed())
+						change_tile_sprite(e.mouse_pos);
+				}
 				else if (e.device.get_keycode(clan::mouse_right))
-					change_tile_sprite(e.mouse_pos,true);
+				{
+					if(!m_button_multi_tile->is_pushed())
+						change_tile_sprite(e.mouse_pos,true);
+				}
 				else if (e.device.get_keycode(clan::mouse_middle))
 					m_scroll=(e.mouse_pos-m_offset)/m_game_time.get_time_elapsed_ms();
 			}
@@ -434,10 +447,11 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	else if(btn == m_button_save_map)	
 	{
 		if(save_file(file_name))
-			m_tile_map.load(file_name);
+			m_tile_map.save(file_name);
 	}
 	else if(btn == m_button_multi_tile)
 	{
+		m_offset = clan::vec2();
 		m_button_multi_tile->set_pushed(true);
 	}
 }

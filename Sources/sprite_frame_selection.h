@@ -6,10 +6,11 @@ class SpriteFrameSelection: public clan::GUIComponent
 protected:
 	clan::Sprite	m_sprite;
 	clan::GameTime  m_game_time;
-	clan::vec2		m_pos, ats, m_scroll, m_drag_offset;
+	clan::vec2		m_pos, ats, m_scroll, m_drag_offset, m_drag_offset_end;
 
 	int32_t			m_selected_frame;
 	clan::Signal_v1<int32_t> m_sig;
+	bool			m_render_box = false;
 
 public:
 	SpriteFrameSelection(clan::Window * root, clan::GameTime & time);

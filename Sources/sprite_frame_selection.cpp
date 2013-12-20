@@ -21,6 +21,27 @@ clan::Signal_v1<int32_t> & SpriteFrameSelection::func_frame_selected()
 	return m_sig;
 }
 
+/*void draw_selection_box(const clan::Point & pos, bool draw)
+{
+	if (!draw) return;
+
+	clan::Point current = m_window.get_ic().get_mouse().get_position();
+	int w = abs(current.x-pos.x), h = abs(current.y-pos.y), x,y;
+
+	if (pos.x<=current.x) x=pos.x;
+	else x=current.x;
+
+	if (pos.y<=current.y) y=pos.y;
+	else y=current.y;
+	
+	clan::Point topleft;
+	topleft.x=x;
+	topleft.y=y;
+
+	clan::Rect rect = clan::Rect(topleft,clan::Size(w,h));
+	m_canvas.draw_box(rect,clan::Colorf::green);
+}*/
+
 void SpriteFrameSelection::set_sprite(clan::Sprite s)
 {
 	m_sprite = s.clone();
@@ -46,6 +67,23 @@ void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect
 		c.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::deeppink);
 	for(int32_t i=0; i<=h; i++)if((i+m_pos.y)%TILE_SIZE==0 ) 
 		c.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::deeppink);
+
+
+	if(m_render_box)
+	{
+		int box_w = abs(m_drag_offset_end.x-m_drag_offset.x), box_h = abs(m_drag_offset_end.y-m_drag_offset.y), x,y;
+
+		if (m_drag_offset_end.x<=m_drag_offset.x) x=m_drag_offset_end.x; else x=m_drag_offset.x;
+		if (m_drag_offset_end.y<=m_drag_offset.y) y=m_drag_offset_end.y; else y=m_drag_offset.y;
+	
+		clan::Point topleft;
+		topleft.x=x;
+		topleft.y=y;
+
+		clan::Rect rect = clan::Rect(topleft,clan::Size(box_w,box_h));
+		c.draw_box(rect,clan::Colorf::green);
+	}
+
 	this->pop_cliprect(c);
 }
 
@@ -65,6 +103,22 @@ void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 			else if (e.type == clan::InputEvent::released && e.id == clan::mouse_middle)
 			{
 				m_scroll=clan::vec2();
+			}
+
+			else if ( e.id == clan::mouse_right && e.type == clan::InputEvent::pressed )
+			{
+				m_drag_offset = e.mouse_pos;
+				m_render_box = true;
+			}
+			else if ( e.id == clan::mouse_right && e.type == clan::InputEvent::released )
+			{
+				m_drag_offset_end = e.mouse_pos;
+
+				//SUBMIT MULTISELECT
+
+				m_render_box = false;
+				m_drag_offset_end = clan::vec2();
+				m_drag_offset = clan::vec2();
 			}
 			else if (e.type == clan::InputEvent::pointer_moved)
 			{
