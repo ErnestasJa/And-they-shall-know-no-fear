@@ -17,6 +17,7 @@ public:
 	virtual ~SpriteFrameSelection();
 	clan::Signal_v1<int32_t> & func_frame_selected();
 	void set_sprite(clan::Sprite s);
+	void draw_selection_box(clan::Canvas & c, const clan::vec2 & pos, const clan::vec2 & pos_end, bool draw);
 	void render(clan::Canvas & c, const clan::Rect & clip_rect);
 	void on_message(std::shared_ptr<clan::GUIMessage> &msg);
 	void clamp_pos();

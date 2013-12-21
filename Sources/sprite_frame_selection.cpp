@@ -29,6 +29,43 @@ void SpriteFrameSelection::set_sprite(clan::Sprite s)
 	m_selected_frame=-1;
 }
 
+void SpriteFrameSelection::draw_selection_box(clan::Canvas & c, const clan::vec2 & pos, const clan::vec2 & pos_end, bool draw = false)
+{
+
+	if (!draw) return;
+	int32_t x,y;
+		
+	if (pos.x<=pos_end.x) 
+	{
+		x=((m_pos.x+pos.x)/TILE_SIZE)*TILE_SIZE-m_pos.x; 
+	}
+	else
+	{
+		x=((m_pos.x+pos_end.x)/TILE_SIZE)*TILE_SIZE-m_pos.x;
+		x+=TILE_SIZE;
+	}
+
+	if (pos.y<=pos_end.y)
+	{
+		y=((m_pos.y+pos.y)/TILE_SIZE)*TILE_SIZE-m_pos.y;
+	}
+	else
+	{
+		y=((m_pos.y+pos_end.y)/TILE_SIZE)*TILE_SIZE-m_pos.y;
+		y+=TILE_SIZE;
+	}
+
+	int32_t box_w = abs((pos_end.x-pos.x)/TILE_SIZE+1)*TILE_SIZE, 
+			box_h = abs((pos_end.y-pos.y)/TILE_SIZE+1)*TILE_SIZE;
+
+	clan::Point topleft;
+	topleft.x=x;
+	topleft.y=y;
+
+	clan::Rect rect = clan::Rect(topleft,clan::Size(box_w,box_h));
+	c.draw_box(rect,clan::Colorf::green);
+}
+
 void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect)
 {
 	m_pos+=m_scroll;
@@ -48,39 +85,7 @@ void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect
 	for(int32_t i=0; i<=h; i++)if((i+m_pos.y)%TILE_SIZE==0 ) 
 		c.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::deeppink);
 
-
-	if(m_render_box)
-	{
-		int32_t x,y;
-
-		if (m_drag_offset.x<=m_drag_offset_end.x) 
-		{
-			x=((m_pos.x+m_drag_offset.x)/TILE_SIZE)*TILE_SIZE-m_pos.x; 
-		}
-		else
-		{
-			x=((m_pos.x+m_drag_offset_end.x)/TILE_SIZE)*TILE_SIZE-m_pos.x; 
-		}
-
-		if (m_drag_offset.y<=m_drag_offset_end.y)
-		{
-			y=((m_pos.y+m_drag_offset.y)/TILE_SIZE)*TILE_SIZE-m_pos.y;
-		}
-		else
-		{
-			y=((m_pos.y+m_drag_offset_end.y)/TILE_SIZE)*TILE_SIZE-m_pos.y; 
-		}
-
-		int32_t box_w = abs((m_drag_offset_end.x-m_drag_offset.x)/TILE_SIZE+1)*TILE_SIZE, 
-				box_h = abs((m_drag_offset_end.y-m_drag_offset.y)/TILE_SIZE+1)*TILE_SIZE;
-
-		clan::Point topleft;
-		topleft.x=x;
-		topleft.y=y;
-
-		clan::Rect rect = clan::Rect(topleft,clan::Size(box_w,box_h));
-		c.draw_box(rect,clan::Colorf::green);
-	}
+	draw_selection_box(c, m_drag_offset, m_drag_offset_end, m_render_box);
 
 	this->pop_cliprect(c);
 }
@@ -114,7 +119,7 @@ void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 
 				//SUBMIT MULTISELECT
 
-				m_render_box = false;
+				//m_render_box = false; DEBUG
 				m_drag_offset_end = clan::vec2();
 				m_drag_offset = clan::vec2();
 			}
