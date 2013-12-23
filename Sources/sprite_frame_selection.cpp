@@ -17,7 +17,7 @@ SpriteFrameSelection::~SpriteFrameSelection()
 
 }
 
-clan::Signal_v1<int32_t> & SpriteFrameSelection::func_frame_selected()
+clan::Signal_v1<clan::Rect> & SpriteFrameSelection::func_frame_selected()
 {
 	return m_sig;
 }
@@ -26,32 +26,30 @@ void SpriteFrameSelection::set_sprite(clan::Sprite s)
 {
 	m_sprite = s.clone();
 	m_pos=clan::vec2(0,0);
-	m_selected_frame=-1;
+	m_selected_sprites=-1;
 }
 
-void SpriteFrameSelection::draw_selection_box(clan::Canvas & c, const clan::vec2 & pos, const clan::vec2 & pos_end, bool draw = false)
+clan::Rect SpriteFrameSelection::selection_box(const clan::vec2 & pos, const clan::vec2 & pos_end)
 {
-
-	if (!draw) return;
 	int32_t x,y, w=0,h=0;
 		
 	if (pos.x<=pos_end.x) 
 	{
-		x=((m_pos.x+pos.x)/TILE_SIZE)*TILE_SIZE-m_pos.x; 
+		x=((pos.x)/TILE_SIZE)*TILE_SIZE; 
 	}
 	else
 	{
-		x=((m_pos.x+pos_end.x)/TILE_SIZE)*TILE_SIZE-m_pos.x;
+		x=((pos_end.x)/TILE_SIZE)*TILE_SIZE;
 		w+=TILE_SIZE;
 	}
 
 	if (pos.y<=pos_end.y)
 	{
-		y=((m_pos.y+pos.y)/TILE_SIZE)*TILE_SIZE-m_pos.y;
+		y=((pos.y)/TILE_SIZE)*TILE_SIZE;
 	}
 	else
 	{
-		y=((m_pos.y+pos_end.y)/TILE_SIZE)*TILE_SIZE-m_pos.y;
+		y=((pos_end.y)/TILE_SIZE)*TILE_SIZE;
 		h+=TILE_SIZE;
 	}
 
@@ -62,8 +60,8 @@ void SpriteFrameSelection::draw_selection_box(clan::Canvas & c, const clan::vec2
 	topleft.x=x;
 	topleft.y=y;
 
-	clan::Rect rect = clan::Rect(topleft,clan::Size(box_w,box_h));
-	c.draw_box(rect,clan::Colorf::green);
+	clan::Rect m_rect = clan::Rect(topleft,clan::Size(box_w,box_h));
+	return m_rect;
 }
 
 void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect)
@@ -80,13 +78,23 @@ void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect
 			m_sprite.draw(c,j*32 - m_pos.x,i*32 - m_pos.y);
 		}
 
-	for(int32_t i=0; i<=w; i++)if((i+m_pos.x)%TILE_SIZE==0 ) 
-		c.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::deeppink);
-	for(int32_t i=0; i<=h; i++)if((i+m_pos.y)%TILE_SIZE==0 ) 
-		c.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::deeppink);
+	for(int32_t i=0; i<=w; i++)
+		if((i+m_pos.x)%TILE_SIZE==0 ) 
+			c.draw_line(clan::LineSegment2f(clan::vec2(i,0),clan::vec2(i,h)),clan::Colorf::deeppink);
+	for(int32_t i=0; i<=h; i++)
+		if((i+m_pos.y)%TILE_SIZE==0 ) 
+			c.draw_line(clan::LineSegment2f(clan::vec2(0,i),clan::vec2(w,i)),clan::Colorf::deeppink);
 
-	draw_selection_box(c, m_drag_offset, m_drag_offset_end, m_render_box);
-
+	if(m_render_box)
+	{
+		m_rect = selection_box(m_drag_offset, m_drag_offset_end);
+		/*clan::Console::write_line("%1,%2",TILE_SIZE-m_pos.x%TILE_SIZE,TILE_SIZE-m_pos.y%TILE_SIZE);
+		clan::vec2 acc = m_rect.get_top_left();
+		acc.x+=TILE_SIZE-m_pos.x%TILE_SIZE;
+		acc.y+=TILE_SIZE-m_pos.y%TILE_SIZE;
+		m_rect= clan::Rect(m_rect,m_rect.get_size());*/
+		c.draw_box(m_rect,clan::Colorf::green);
+	}
 	this->pop_cliprect(c);
 }
 
@@ -110,16 +118,21 @@ void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 			else if ( e.id == clan::mouse_right && e.type == clan::InputEvent::pressed )
 			{
 				m_drag_offset = e.mouse_pos;
+				m_drag_offset_signal = m_drag_offset+m_pos;
+
 				m_drag_offset_end = e.mouse_pos;
 				m_render_box = true;
 			}
 			else if ( e.id == clan::mouse_right && e.type == clan::InputEvent::released )
 			{
 				m_drag_offset_end = e.mouse_pos;
+				m_drag_offset_end_signal = m_drag_offset_end+m_pos;
 
-				//SUBMIT MULTISELECT
+				m_rect = selection_box(m_drag_offset_signal, m_drag_offset_end_signal);
+				clan::Console::write_line("SELECTION start: [%1,%2] end: [%3,%4]", m_rect.get_top_left().x, m_rect.get_top_left().y, m_rect.get_bottom_right().x, m_rect.get_bottom_right().y); //DEBUG
+				m_sig.invoke(m_rect);
 
-				//m_render_box = false; DEBUG
+				m_render_box = false;
 				m_drag_offset_end = clan::vec2();
 				m_drag_offset = clan::vec2();
 			}
@@ -134,11 +147,12 @@ void SpriteFrameSelection::on_message(std::shared_ptr<clan::GUIMessage> &msg)
 			if ( e.type == clan::InputEvent::released && e.id == clan::mouse_left )
 			{
 				clan::vec2 ats = m_pos + e.mouse_pos;
-				ats.x/=32;
-				ats.y/=32;
+				ats.x=(ats.x/TILE_SIZE)*TILE_SIZE;
+				ats.y=(ats.y/TILE_SIZE)*TILE_SIZE;
 
-				m_selected_frame = ats.y*32 + ats.x;
-				m_sig.invoke(m_selected_frame);
+				m_rect = clan::Rect(ats,clan::Size(TILE_SIZE,TILE_SIZE));
+				clan::Console::write_line("SELECTION start: [%1,%2] end: [%3,%4]", m_rect.get_top_left().x, m_rect.get_top_left().y, m_rect.get_bottom_right().x, m_rect.get_bottom_right().y); //DEBUG
+				m_sig.invoke(m_rect);
 			}
 		}
 	}

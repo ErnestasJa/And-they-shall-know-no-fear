@@ -8,7 +8,7 @@ editor::editor(clan::DisplayWindow &display_window)
 {
 	m_window = display_window;
 	m_sprite_frame_selection = nullptr;
-	m_selected_frame = -1;
+	m_selected_sprites = NULL;
 	m_selected_layer = 0;
 	m_selected_sprite_sheet = -1;
 	m_game_time = clan::GameTime(20,60);
@@ -305,9 +305,10 @@ void editor::on_exit(bool confirm)
 	m_run = false;
 }
 
-void editor::on_frame_select(int32_t frame)
+void editor::on_frame_select(clan::Rect frame)
 {
-	m_selected_frame = frame;
+	m_selected_sprites = new SelectedSprites(frame);
+	m_selected_sprites->print();
 }
 
 void editor::on_layer_select(int32_t layer)
@@ -333,14 +334,36 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 
 	if(c.is_null()) 
 		c = m_tile_map.add_chunk(chunk_pos);
+
+
 	if(remove)
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
-
-	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
+	else if (m_selected_sprites!=NULL && m_selected_layer!=-1)
 	{
-		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
-		c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
-		c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_frame;
+		if(m_selected_sprites->get_x()+m_selected_sprites->get_y()>2)
+		{
+			clan::vec2 temp_pos;
+			for (int i = 0; i<m_selected_sprites->get_x(); i++)
+			{
+				for (int j = 0; j<m_selected_sprites->get_y(); j++)
+				{
+/*------------------------------------------------\/WIP\/------------------------------------------------*/
+					temp_pos = tile_pos;
+					temp_pos.x+=j;
+					temp_pos.y+=i;
+					c.get_tile(temp_pos,m_selected_layer).type=ETT_NORMAL;
+					c.get_tile(temp_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
+					c.get_tile(temp_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(i,j);
+/*------------------------------------------------/\WIP/\------------------------------------------------*/
+				}
+			}
+		}
+		else
+		{
+			c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+			c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
+			c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(0,0);
+		}
 	}
 }
 
@@ -371,14 +394,15 @@ void editor::on_input(const clan::InputEvent & e)
 			{
 				if(m_button_multi_tile->is_pushed())
 				{
-					//submit MULTISELECT m_offset, e.mouse_pos DEBUG
+					//submit MULTISELECT m_offset+m_pos, e.mouse_pos+m_pos DEBUG
 					clan::Console::write_line("SELECTION start: [%1,%2] end: [%3,%4]", m_offset.x+m_pos.x, m_offset.y+m_pos.y, e.mouse_pos.x+m_pos.x, e.mouse_pos.y+m_pos.y); //DEBUG
 					m_button_multi_tile->set_pushed(false);
 					m_offset = clan::vec2();
 				}
 				clan::Console::write_line("RELEASED mouse_left"); //DEBUG
 			}
-			else if (e.id == clan::mouse_left)
+
+			if (e.id == clan::mouse_left)
 			{
 				if(!m_button_multi_tile->is_pushed())
 					change_tile_sprite(e.mouse_pos);
@@ -388,7 +412,8 @@ void editor::on_input(const clan::InputEvent & e)
 				if(!m_button_multi_tile->is_pushed())
 					change_tile_sprite(e.mouse_pos,true);
 			}
-			else if (e.id == clan::mouse_middle && e.type == clan::InputEvent::pressed)
+
+			if (e.id == clan::mouse_middle && e.type == clan::InputEvent::pressed)
 			{
 				m_offset = e.mouse_pos;
 				clan::Console::write_line("PRESSED mouse_middle"); //DEBUG
@@ -399,7 +424,8 @@ void editor::on_input(const clan::InputEvent & e)
 				m_offset=clan::vec2();
 				clan::Console::write_line("RELEASED mouse_middle"); //DEBUG
 			}
-			else if (e.type == clan::InputEvent::pointer_moved)
+
+			if (e.type == clan::InputEvent::pointer_moved)
 			{
 				//edge_pan(e.mouse_pos); DEBUG
 				if (e.device.get_keycode(clan::mouse_left))

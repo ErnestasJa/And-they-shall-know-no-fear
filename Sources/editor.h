@@ -4,6 +4,7 @@
 #include "state.h"
 #include "tile_map.h"
 #include "yn_dialogue.h"
+#include "selected_sprites.h"
 
 class SpriteFrameSelection;
 class editor: public State
@@ -23,7 +24,7 @@ protected:
 	///event funcs
 	void on_input(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton * btn);
-	void on_frame_select(int32_t frame);
+	void on_frame_select(clan::Rect frame);
 	void on_layer_select(int32_t layer);
 	void on_sprite_sheet_select(int32_t sprite_sheet);
 	bool on_close_wnd(clan::GUIComponent * wnd);
@@ -94,7 +95,8 @@ protected:
 
 
 	clan::Slot m_frame_select, m_save;
-	int32_t m_selected_frame, m_selected_layer, m_selected_sprite_sheet;
+	int32_t m_selected_layer, m_selected_sprite_sheet;
+	SelectedSprites *m_selected_sprites;
 
 };
 

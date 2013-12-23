@@ -192,6 +192,7 @@
     <ClInclude Include="Sources\net\message.h" />
     <ClInclude Include="Sources\precomp.h" />
     <ClInclude Include="Sources\properties\iproperty.h" />
+    <ClInclude Include="Sources\selected_sprites.h" />
     <ClInclude Include="Sources\yn_dialogue.h" />
     <ClInclude Include="Sources\sprite_frame_selection.h" />
     <ClInclude Include="Sources\properties\property.h" />
