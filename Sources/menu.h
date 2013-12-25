@@ -16,7 +16,7 @@ protected:
 	clan::Canvas m_canvas;
 	clan::DisplayWindow m_window;
 	clan::ResourceManager m_resources;
-	clan::Image m_background;
+	clan::Image m_background,quit_button_img,play_button_img,editor_button_img;
 	clan::GUIManager m_gui_manager;
 	clan::GUIWindowManagerDirect m_window_manager;
 
