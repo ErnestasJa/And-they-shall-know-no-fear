@@ -23,7 +23,6 @@ bool Menu::init()
 
 	m_background = clan::Image::resource(m_canvas,"background",m_resources);
 	quit_button_img = clan::Image::resource(m_canvas,"quit_button_img",m_resources);
-	quit_button_img1=clan::Image::resource(m_canvas,"quit_button_img1",m_resources);
 	play_button_img = clan::Image::resource(m_canvas,"play_button_img",m_resources);
 	editor_button_img = clan::Image::resource(m_canvas,"editor_button_img",m_resources);
 
