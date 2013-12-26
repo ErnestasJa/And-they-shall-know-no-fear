@@ -5,15 +5,15 @@
 	</image>
   
   <image name="quit_button_img">
-    <image file="Gfx/button/quit_button1.png"/>
+    <image file="Gfx/button/quit_button.png"/>
   </image>
 
   <image name="play_button_img">
-    <image file="Gfx/button/play_button1.png"/>
+    <image file="Gfx/button/play_button.png"/>
   </image>
 
   <image name="editor_button_img">
-    <image file="Gfx/button/editor_button1.png"/>
+    <image file="Gfx/button/editor_button.png"/>
   </image>
   
 </resources>
