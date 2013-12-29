@@ -5,7 +5,7 @@
 enum EPropertyFlag
 {
 	EPF_UNCHANGED = BIT(0),
-	EPF_ALWAYS_SEND = BIT(1),
+	EPF_ALWAYS_SEND = BIT(1), ///Very buggy, use at your own risk
 };
 
 

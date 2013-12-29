@@ -121,7 +121,7 @@ void PropertyContainer::net_serialize(clan::NetGameEventValue & e, bool only_cha
 			}
 		}
 
-		e.set_member(0,c);
+		e.set_member(1,c);
 	}
 	else
 	{

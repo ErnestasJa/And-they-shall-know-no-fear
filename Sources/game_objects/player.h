@@ -7,10 +7,14 @@
 class Player: public GameObject
 {
 protected:
-	static clan::Sprite m_rw,m_lw,m_uw,m_dw;
-	clan::Sprite m_sprite;
+	static clan::Sprite m_rw,m_lw,m_uw,m_dw; ///preloaded sprites
+	clan::Sprite m_sprite; ///current sprite
 
 	Property<uint32_t> keys;
+
+	static clan::Contour s_contour;
+
+	clan::CollisionOutline m_outline;
 public:
 	static GameObject * create(uint32_t guid){return new Player(guid);};
 	static bool preload(clan::Canvas & canvas, clan::ResourceManager & resources);
@@ -25,6 +29,9 @@ public:
 	virtual void update(const clan::GameTime & time);
 	virtual void render(clan::Canvas & c, const clan::vec2 & offset);
 	virtual void on_message(const Message & msg);
+
+	virtual void on_collide(GameObject * obj);
+	virtual clan::CollisionOutline & get_outline();
 };
 
 #endif

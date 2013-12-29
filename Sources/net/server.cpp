@@ -12,8 +12,9 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	PropertyContainer::register_properties();
 	Message::register_messages();
 
-	m_gom = new GameObjectManager();
+	m_game_time = clan::GameTime(33,33);
 
+	m_gom = new GameObjectManager();
 	m_max_clients = max_clients;
 	
 	m_client_cons = new ServerClientConnection[m_max_clients];
@@ -30,17 +31,16 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 
 	m_net_server.start(port);
 
-	m_game_time = clan::GameTime(33,33);
-
 	return true;
 }
 
 void Server::sync_game_objects(bool sync_only_changed_props)
 {
 	clan::NetGameEvent e("gosmsg");
+
 	for(auto it = m_gom->get_game_objects().begin(); it != m_gom->get_game_objects().end(); it++)
 	{
-		MessageUtil::add_game_object(e,(*it),sync_only_changed_props);
+		MessageUtil::add_game_object(e,(*it),false);
 	}
 	
 	m_net_server.send_event(e);
@@ -53,6 +53,7 @@ bool Server::run()
 	if(m_gom)
 	{
 		m_gom->update_game_objects(m_game_time);
+		m_gom->collide_game_objects(m_game_time);
 		sync_game_objects();
 	}
 
@@ -163,16 +164,17 @@ void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection * con)
 {
 	///process every message in event
+	Client * client = con->get_client();
 	for(uint32_t i = 0; i < MessageUtil::get_message_count(e); i++)
 	{
 		uint32_t type = MessageUtil::get_message_type(e,i);
-		clan::log_event("net_event","Got message from server type='%1';",type);
 
 		if(type==MSGC_INPUT)
 		{
+			clan::log_event("net_event", "Move event");
 			MSGC_Input m;
 			MessageUtil::get_message(e,m,i);
-			m_gom->find_game_object_by_guid(m.id)->on_message(m);
+			m_gom->find_game_object_by_guid(client->get_id())->on_message(m);
 		}
 		else ///maybe game object manager might handle this message
 			m_gom->on_net_event(e);
@@ -258,8 +260,6 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)
 {
-	clan::log_event("events", "Client sent event: %1", e.to_string());
-
 	ServerClientConnection * con = ServerClientConnection::get_client(connection);
 	Client* client = con->get_client();
 

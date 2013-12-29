@@ -306,6 +306,7 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 	else if(m_selected_frame!=-1 && m_selected_layer!=-1)
 	{
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+		c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
 		c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_frame;
 	}
 }
@@ -382,7 +383,7 @@ void editor::on_button_clicked(clan::PushButton * btn)
 				update_gui_sprite_sheet_dropbox();
 		}
 	}
-	else if(btn == m_button_save_map)	
+	else if(btn == m_button_save_map)
 	{
 		if(save_file(file_name))m_tile_map.load(file_name);
 	}

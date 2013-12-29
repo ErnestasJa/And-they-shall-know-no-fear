@@ -112,8 +112,8 @@ public:
 
 	MSGC_Input()
 	{
-		id = add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);
-		keys = add_property<uint32_t>("keys",0,EPF_ALWAYS_SEND);
+		id = add_property<uint32_t>("id",0);
+		keys = add_property<uint32_t>("keys",0);
 	}
 };
 
