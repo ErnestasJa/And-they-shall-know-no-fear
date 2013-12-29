@@ -94,6 +94,7 @@
     <ClInclude Include="Sources\game_objects\player.h">
       <Filter>game_objects</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\selected_sprites.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources.xml" />
