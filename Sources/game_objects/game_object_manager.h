@@ -27,6 +27,7 @@ public:
 	std::vector<GameObject*> & get_game_objects();
 
 	void update_game_objects(const clan::GameTime & game_time);
+	void collide_game_objects(const clan::GameTime & game_time);
 	void render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset = clan::vec2(0,0));
 
 	void on_net_event(const clan::NetGameEvent & e);

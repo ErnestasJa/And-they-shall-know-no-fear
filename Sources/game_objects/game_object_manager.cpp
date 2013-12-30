@@ -77,6 +77,38 @@ void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 		(*it)->update(game_time);
 }
 
+
+void GameObjectManager::collide_game_objects(const clan::GameTime & game_time)
+{
+	for(uint32_t i = 0; i+1<m_game_object_list.size(); i++)
+	for(uint32_t j = i+1; j<m_game_object_list.size(); j++)
+	{
+		clan::CollisionOutline & outline = m_game_object_list[i]->get_outline();
+		clan::CollisionOutline & outline2 = m_game_object_list[j]->get_outline();
+
+		outline.enable_collision_info(true, true, false);
+		outline2.enable_collision_info(true, true, false);
+
+		if( outline.collide(outline2) )
+		{
+			clan::log_event("game_ev","Game objects colliding: %1<->%2",m_game_object_list[i]->get_guid(),m_game_object_list[j]->get_guid());
+			const std::vector<clan::CollidingContours> &colpointinfo = outline.get_collision_info();
+			// Loop through all pairs of colliding contours
+			for(size_t c = 0; c < colpointinfo.size(); c++)
+			{
+					const clan::CollidingContours &cc = colpointinfo[c];
+					for(size_t p = 0; p < cc.points.size(); p++)
+					{
+							//std::cout << "Collision: Point(" << cc.points[p].point.x << "," << cc.points[p].point.y << ")\n";
+							//std::cout << "Collision: Normal(" << cc.points[p].normal.x << "," << cc.points[p].normal.y << ")\n";
+					}
+			}
+		}
+	}
+
+}
+
+
 void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset)
 {
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)

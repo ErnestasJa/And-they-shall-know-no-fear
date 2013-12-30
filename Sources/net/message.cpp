@@ -50,6 +50,12 @@ void MessageUtil::add_message(clan::NetGameEvent & net_event, const Message & m,
 	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
 	m.net_serialize(val,serialize_only_changed);
 
+	if(serialize_only_changed && val.get_member_count() < 3)
+	{
+		clan::log_event("ev","val.get_member_count()=%1",val.get_member_count());
+		return;
+	}
+
 	net_event.add_argument(m.get_type());
 	net_event.add_argument(val);
 }
@@ -81,7 +87,7 @@ void MessageUtil::add_game_object(clan::NetGameEvent & net_event, GameObject * m
 	clan::NetGameEventValue val(clan::NetGameEventValue::complex);
 	m->net_serialize(val,serialize_only_changed);
 
-	if(val.get_member_count()==0)
+	if(val.get_member_count()<3)
 	{
 		return;
 	}

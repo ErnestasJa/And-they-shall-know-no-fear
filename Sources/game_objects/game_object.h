@@ -37,6 +37,9 @@ public:
 	virtual void update(const clan::GameTime & time)=0;
 	virtual void render(clan::Canvas & c, const clan::vec2 & offset)=0;
 	virtual void on_message(const Message & msg)=0;
+
+	virtual void on_collide(GameObject * obj) = 0;
+	virtual clan::CollisionOutline & get_outline() = 0;
 };
 
 #endif

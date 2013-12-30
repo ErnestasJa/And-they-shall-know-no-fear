@@ -10,7 +10,7 @@ GameObject::GameObject(uint32_t type, uint32_t guid)
 	m_guid = guid;
 
 	///must init properties
-	m_id = add_property<uint32_t>("id",0,EPF_ALWAYS_SEND);
+	m_id = add_property<uint32_t>("id",0);
 	m_pos = add_property<clan::vec2f>("pos",clan::vec2f(0,0));
 }
 

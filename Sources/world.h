@@ -67,6 +67,7 @@ protected:
 
 	uint32_t	m_client_id;
 	std::string	m_server_ip, m_server_port, m_server_pass, m_client_name;
+
 	ConnectionInfo	m_con_info;
 	uint32_t	m_max_clients;
 
@@ -78,4 +79,6 @@ protected:
 	Client * m_clients;
 	Player * m_player;
 	Player ** m_players;
+
+	clan::NetGameEvent * m_game_event;
 };

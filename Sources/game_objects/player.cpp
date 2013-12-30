@@ -7,9 +7,22 @@
 
 clan::Sprite Player::m_rw, Player::m_lw, Player::m_uw, Player::m_dw;
 
+clan::Contour Player::s_contour;
+
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
+
+	clan::Contour contour;
+	contour.get_points().push_back(clan::Pointf(0,0));
+	contour.get_points().push_back(clan::Pointf(0,32));
+	contour.get_points().push_back(clan::Pointf(32,32));
+	contour.get_points().push_back(clan::Pointf(32,0));
+
+	m_outline.get_contours().push_back(contour);
+	m_outline.calculate_radius();
+	m_outline.calculate_smallest_enclosing_discs();
+	
 }
 
 Player::~Player()
@@ -23,6 +36,7 @@ bool Player::preload(clan::Canvas & canvas, clan::ResourceManager & resources)
 	m_lw = clan::Sprite::resource(canvas, "champ_lw", resources );
 	m_uw = clan::Sprite::resource(canvas, "champ_uw", resources );
 	m_dw = clan::Sprite::resource(canvas, "champ_dw", resources );
+
 	return true;
 }
 
@@ -37,7 +51,6 @@ void Player::free()
 void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
 	m_sprite=m_dw;
-
 	clan::Console::write_line("is null: %1",m_sprite.is_null());
 }
 
@@ -75,12 +88,17 @@ void Player::update(const clan::GameTime & time)
 		v.y+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
 	}
+
+	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
 }
 
 void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 {
 	if(!m_sprite.is_null())
+	{
 		m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
+		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
+	}
 }
 
 void Player::on_message(const Message & msg)
@@ -89,5 +107,16 @@ void Player::on_message(const Message & msg)
 	{
 		const MSGC_Input & input = static_cast<const MSGC_Input &>(msg);
 		keys = input.keys;
+		clan::log_event("input_ev","keys: %1;", keys);
 	}
+}
+
+void Player::on_collide(GameObject * obj)
+{
+
+}
+
+clan::CollisionOutline & Player::get_outline()
+{
+	return m_outline;
 }

@@ -60,6 +60,8 @@ bool World::init()
 	m_game_obj_sync_events.func_event("gosmsg").set(this, &World::on_game_object_sync_event);
 	m_net_events.func_event ("nmsg").set(this, &World::on_net_event);
 
+	m_game_event = new clan::NetGameEvent("gmsg");
+
 	clan::log_event("system", "ClientConnection trying to connect to %1:%2 as %3",m_server_ip,m_server_port,m_client_name);
 	m_client_con->connect(m_server_ip, m_server_port);
 	
@@ -135,7 +137,6 @@ void World::on_auth_event(const clan::NetGameEvent & e)
 			q.query_type = EQT_SERVER_INFO;
 			MessageUtil::add_message(e,q);
 			m_client_con->send_event(e);
-			
 		}
 		else
 		{
@@ -198,11 +199,17 @@ void World::on_game_object_sync_event(const clan::NetGameEvent & e)
 		uint32_t type = MessageUtil::get_game_object_type(e,i);
 		uint32_t guid = MessageUtil::get_game_object_guid(e,i);
 
+		clan::log_event("net_event","Object[%1] sync event.",guid);
+
 		GameObject * go = m_gom->find_game_object_by_guid(guid);
 
-		if(go)
+		if(go){
 			MessageUtil::get_game_object(e,go,i);
-		//clan::log_event("net_event", "synced game object");
+		}
+		else
+		{
+			clan::log_event("net_event","Object[%1] not found.",guid);
+		}
 	}
 }
 
@@ -262,10 +269,19 @@ bool World::run()
 		{
 			m_game_time.update();
 			m_canvas.clear();
+			
 
 			m_tile_map.render(m_pos);
 			m_gom->update_game_objects(m_game_time);
 			m_gom->render_game_objects(m_canvas);
+
+			if(MessageUtil::get_message_count(*m_game_event)>0)
+			{
+				m_client_con->send_event(*m_game_event);
+				clan::NetGameEvent * tmp = m_game_event;
+				m_game_event = new clan::NetGameEvent("gmsg");
+				delete tmp;
+			}
 		}
 
 		m_canvas.flush();
@@ -312,39 +328,23 @@ void World::on_key_up(const clan::InputEvent & e)
 	{
 		if(e.id == clan::keycode_a)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_LEFT);
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
+			MessageUtil::add_message(*m_game_event,msg,true);	
 		}
 		else if(e.id == clan::keycode_d)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_RIGHT);
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
+			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 		else if(e.id == clan::keycode_w)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_UP);
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
+			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 		else if(e.id == clan::keycode_s)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys = msg.keys& (~EUIKT_MOVE_DOWN);
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
+			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 	}
 }
@@ -356,40 +356,23 @@ void World::on_key_down(const clan::InputEvent & e)
 		
 		if(e.id == clan::keycode_a)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_LEFT;
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
-
+			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 		else if(e.id == clan::keycode_d)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_RIGHT;
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
+			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 		else if(e.id == clan::keycode_w)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_UP;
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
+			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 		else if(e.id == clan::keycode_s)
 		{
-			clan::NetGameEvent e("gmsg");
 			msg.keys=msg.keys|EUIKT_MOVE_DOWN;
-			MessageUtil::add_message(e,msg);
-
-			m_player->on_message(msg);
-			m_client_con->send_event(e);
+			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 	}
 }
