@@ -326,19 +326,7 @@ void editor::on_sprite_sheet_select(int32_t sprite_sheet)
 
 void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 {
-	clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
-	clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
-	clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4", chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
-
-	TileChunk c=m_tile_map.get_chunk(chunk_pos);
-
-	if(c.is_null()) 
-		c = m_tile_map.add_chunk(chunk_pos);
-
-
-	if(remove)
-		c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
-	else if (m_selected_sprites!=NULL && m_selected_layer!=-1)
+	if (m_selected_sprites!=NULL && m_selected_layer!=-1)
 	{
 		if(m_selected_sprites->get_x()+m_selected_sprites->get_y()>2)
 		{
@@ -347,22 +335,43 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 			{
 				for (int j = 0; j<m_selected_sprites->get_y(); j++)
 				{
-/*------------------------------------------------\/WIP\/------------------------------------------------*/
-					temp_pos = tile_pos;
-					temp_pos.x+=j;
-					temp_pos.y+=i;
-					c.get_tile(temp_pos,m_selected_layer).type=ETT_NORMAL;
-					c.get_tile(temp_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
-					c.get_tile(temp_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(i,j);
-/*------------------------------------------------/\WIP/\------------------------------------------------*/
+					clan::vec2 offset_tiles,offset_pixels;
+					offset_tiles.x+=j;
+					offset_tiles.y+=i;
+					offset_pixels=offset_tiles*TILE_SIZE;
+									
+					clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos+offset_pixels);
+					clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos+offset_pixels);
+
+					TileChunk c=m_tile_map.get_chunk(chunk_pos);
+
+					if(c.is_null()) 
+						c = m_tile_map.add_chunk(chunk_pos);
+
+					c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+					c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
+					c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(i,j);
 				}
 			}
 		}
 		else
 		{
-			c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
-			c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
-			c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(0,0);
+			clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
+			clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
+
+			TileChunk c=m_tile_map.get_chunk(chunk_pos);
+
+			if(c.is_null()) 
+				c = m_tile_map.add_chunk(chunk_pos);
+
+			if(remove)
+				c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
+			else
+			{
+				c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+				c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
+				c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(0,0);
+			}
 		}
 	}
 }
