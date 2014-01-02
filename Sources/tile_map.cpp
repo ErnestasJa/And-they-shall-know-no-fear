@@ -268,7 +268,7 @@ public:
         return m_canvas;
     }
 
-    void render(const clan::vec2 & pos)
+	void render(const clan::vec2 & pos, const int start_layer=0, const int end_layer=LAYER_COUNT)
     {
         int w = m_canvas.get_width();
         int h = m_canvas.get_height();
@@ -292,7 +292,7 @@ public:
 				if(!c.is_batched())
 					c.batch();
 
-				for(int32_t i = 0; i < LAYER_COUNT; i++)
+				for(int32_t i = start_layer; i < end_layer; i++)
 					c.draw_chunk(m_canvas,clan::vec2(x*CHUNK_EDGE_LENGTH_PIXELS,y*CHUNK_EDGE_LENGTH_PIXELS)-pos,i,false);
 			}
 		}
@@ -507,9 +507,9 @@ clan::Canvas & TileMap::get_canvas()
 	return impl->get_canvas();
 }
 
-void TileMap::render(const clan::vec2 & pos)
+void TileMap::render(const clan::vec2 & pos, const int start_layer, const int end_layer)
 {
-    impl->render(pos);
+    impl->render(pos,start_layer,end_layer);
 }
 
 bool TileMap::load(const std::string & file)

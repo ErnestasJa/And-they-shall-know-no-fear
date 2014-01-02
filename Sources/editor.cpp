@@ -261,7 +261,7 @@ bool editor::run()
 		m_pos=m_pos + m_pan + m_scroll;
 
 		m_tile_map.render(m_pos);
-		draw_world_axis(m_checkbox_t->is_checked(),m_checkbox_c->is_checked(),m_checkbox_o->is_checked());
+		draw_world_axis(m_checkbox_o->is_checked(),m_checkbox_c->is_checked(),m_checkbox_t->is_checked());
 		draw_hover_box(!m_button_multi_tile->is_pushed());
 		draw_selection_box(m_offset, m_button_multi_tile->is_pushed() && m_offset.length()!=0);
 
@@ -326,7 +326,18 @@ void editor::on_sprite_sheet_select(int32_t sprite_sheet)
 
 void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 {
-	if (m_selected_sprites!=NULL && m_selected_layer!=-1)
+	if(remove)
+	{
+		clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
+		clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
+
+		TileChunk c=m_tile_map.get_chunk(chunk_pos);
+		if(c.is_null()) 
+			c = m_tile_map.add_chunk(chunk_pos);
+
+		c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
+	}
+	else if (m_selected_sprites!=NULL && m_selected_layer!=-1)
 	{
 		if(m_selected_sprites->get_x()+m_selected_sprites->get_y()>2)
 		{
@@ -364,14 +375,10 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 			if(c.is_null()) 
 				c = m_tile_map.add_chunk(chunk_pos);
 
-			if(remove)
-				c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
-			else
-			{
-				c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
-				c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
-				c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(0,0);
-			}
+			c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+			c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
+			c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(0,0);
+
 		}
 	}
 }
@@ -411,7 +418,7 @@ void editor::on_input(const clan::InputEvent & e)
 				clan::Console::write_line("RELEASED mouse_left"); //DEBUG
 			}
 
-			if (e.id == clan::mouse_left)
+			else if (e.id == clan::mouse_left)
 			{
 				if(!m_button_multi_tile->is_pushed())
 					change_tile_sprite(e.mouse_pos);
