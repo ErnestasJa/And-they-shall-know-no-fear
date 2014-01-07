@@ -401,7 +401,7 @@ void editor::on_input(const clan::InputEvent & e)
 		{
 			if(m_gui_root->get_component_at(e.mouse_pos)!=m_gui_root) break;
 
-			if (e.id == clan::mouse_left && e.type == clan::InputEvent::pressed)
+			if (e.id == clan::mouse_left && e.type == clan::InputEvent::pressed && m_button_multi_tile->is_pushed())
 			{
 				m_offset = e.mouse_pos;
 				clan::Console::write_line("PRESSED mouse_left"); //DEBUG
