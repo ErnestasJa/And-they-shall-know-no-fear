@@ -88,11 +88,6 @@ void SpriteFrameSelection::render(clan::Canvas & c, const clan::Rect & clip_rect
 	if(m_render_box)
 	{
 		m_rect = selection_box(m_drag_offset, m_drag_offset_end);
-		/*clan::Console::write_line("%1,%2",TILE_SIZE-m_pos.x%TILE_SIZE,TILE_SIZE-m_pos.y%TILE_SIZE);
-		clan::vec2 acc = m_rect.get_top_left();
-		acc.x+=TILE_SIZE-m_pos.x%TILE_SIZE;
-		acc.y+=TILE_SIZE-m_pos.y%TILE_SIZE;
-		m_rect= clan::Rect(m_rect,m_rect.get_size());*/
 		c.draw_box(m_rect,clan::Colorf::green);
 	}
 	this->pop_cliprect(c);

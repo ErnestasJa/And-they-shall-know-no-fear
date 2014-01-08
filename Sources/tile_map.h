@@ -29,7 +29,7 @@ class TileMap
 	void		erase_chunk( const clan::vec2 & pos );
 
 	clan::Canvas &	get_canvas();
-    void			render(const clan::vec2 & pos);
+	void		render(const clan::vec2 & pos, int start_layer=0, int end_layer=LAYER_COUNT);
 	
 	bool load(const std::string & file);
 	bool save(const std::string & file);

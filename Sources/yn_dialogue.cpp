@@ -58,6 +58,7 @@ void YNDialogue::toggle_visibility()
 	m_exit_window->set_focus(!m_exit_window->has_focus());
 }
 
+
 clan::Signal_v1<bool> & YNDialogue::confirmation()
 {
 	return m_sig;

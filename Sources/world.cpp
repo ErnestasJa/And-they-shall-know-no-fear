@@ -271,10 +271,10 @@ bool World::run()
 			m_game_time.update();
 			m_canvas.clear();
 			
-
-			m_tile_map.render(m_pos);
+			m_tile_map.render(m_pos,0,LAYER_COUNT-1);
 			m_gom->update_game_objects(m_game_time);
 			m_gom->render_game_objects(m_canvas);
+			m_tile_map.render(m_pos,LAYER_COUNT-1,LAYER_COUNT);
 
 			if(MessageUtil::get_message_count(*m_game_event)>0)
 			{

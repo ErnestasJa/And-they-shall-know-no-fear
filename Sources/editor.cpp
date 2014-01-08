@@ -261,7 +261,7 @@ bool editor::run()
 		m_pos=m_pos + m_pan + m_scroll;
 
 		m_tile_map.render(m_pos);
-		draw_world_axis(m_checkbox_t->is_checked(),m_checkbox_c->is_checked(),m_checkbox_o->is_checked());
+		draw_world_axis(m_checkbox_o->is_checked(),m_checkbox_c->is_checked(),m_checkbox_t->is_checked());
 		draw_hover_box(!m_button_multi_tile->is_pushed());
 		draw_selection_box(m_offset, m_button_multi_tile->is_pushed() && m_offset.length()!=0);
 
@@ -326,18 +326,17 @@ void editor::on_sprite_sheet_select(int32_t sprite_sheet)
 
 void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 {
-	clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
-	clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
-	clan::Console::write_line("chunk: x:%1 y:%2\ntile: x:%3 y:%4", chunk_pos.x, chunk_pos.y, tile_pos.x, tile_pos.y); //DEBUG
-
-	TileChunk c=m_tile_map.get_chunk(chunk_pos);
-
-	if(c.is_null()) 
-		c = m_tile_map.add_chunk(chunk_pos);
-
-
 	if(remove)
+	{
+		clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
+		clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
+
+		TileChunk c=m_tile_map.get_chunk(chunk_pos);
+		if(c.is_null()) 
+			c = m_tile_map.add_chunk(chunk_pos);
+
 		c.get_tile(tile_pos,m_selected_layer).type=ETT_NO_TILE;
+	}
 	else if (m_selected_sprites!=NULL && m_selected_layer!=-1)
 	{
 		if(m_selected_sprites->get_x()+m_selected_sprites->get_y()>2)
@@ -347,22 +346,39 @@ void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 			{
 				for (int j = 0; j<m_selected_sprites->get_y(); j++)
 				{
-/*------------------------------------------------\/WIP\/------------------------------------------------*/
-					temp_pos = tile_pos;
-					temp_pos.x+=j;
-					temp_pos.y+=i;
-					c.get_tile(temp_pos,m_selected_layer).type=ETT_NORMAL;
-					c.get_tile(temp_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
-					c.get_tile(temp_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(i,j);
-/*------------------------------------------------/\WIP/\------------------------------------------------*/
+					clan::vec2 offset_tiles,offset_pixels;
+					offset_tiles.x+=j;
+					offset_tiles.y+=i;
+					offset_pixels=offset_tiles*TILE_SIZE;
+									
+					clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos+offset_pixels);
+					clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos+offset_pixels);
+
+					TileChunk c=m_tile_map.get_chunk(chunk_pos);
+
+					if(c.is_null()) 
+						c = m_tile_map.add_chunk(chunk_pos);
+
+					c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
+					c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
+					c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(i,j);
 				}
 			}
 		}
 		else
 		{
+			clan::vec2 chunk_pos=pixel_to_chunk_pos(pos+m_pos);
+			clan::vec2 tile_pos=pixel_to_tile_pos(pos+m_pos);
+
+			TileChunk c=m_tile_map.get_chunk(chunk_pos);
+
+			if(c.is_null()) 
+				c = m_tile_map.add_chunk(chunk_pos);
+
 			c.get_tile(tile_pos,m_selected_layer).type=ETT_NORMAL;
 			c.get_tile(tile_pos,m_selected_layer).sprite_ID=m_selected_sprite_sheet;
 			c.get_tile(tile_pos,m_selected_layer).sprite_frame=m_selected_sprites->at(0,0);
+
 		}
 	}
 }
@@ -385,7 +401,7 @@ void editor::on_input(const clan::InputEvent & e)
 		{
 			if(m_gui_root->get_component_at(e.mouse_pos)!=m_gui_root) break;
 
-			if (e.id == clan::mouse_left && e.type == clan::InputEvent::pressed)
+			if (e.id == clan::mouse_left && e.type == clan::InputEvent::pressed && m_button_multi_tile->is_pushed())
 			{
 				m_offset = e.mouse_pos;
 				clan::Console::write_line("PRESSED mouse_left"); //DEBUG
@@ -402,7 +418,7 @@ void editor::on_input(const clan::InputEvent & e)
 				clan::Console::write_line("RELEASED mouse_left"); //DEBUG
 			}
 
-			if (e.id == clan::mouse_left)
+			else if (e.id == clan::mouse_left)
 			{
 				if(!m_button_multi_tile->is_pushed())
 					change_tile_sprite(e.mouse_pos);

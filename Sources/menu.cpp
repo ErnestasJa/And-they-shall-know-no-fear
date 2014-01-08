@@ -40,9 +40,10 @@ bool Menu::init()
 	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
 	button_exit->set_text("Exit");
 
-	m_exit_window = new YNDialogue(c, "You are about to quit!");
 	m_con_window = new ConDialogue(c);
 	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
+
+	m_exit_window = new YNDialogue(c, "You are about to quit!");
 
 	confirmWindowClosedEventSlot = m_exit_window->confirmation().connect(this, &Menu::CloseConfirmed);
 	connectAttemptEventSlot = m_con_window->submit_connection().connect(this, &Menu::ConnectAttempt);
