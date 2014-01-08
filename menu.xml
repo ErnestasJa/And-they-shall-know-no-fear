@@ -3,4 +3,16 @@
 	<image name="background">
 		<image file="Gfx/bg/bg.jpg"/>
 	</image>
+	
+  <image name="quit_button_img">
+    <image file="Gfx/button/quit_button.png"/>
+  </image>
+
+  <image name="play_button_img">
+    <image file="Gfx/button/play_button.png"/>
+  </image>
+
+  <image name="editor_button_img">
+    <image file="Gfx/button/editor_button.png"/>
+  </image>
 </resources>

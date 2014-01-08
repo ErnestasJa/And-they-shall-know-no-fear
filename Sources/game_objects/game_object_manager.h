@@ -32,6 +32,7 @@ public:
 	void update_game_objects(const clan::GameTime & game_time);
 	void collide_game_objects(const clan::GameTime & game_time);
 	void render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset = clan::vec2(0,0));
+	void remove_not_alive_objects();
 
 	clan::Signal_v1<GameObject*> & sig_on_update_game_object();
 

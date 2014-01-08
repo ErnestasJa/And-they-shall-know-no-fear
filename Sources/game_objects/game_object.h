@@ -18,6 +18,7 @@ class GameObject: public PropertyContainer
 protected:
 	uint32_t	m_type;
 	uint32_t	m_guid;
+	bool		m_is_alive;
 
 	///faster (direct) access to properties
 	Property<uint32_t>		m_id;
@@ -40,6 +41,11 @@ public:
 
 	virtual void on_collide(GameObject * obj) = 0;
 	virtual clan::CollisionOutline & get_outline() = 0;
+
+
+	///server only for now?
+	virtual bool is_alive();
+	virtual void set_is_alive(bool is_alive);
 };
 
 #endif
