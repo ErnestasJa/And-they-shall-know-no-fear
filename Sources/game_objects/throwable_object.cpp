@@ -64,7 +64,8 @@ void ThrowableObject::update(const clan::GameTime & time)
 	if(!m_sprite.is_null())
 		m_sprite.update(time.get_time_elapsed_ms());
 
-	m_pos.set(m_pos.get()+m_vel.get());
+	clan::vec2f v = m_vel.get() * clan::vec2f((float)time.get_time_elapsed_ms()/1000.0f,(float)time.get_time_elapsed_ms()/1000.0f);
+	m_pos.set(m_pos.get()+v);
 
 	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
 }

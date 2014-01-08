@@ -8,6 +8,7 @@ GameObject::GameObject(uint32_t type, uint32_t guid)
 {
 	m_type = type;
 	m_guid = guid;
+	m_is_alive = true;
 
 	///must init properties
 	m_id = add_property<uint32_t>("id",0);
@@ -38,4 +39,15 @@ Property<clan::vec2f> GameObject::get_pos()
 Property<uint32_t> GameObject::get_id()
 {
 	return m_id;
+}
+
+///server only for now?
+bool GameObject::is_alive()
+{
+	return m_is_alive;
+}
+
+void GameObject::set_is_alive(bool is_alive)
+{
+	m_is_alive = is_alive;
 }
