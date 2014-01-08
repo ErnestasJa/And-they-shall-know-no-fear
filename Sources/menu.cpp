@@ -17,7 +17,11 @@ bool Menu::init()
 {
 	clan::XMLResourceDocument res("menu.xml");
 	m_resources = clan::XMLResourceManager::create(res);
-	m_background = clan::Image::resource(m_canvas,"background",m_resources);
+	
+m_background = clan::Image::resource(m_canvas,"background",m_resources);
+	quit_button_img = clan::Image::resource(m_canvas,"quit_button_img",m_resources);
+	play_button_img = clan::Image::resource(m_canvas,"play_button_img",m_resources);
+editor_button_img = clan::Image::resource(m_canvas,"editor_button_img",m_resources);
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
 
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
@@ -25,20 +29,34 @@ bool Menu::init()
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	windowClosedEventSlot = m_window.sig_window_close().connect(this, &Menu::WindowCloseEventHandler);
 
-	button_world = new clan::PushButton(c);
-	button_world->set_geometry(clan::Rect( 540, 300, clan::Size(160, 60)));
+	button_world = new clan::PushButton(c);	
+	button_world->set_geometry(clan::Rect( 472, 516, clan::Size(80, 26)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
-	button_world->set_text("World");
+	//button_world->set_text("World");	
+	button_world_top =new clan::ImageView(button_world);
+	button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	button_world_top->set_image(play_button_img);
+	button_world_top->set_scale_to_fit(true);
+	
 
 	button_editor = new clan::PushButton(c);
-	button_editor->set_geometry(clan::Rect( 540, 380, clan::Size(160, 60)));
+	button_editor->set_geometry(clan::Rect( 472, 566, clan::Size(80, 26)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
-	button_editor->set_text("Editor");
+	//button_editor->set_text("Editor");
+	editor_button_top =new clan::ImageView(button_editor);
+	editor_button_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	editor_button_top->set_image(editor_button_img);
+	editor_button_top->set_scale_to_fit(true);
 
+	
 	button_exit = new clan::PushButton(c);
-	button_exit->set_geometry(clan::Rect( 540, 460, clan::Size(160, 60)));
+	button_exit->set_geometry(clan::Rect( 472, 616, clan::Size(80, 26)));
 	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
-	button_exit->set_text("Exit");
+	//button_exit->set_text("Exit");
+	quit_button_top =new clan::ImageView(button_exit);
+	quit_button_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	quit_button_top->set_image(quit_button_img);
+	quit_button_top->set_scale_to_fit(true);
 
 	m_con_window = new ConDialogue(c);
 	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
