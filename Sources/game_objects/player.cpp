@@ -5,19 +5,21 @@
 #include "player.h"
 #include "../net/message.h"
 
-clan::Sprite Player::m_rw, Player::m_lw, Player::m_uw, Player::m_dw;
-
-
+clan::Sprite Player::s_rw, 
+			 Player::s_lw, 
+			 Player::s_uw, 
+			 Player::s_dw,
+			 Player::s_h;
 
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
 
 	clan::Contour contour;
-	contour.get_points().push_back(clan::Pointf(0,0));
-	contour.get_points().push_back(clan::Pointf(0,64));
-	contour.get_points().push_back(clan::Pointf(64,64));
-	contour.get_points().push_back(clan::Pointf(64,0));
+	contour.get_points().push_back(clan::Pointf(16,13));
+	contour.get_points().push_back(clan::Pointf(16,63));
+	contour.get_points().push_back(clan::Pointf(47,63));
+	contour.get_points().push_back(clan::Pointf(47,13));
 
 	m_outline.get_contours().push_back(contour);
 	m_outline.calculate_radius();
@@ -43,24 +45,35 @@ void Player::set_next_attack_time(uint32_t time)
 
 bool Player::preload(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
-	m_rw = clan::Sprite::resource(canvas, "champ_rw", resources );
-	m_lw = clan::Sprite::resource(canvas, "champ_lw", resources );
-	m_uw = clan::Sprite::resource(canvas, "champ_uw", resources );
-	m_dw = clan::Sprite::resource(canvas, "champ_dw", resources );
+	s_rw = clan::Sprite::resource(canvas, "champ_rw", resources );
+	s_lw = clan::Sprite::resource(canvas, "champ_lw", resources );
+	s_uw = clan::Sprite::resource(canvas, "champ_uw", resources );
+	s_dw = clan::Sprite::resource(canvas, "champ_dw", resources );
+
+	s_h = clan::Sprite::resource(canvas, "hp_bar", resources );
 
 	return true;
 }
 
 void Player::free()
 {
-	m_rw = clan::Sprite();
-	m_lw = clan::Sprite();
-	m_uw = clan::Sprite();
-	m_dw = clan::Sprite();
+	s_rw = clan::Sprite();
+	s_lw = clan::Sprite();
+	s_uw = clan::Sprite();
+	s_dw = clan::Sprite();
+
+	s_h = clan::Sprite();
 }
 
 void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
+	m_rw = s_rw.clone();
+	m_lw = s_lw.clone();
+	m_uw = s_uw.clone();
+	m_dw = s_dw.clone();
+
+	m_h = s_h.clone();
+
 	m_sprite=m_dw;
 	clan::Console::write_line("is null: %1",m_sprite.is_null());
 }
@@ -75,7 +88,7 @@ void Player::update(const clan::GameTime & time)
 	{
 		m_sprite=m_lw;
 		clan::vec2f v=m_pos;
-		v.x-=32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.x-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_RIGHT)
@@ -108,6 +121,8 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 	if(!m_sprite.is_null())
 	{
 		m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
+		m_h.draw(c,m_pos.get().x+offset.x, m_pos.get().y+offset.y-5);
+		//c.draw_box(m_pos.get().x+offset.x, m_pos.get().y+offset.y,  m_pos.get().x+offset.x, m_pos.get().y+offset.y,  clan::Colorf(0.0f,1.0f,0.0f,1.0f));
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
 	}
 }

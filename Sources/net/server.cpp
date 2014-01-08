@@ -231,8 +231,12 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
 					vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
 
+					clan::vec2f off;
+					off.x = 26;
+					off.y = 28;
+
 					obj->get_vel().set(vel);
-					obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get());
+					obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get()+off);
 					p->set_next_attack_time(m_game_time.get_current_time_ms() + 1000);
 				}
 			}
