@@ -7,8 +7,6 @@
 
 clan::Sprite Player::m_rw, Player::m_lw, Player::m_uw, Player::m_dw;
 
-
-
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
@@ -69,7 +67,6 @@ void Player::update(const clan::GameTime & time)
 {
 	if(!m_sprite.is_null())
 		m_sprite.update(time.get_time_elapsed_ms());
-	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
 	if(keys&EUIKT_MOVE_LEFT)
 	{

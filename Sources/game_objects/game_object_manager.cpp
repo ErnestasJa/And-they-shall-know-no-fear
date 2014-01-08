@@ -147,17 +147,19 @@ void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 void GameObjectManager::collide_game_objects(const clan::GameTime & game_time)
 {
 	for(uint32_t i = 0; i+1<m_game_object_list.size(); i++)
-	for(uint32_t j = i+1; j<m_game_object_list.size(); j++)
+	for(uint32_t j = 0; j<m_tmp_object_list.size(); j++)
 	{
 		clan::CollisionOutline & outline = m_game_object_list[i]->get_outline();
-		clan::CollisionOutline & outline2 = m_game_object_list[j]->get_outline();
+		clan::CollisionOutline & outline2 = m_tmp_object_list[j]->get_outline();
 
 		outline.enable_collision_info(true, true, false);
 		outline2.enable_collision_info(true, true, false);
 
 		if( outline.collide(outline2) )
 		{
-			clan::log_event("game_ev","Game objects colliding: %1<->%2",m_game_object_list[i]->get_guid(),m_game_object_list[j]->get_guid());
+			clan::log_event("game_ev","Game objects colliding: %1<->%2",m_game_object_list[i]->get_guid(),m_tmp_object_list[j]->get_guid());
+			m_game_object_list[i]->on_collide(m_tmp_object_list[j]);
+
 			const std::vector<clan::CollidingContours> &colpointinfo = outline.get_collision_info();
 			// Loop through all pairs of colliding contours
 			for(size_t c = 0; c < colpointinfo.size(); c++)
