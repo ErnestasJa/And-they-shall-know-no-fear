@@ -58,6 +58,7 @@ void Server::on_update_game_object(GameObject * obj)
 	if(obj->get_type()==EGOT_THROWABLE_OBJECT)
 	{
 		ThrowableObject * o = static_cast<ThrowableObject *>(obj);
+
 		if(o->get_spawn_time()+3000<m_game_time.get_current_time_ms())
 		{
 			remove_game_object(o);
@@ -88,19 +89,23 @@ void Server::remove_game_object(GameObject * obj)
 	MessageUtil::add_message(ev,msg);
 	m_net_server.send_event(ev);
 
-	m_gom->remove_game_object(obj->get_guid());
+	obj->set_is_alive(false);
 }
 
 bool Server::run()
 {
+	
 	m_game_time.update();
 
 	if(m_gom)
 	{
+		m_gom->remove_not_alive_objects();
 		m_gom->update_game_objects(m_game_time);
 		m_gom->collide_game_objects(m_game_time);
+
 		sync_game_objects();
 	}
+
 
 	return true;
 }
@@ -230,6 +235,8 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					clan::vec2f vel;
 					vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
 					vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
+					vel = vel.normalize();
+					vel *= 128.0f;
 
 					obj->get_vel().set(vel);
 					obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get());

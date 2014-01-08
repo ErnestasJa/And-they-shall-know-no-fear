@@ -71,8 +71,27 @@ void GameObjectManager::remove_game_object(uint32_t guid)
 
 		m_tmp_object_list.erase(it);
 	}
+	else
+		m_game_object_list.erase(it);
+}
 
-	m_game_object_list.erase(it);
+void GameObjectManager::remove_not_alive_objects()
+{
+	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end();)
+	{
+		if(!(*it)->is_alive())
+			it = m_game_object_list.erase(it);
+		else
+			it++;
+	}
+
+	for(auto it = m_tmp_object_list.begin(); it!=m_tmp_object_list.end();)
+	{
+		if(!(*it)->is_alive())
+			it = m_tmp_object_list.erase(it);
+		else
+			it++;
+	}
 }
 
 GameObject * GameObjectManager::find_game_object_by_id(uint32_t id)
@@ -85,9 +104,11 @@ GameObject * GameObjectManager::find_game_object_by_id(uint32_t id)
 		
 		if(it==m_tmp_object_list.end())
 			return nullptr;
+
+		return (*it);
 	}
-	
-	return (*it);
+	else
+		return (*it);
 }
 
 
@@ -110,10 +131,16 @@ GameObject * GameObjectManager::find_game_object_by_guid(uint32_t guid)
 void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 {
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)
+	{
 		(*it)->update(game_time);
+		m_on_update_game_object.invoke(*it);
+	}
 
-	for(auto it = m_tmp_object_list.begin(); it!=m_tmp_object_list.end(); it++)
-		(*it)->update(game_time);
+	for(auto itg = m_tmp_object_list.begin(); itg!=m_tmp_object_list.end(); itg++)
+	{
+		(*itg)->update(game_time);
+		m_on_update_game_object.invoke(*itg);
+	}
 }
 
 
