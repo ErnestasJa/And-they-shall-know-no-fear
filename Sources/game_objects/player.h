@@ -18,7 +18,7 @@ protected:
 	clan::Sprite m_rw,m_lw,m_uw,m_dw, m_h; ///instanced sprites
 	clan::Sprite m_sprite; ///current sprite
 
-	Property<uint32_t> keys;
+	Property<uint32_t> keys, life;
 
 	clan::CollisionOutline m_outline;
 public:

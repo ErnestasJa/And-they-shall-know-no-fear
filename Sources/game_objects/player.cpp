@@ -14,6 +14,7 @@ clan::Sprite Player::s_rw,
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
+	life=add_property<uint32_t>("life",70);
 
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(16,13));
@@ -121,8 +122,8 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 	if(!m_sprite.is_null())
 	{
 		m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
+		c.fill_rect(m_pos.get().x+offset.x+10, m_pos.get().y+offset.y-1,  m_pos.get().x+offset.x+10+(44*life/100), m_pos.get().y+offset.y+8,  clan::Colorf(0.0f,1.0f,0.0f,1.0f));
 		m_h.draw(c,m_pos.get().x+offset.x, m_pos.get().y+offset.y-5);
-		//c.draw_box(m_pos.get().x+offset.x, m_pos.get().y+offset.y,  m_pos.get().x+offset.x, m_pos.get().y+offset.y,  clan::Colorf(0.0f,1.0f,0.0f,1.0f));
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
 	}
 }
