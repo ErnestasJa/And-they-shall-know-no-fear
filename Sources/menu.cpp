@@ -25,7 +25,7 @@ editor_button_img = clan::Image::resource(m_canvas,"editor_button_img",m_resourc
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
 
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
-	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
+	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/basic");
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	windowClosedEventSlot = m_window.sig_window_close().connect(this, &Menu::WindowCloseEventHandler);
 
