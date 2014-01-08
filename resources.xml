@@ -49,5 +49,9 @@
 			<grid pos="0,192" size="64,64" array="9,1"/>
 		</image>
 	</sprite>
+
+  <sprite name="hp_bar">
+    <image file="Gfx/player/hp_bar.png"/>
+  </sprite>
 	
 </resources>

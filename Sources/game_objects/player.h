@@ -14,7 +14,8 @@ public:
 	void set_next_attack_time(uint32_t time);
 
 protected:
-	static clan::Sprite m_rw,m_lw,m_uw,m_dw; ///preloaded sprites
+	static clan::Sprite s_rw,s_lw,s_uw,s_dw, s_h; ///preloaded sprites
+	clan::Sprite m_rw,m_lw,m_uw,m_dw, m_h; ///instanced sprites
 	clan::Sprite m_sprite; ///current sprite
 
 	Property<uint32_t> keys;

@@ -240,8 +240,12 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					vel = vel.normalize();
 					vel *= 128.0f;
 
+					clan::vec2f off;
+					off.x = 26;
+					off.y = 28;
+
 					obj->get_vel().set(vel);
-					obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get());
+					obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get()+off);
 					p->set_next_attack_time(m_game_time.get_current_time_ms() + 1000);
 				}
 			}
