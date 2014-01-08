@@ -42,11 +42,13 @@ void Server::sync_game_objects(bool sync_only_changed_props)
 
 	for(auto it = m_gom->get_game_objects().begin(); it != m_gom->get_game_objects().end(); it++)
 	{
+		if((*it)->is_alive())
 		MessageUtil::add_game_object(e,(*it),false);
 	}
 
 	for(auto it = m_gom->get_tmp_game_objects().begin(); it != m_gom->get_tmp_game_objects().end(); it++)
 	{
+		if((*it)->is_alive())
 		MessageUtil::add_game_object(e,(*it),false);
 	}
 	
