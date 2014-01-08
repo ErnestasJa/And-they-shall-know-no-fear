@@ -7,7 +7,7 @@
 
 clan::Sprite Player::m_rw, Player::m_lw, Player::m_uw, Player::m_dw;
 
-clan::Contour Player::s_contour;
+
 
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
@@ -15,19 +15,30 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(0,0));
-	contour.get_points().push_back(clan::Pointf(0,32));
-	contour.get_points().push_back(clan::Pointf(32,32));
-	contour.get_points().push_back(clan::Pointf(32,0));
+	contour.get_points().push_back(clan::Pointf(0,64));
+	contour.get_points().push_back(clan::Pointf(64,64));
+	contour.get_points().push_back(clan::Pointf(64,0));
 
 	m_outline.get_contours().push_back(contour);
 	m_outline.calculate_radius();
 	m_outline.calculate_smallest_enclosing_discs();
 	
+	m_next_attack_time = 0;
 }
 
 Player::~Player()
 {
 
+}
+
+uint32_t Player::get_next_attack_time()
+{
+	return m_next_attack_time;
+}
+
+void Player::set_next_attack_time(uint32_t time)
+{
+	m_next_attack_time = time;
 }
 
 bool Player::preload(clan::Canvas & canvas, clan::ResourceManager & resources)

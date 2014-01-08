@@ -15,7 +15,9 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_game_time = clan::GameTime(33,33);
 
 	m_gom = new GameObjectManager();
+	m_on_update_game_object = m_gom->sig_on_update_game_object().connect(this,&Server::on_update_game_object);
 	m_max_clients = max_clients;
+	m_current_guid = max_clients;
 	
 	m_client_cons = new ServerClientConnection[m_max_clients];
 	m_clients =		new Client[m_max_clients];
@@ -42,8 +44,51 @@ void Server::sync_game_objects(bool sync_only_changed_props)
 	{
 		MessageUtil::add_game_object(e,(*it),false);
 	}
+
+	for(auto it = m_gom->get_tmp_game_objects().begin(); it != m_gom->get_tmp_game_objects().end(); it++)
+	{
+		MessageUtil::add_game_object(e,(*it),false);
+	}
 	
 	m_net_server.send_event(e);
+}
+
+void Server::on_update_game_object(GameObject * obj)
+{
+	if(obj->get_type()==EGOT_THROWABLE_OBJECT)
+	{
+		ThrowableObject * o = static_cast<ThrowableObject *>(obj);
+		if(o->get_spawn_time()+3000<m_game_time.get_current_time_ms())
+		{
+			remove_game_object(o);
+		}
+	}
+}
+
+void Server::create_game_object(GameObject * obj)
+{
+	MSGS_GameObjectAction msg;
+	msg.action_type = EGOAT_CREATE;
+	msg.guid = obj->get_guid();
+	msg.object_type = obj->get_type(); /// realiai tipas nereikalingas
+
+	clan::NetGameEvent ev("gmsg");
+	MessageUtil::add_message(ev,msg);
+	m_net_server.send_event(ev);
+}
+
+void Server::remove_game_object(GameObject * obj)
+{
+	MSGS_GameObjectAction msg;
+	msg.action_type = EGOAT_REMOVE;
+	msg.guid = obj->get_guid();
+	msg.object_type = obj->get_type(); /// realiai tipas nereikalingas
+
+	clan::NetGameEvent ev("gmsg");
+	MessageUtil::add_message(ev,msg);
+	m_net_server.send_event(ev);
+
+	m_gom->remove_game_object(obj->get_guid());
 }
 
 bool Server::run()
@@ -92,17 +137,9 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 		con->disconnect();
 
 		int32_t id = client->get_id();
+		GameObject * obj = m_gom->find_game_object_by_guid(id);
 		
-		MSGS_GameObjectAction msg;
-		msg.action_type = EGOAT_REMOVE;
-		msg.guid = id;
-		msg.object_type = EGOT_PLAYER; /// realiai tipas nereikalingas
-
-		clan::NetGameEvent ev("gmsg");
-		MessageUtil::add_message(ev,msg);
-		m_net_server.send_event(ev);
-
-		m_gom->remove_game_object(id);
+		remove_game_object(obj);		
 
 		m_clients[id] = Client(); ///reset client data
 	}
@@ -174,7 +211,31 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			clan::log_event("net_event", "Move event");
 			MSGC_Input m;
 			MessageUtil::get_message(e,m,i);
-			m_gom->find_game_object_by_guid(client->get_id())->on_message(m);
+
+			Player * p = static_cast<Player *>(m_gom->find_game_object_by_guid(client->get_id()));
+			p->on_message(m);
+
+			if(m.keys&EUIKT_ATTACK)
+			{
+				if(p->get_next_attack_time()<=m_game_time.get_current_time_ms())
+				{
+					///spawn rock, shoot rock
+					ThrowableObject * obj = static_cast<ThrowableObject *>(m_gom->add_game_object(EGOT_THROWABLE_OBJECT, m_current_guid));
+					obj->set_spawn_time(m_game_time.get_current_time_ms());
+
+					m_current_guid ++;
+
+					create_game_object(obj);
+
+					clan::vec2f vel;
+					vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
+					vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
+
+					obj->get_vel().set(vel);
+					obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get());
+					p->set_next_attack_time(m_game_time.get_current_time_ms() + 1000);
+				}
+			}
 		}
 		else ///maybe game object manager might handle this message
 			m_gom->on_net_event(e);

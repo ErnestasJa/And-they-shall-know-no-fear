@@ -7,9 +7,11 @@ class ServerClientConnection;
 class Message;
 class Client;
 class ServerClientConnection;
+class GameObject;
 class Server
 {
 protected:
+	uint32_t					m_current_guid;
 	uint32_t					m_max_clients;
 	ServerClientConnection*		m_client_cons;
 	Client*						m_clients;
@@ -19,6 +21,8 @@ protected:
 
 	clan::NetGameServer			m_net_server;
 	clan::SlotContainer			m_slots;
+
+	clan::Slot m_on_update_game_object;
 
 	clan::NetGameEventDispatcher_v1<ServerClientConnection*> m_auth_events, m_game_events, m_net_events, m_game_obj_sync_events;
 
@@ -39,6 +43,10 @@ public:
 
 public:
 	void sync_game_objects(bool sync_only_changed_props = false);
+	void on_update_game_object(GameObject * obj);
+
+	void create_game_object(GameObject * obj);
+	void remove_game_object(GameObject * obj);
 
 public:
 	bool init(uint32_t max_users, const std::string & port);

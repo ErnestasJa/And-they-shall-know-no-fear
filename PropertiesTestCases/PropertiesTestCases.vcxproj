@@ -38,11 +38,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>..\Sources;.\Sources\game_objects;..\..\Libraries\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\Libraries\Lib\ClanLib;..\..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\Libraries\Lib\ClanLib\win32;..\..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>..\Sources;.\Sources\game_objects;..\..\Libraries\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\Libraries\Lib\ClanLib;..\..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\Libraries\Lib\ClanLib\Win32_Release;..\..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -65,6 +65,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -77,6 +78,7 @@
     <ClCompile Include="..\Sources\game_objects\game_object.cpp" />
     <ClCompile Include="..\Sources\game_objects\game_object_manager.cpp" />
     <ClCompile Include="..\Sources\game_objects\player.cpp" />
+    <ClCompile Include="..\Sources\game_objects\throwable_object.cpp" />
     <ClCompile Include="..\Sources\net\message.cpp" />
     <ClCompile Include="..\Sources\precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -93,6 +95,7 @@
     <ClInclude Include="..\Sources\game_objects\game_object_manager.h" />
     <ClInclude Include="..\Sources\game_objects\game_object_types.h" />
     <ClInclude Include="..\Sources\game_objects\player.h" />
+    <ClInclude Include="..\Sources\game_objects\throwable_object.h" />
     <ClInclude Include="..\Sources\net\message.h" />
     <ClInclude Include="..\Sources\precomp.h" />
     <ClInclude Include="..\Sources\properties\iproperty.h" />

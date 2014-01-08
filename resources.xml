@@ -13,31 +13,40 @@
 		</sprite>	
 	</section>
 	
-	<sprite name="champ_dw">
-		<animation speed="300"/>
-		<image file="Gfx\player\char.png">
-			<grid pos="0,0" size="32,32" array="3,1"/>
+	
+	<sprite name="rock">
+		<animation speed="100"/>
+		<image file="Gfx\player\shot.png">
+			<grid pos="0,0" size="12,12" array="10,1"/>
 		</image>
 	</sprite>
 	
-	<sprite name="champ_rw">
-		<animation speed="300"/>
-		<image file="Gfx\player\char.png">
-		<grid pos="0,32" size="32,32" array="3,1"/>
-		</image>
-	</sprite>
 	
 	<sprite name="champ_uw">
-		<animation speed="300"/>
+		<animation speed="111"/>
 		<image file="Gfx\player\char.png">
-			<grid pos="0,64" size="32,32" array="3,1"/>
+			<grid pos="0,0" size="64,64" array="9,1"/>
 		</image>
 	</sprite>
 	
 	<sprite name="champ_lw">
-		<animation speed="300"/>
+		<animation speed="111"/>
 		<image file="Gfx\player\char.png">
-			<grid pos="0,96" size="32,32" array="3,1"/>
+		<grid pos="0,64" size="64,64" array="9,1"/>
+		</image>
+	</sprite>
+	
+	<sprite name="champ_dw">
+		<animation speed="111"/>
+		<image file="Gfx\player\char.png">
+			<grid pos="0,128" size="64,64" array="9,1"/>
+		</image>
+	</sprite>
+	
+	<sprite name="champ_rw">
+		<animation speed="111"/>
+		<image file="Gfx\player\char.png">
+			<grid pos="0,192" size="64,64" array="9,1"/>
 		</image>
 	</sprite>
 	

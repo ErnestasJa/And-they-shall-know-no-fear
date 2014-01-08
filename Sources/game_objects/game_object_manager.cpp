@@ -6,6 +6,7 @@
 GameObjectManager::GameObjectManager()
 {
 	register_game_object<Player>();
+	register_game_object<ThrowableObject>();
 }
 
 GameObjectManager::~GameObjectManager()
@@ -34,10 +35,26 @@ std::vector<GameObject*> & GameObjectManager::get_game_objects()
 	return m_game_object_list;
 }
 
+
+std::vector<GameObject*> & GameObjectManager::get_tmp_game_objects()
+{
+	return m_tmp_object_list;
+}
+
 GameObject * GameObjectManager::add_game_object(uint32_t type, uint32_t guid)
 {
 	GameObject * o = create_game_object(type,guid);
-	m_game_object_list.push_back(o);
+	switch(type)
+	{
+	case EGOT_THROWABLE_OBJECT:
+		{
+			m_tmp_object_list.push_back(o);
+			break;
+		}
+	default:
+		m_game_object_list.push_back(o);
+		break;
+	}
 	return o;
 }
 
@@ -45,8 +62,17 @@ void GameObjectManager::remove_game_object(uint32_t guid)
 {
 	auto it = std::find_if(m_game_object_list.begin(), m_game_object_list.end(), [&guid](GameObject * o){return o->get_guid()==guid;});
 
-	if(it!=m_game_object_list.end())
-		m_game_object_list.erase(it);
+	if(it==m_game_object_list.end())
+	{	
+		it = std::find_if(m_tmp_object_list.begin(), m_tmp_object_list.end(), [&guid](GameObject * o){return o->get_guid()==guid;});
+		
+		if(it==m_tmp_object_list.end())
+			return;
+
+		m_tmp_object_list.erase(it);
+	}
+
+	m_game_object_list.erase(it);
 }
 
 GameObject * GameObjectManager::find_game_object_by_id(uint32_t id)
@@ -54,8 +80,13 @@ GameObject * GameObjectManager::find_game_object_by_id(uint32_t id)
 	auto it = std::find_if(m_game_object_list.begin(), m_game_object_list.end(), [&id](GameObject * o){return o->get_id()==id;});
 
 	if(it==m_game_object_list.end())
-		return nullptr;
-
+	{	
+		it = std::find_if(m_tmp_object_list.begin(), m_tmp_object_list.end(), [&id](GameObject * o){return o->get_id()==id;});
+		
+		if(it==m_tmp_object_list.end())
+			return nullptr;
+	}
+	
 	return (*it);
 }
 
@@ -65,8 +96,13 @@ GameObject * GameObjectManager::find_game_object_by_guid(uint32_t guid)
 	auto it = std::find_if(m_game_object_list.begin(), m_game_object_list.end(), [&guid](GameObject * o){return o->get_guid()==guid;});
 
 	if(it==m_game_object_list.end())
-		return nullptr;
-
+	{
+		it = std::find_if(m_tmp_object_list.begin(), m_tmp_object_list.end(), [&guid](GameObject * o){return o->get_guid()==guid;});
+			
+		if(it==m_tmp_object_list.end())
+			return nullptr;
+	}
+	
 	return (*it);
 }
 
@@ -74,6 +110,9 @@ GameObject * GameObjectManager::find_game_object_by_guid(uint32_t guid)
 void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 {
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)
+		(*it)->update(game_time);
+
+	for(auto it = m_tmp_object_list.begin(); it!=m_tmp_object_list.end(); it++)
 		(*it)->update(game_time);
 }
 
@@ -113,19 +152,20 @@ void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::v
 {
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)
 		(*it)->render(canvas,offset);
+
+	for(auto it = m_tmp_object_list.begin(); it!=m_tmp_object_list.end(); it++)
+		(*it)->render(canvas,offset);
+}
+
+clan::Signal_v1<GameObject*> & GameObjectManager::sig_on_update_game_object()
+{
+	return m_on_update_game_object;
 }
 
 void GameObjectManager::on_net_event(const clan::NetGameEvent & e)
 {
 	uint32_t type = e.get_argument(0).to_uinteger();
 	clan::log_event("net_event","Got message from server type='%1' msg='%2'.",type,e.to_string());
-
-	if(type==MSGC_INPUT)
-	{
-		MSGC_Input m;
-		m.net_deserialize(e.get_argument(1));
-		find_game_object_by_guid(m.id)->on_message(m);
-	}
 
 	///messages that are only handled on server
 	#if defined GAME_SERVER

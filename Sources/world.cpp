@@ -11,7 +11,7 @@ World::World(clan::DisplayWindow &display_window)
 	clan::ConsoleLogger logger;
 
 	m_window = display_window;
-	m_game_time = clan::GameTime(20,60);
+	m_game_time = clan::GameTime(60,60);
 
 	m_client_con = new ClientConnection();
 
@@ -152,29 +152,32 @@ void World::on_game_event(const clan::NetGameEvent & e)
 	for(uint32_t i = 0; i < MessageUtil::get_message_count(e); i++)
 	{
 		uint32_t type = MessageUtil::get_message_type(e,i);
-		clan::log_event("net_event","Got message from server type='%1';",type);
 
-		if(type==MSGC_INPUT)
-		{
-			MSGC_Input m;
-			MessageUtil::get_message(e,m,i);
-			m_gom->find_game_object_by_guid(m.id)->on_message(m);
-		}
-		else if(type==MSGS_GAME_OBJECT_ACTION)
+		if(type==MSGS_GAME_OBJECT_ACTION)
 		{
 			MSGS_GameObjectAction m;
 			MessageUtil::get_message(e,m,i);
 
 			if(m.action_type==EGOAT_CREATE)
 			{
-				Player * obj = static_cast<Player*>(m_gom->add_game_object(m.object_type,m.guid));
+				GameObject * obj = m_gom->add_game_object(m.object_type,m.guid);
 
-				obj->load(m_canvas,m_resources);
+				if(m.object_type==EGOT_PLAYER)
+				{
+					Player * pobj = static_cast<Player*>(obj);
+					pobj->load(m_canvas,m_resources);
 
-				if( m.guid == m_client->get_id() )
-					m_player = obj;
+					if( m.guid == m_client->get_id() )
+						m_player = pobj;
 
-				m_players[ m.guid ] = obj;
+					m_players[ m.guid ] = pobj;
+				}
+				else if(m.object_type==EGOT_THROWABLE_OBJECT)
+				{
+					ThrowableObject * tobj = static_cast<ThrowableObject*>(obj);
+					tobj->load(m_canvas,m_resources);
+				}
+				
 			}
 			else if(m.action_type==EGOAT_REMOVE)
 			{
@@ -198,8 +201,6 @@ void World::on_game_object_sync_event(const clan::NetGameEvent & e)
 	{
 		uint32_t type = MessageUtil::get_game_object_type(e,i);
 		uint32_t guid = MessageUtil::get_game_object_guid(e,i);
-
-		clan::log_event("net_event","Object[%1] sync event.",guid);
 
 		GameObject * go = m_gom->find_game_object_by_guid(guid);
 
@@ -346,6 +347,12 @@ void World::on_key_up(const clan::InputEvent & e)
 			msg.keys = msg.keys& (~EUIKT_MOVE_DOWN);
 			MessageUtil::add_message(*m_game_event,msg,true);
 		}
+		else if(e.id == clan::keycode_space)
+		{
+			msg.keys = msg.keys& (~EUIKT_ATTACK);
+			MessageUtil::add_message(*m_game_event,msg,true);
+		}
+
 	}
 }
 
@@ -372,6 +379,11 @@ void World::on_key_down(const clan::InputEvent & e)
 		else if(e.id == clan::keycode_s)
 		{
 			msg.keys=msg.keys|EUIKT_MOVE_DOWN;
+			MessageUtil::add_message(*m_game_event,msg,true);
+		}
+		else if(e.id == clan::keycode_space)
+		{
+			msg.keys=msg.keys|EUIKT_ATTACK;
 			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 	}

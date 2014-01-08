@@ -7,12 +7,17 @@
 class Player: public GameObject
 {
 protected:
+	uint32_t m_next_attack_time;
+
+public:
+	uint32_t get_next_attack_time();
+	void set_next_attack_time(uint32_t time);
+
+protected:
 	static clan::Sprite m_rw,m_lw,m_uw,m_dw; ///preloaded sprites
 	clan::Sprite m_sprite; ///current sprite
 
 	Property<uint32_t> keys;
-
-	static clan::Contour s_contour;
 
 	clan::CollisionOutline m_outline;
 public:

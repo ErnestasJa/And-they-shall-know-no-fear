@@ -46,9 +46,9 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Sources;.\Sources\game_objects;..\Libraries\Include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Libraries\Lib\ClanLib;..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Libraries\Lib\ClanLib\win32;..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Sources;.\Sources\game_objects;..\Libraries\Include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Libraries\Lib\ClanLib;..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Libraries\Lib\ClanLib\Win32_Release;..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -92,6 +92,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -154,6 +155,7 @@
     <ClCompile Include="Sources\game_objects\game_object.cpp" />
     <ClCompile Include="Sources\game_objects\game_object_manager.cpp" />
     <ClCompile Include="Sources\game_objects\player.cpp" />
+    <ClCompile Include="Sources\game_objects\throwable_object.cpp" />
     <ClCompile Include="Sources\menu.cpp" />
     <ClCompile Include="Sources\net\user_client.cpp" />
     <ClCompile Include="Sources\net\common.cpp" />
@@ -185,6 +187,7 @@
     <ClInclude Include="Sources\game_objects\game_object_manager.h" />
     <ClInclude Include="Sources\game_objects\game_object_types.h" />
     <ClInclude Include="Sources\game_objects\player.h" />
+    <ClInclude Include="Sources\game_objects\throwable_object.h" />
     <ClInclude Include="Sources\map_attributes.h" />
     <ClInclude Include="Sources\menu.h" />
     <ClInclude Include="Sources\net\user_client.h" />

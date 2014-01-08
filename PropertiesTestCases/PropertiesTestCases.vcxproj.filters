@@ -45,6 +45,9 @@
     <ClCompile Include="..\Sources\game_objects\player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Sources\game_objects\throwable_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Sources\properties\iproperty.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Sources\game_objects\player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\game_objects\throwable_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

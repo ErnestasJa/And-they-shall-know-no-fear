@@ -9,7 +9,9 @@ class GameObjectManager
 {
 protected:
 	std::vector<GameObject*> m_game_object_list;
+	std::vector<GameObject*> m_tmp_object_list;
 
+	clan::Signal_v1<GameObject*> m_on_update_game_object;
 public:
 	GameObjectManager();
 	virtual ~GameObjectManager();
@@ -25,10 +27,13 @@ public:
 	GameObject * find_game_object_by_guid(uint32_t guid);
 
 	std::vector<GameObject*> & get_game_objects();
+	std::vector<GameObject*> & get_tmp_game_objects();
 
 	void update_game_objects(const clan::GameTime & game_time);
 	void collide_game_objects(const clan::GameTime & game_time);
 	void render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset = clan::vec2(0,0));
+
+	clan::Signal_v1<GameObject*> & sig_on_update_game_object();
 
 	void on_net_event(const clan::NetGameEvent & e);
 	void on_game_object_sync_event(const clan::NetGameEvent & e);
