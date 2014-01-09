@@ -105,6 +105,7 @@
   <ItemGroup>
     <None Include="resources.xml" />
     <None Include="TODO.txt" />
+    <None Include="menu.xml" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="game_objects">
