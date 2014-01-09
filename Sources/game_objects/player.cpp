@@ -155,6 +155,7 @@ void Player::on_collide(GameObject * obj)
 		else
 		{
 			this->life=0;
+			this->set_is_alive(false);
 		}
 	}
 }

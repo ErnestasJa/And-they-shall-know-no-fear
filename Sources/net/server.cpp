@@ -15,7 +15,10 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_game_time = clan::GameTime(33,33);
 
 	m_gom = new GameObjectManager();
-	m_on_update_game_object = m_gom->sig_on_update_game_object().connect(this,&Server::on_update_game_object);
+	m_gom->func_on_add_game_object().set(this,&Server::on_add_game_object);
+	m_gom->func_on_update_game_object().set(this,&Server::on_update_game_object);
+	m_gom->func_on_remove_game_object().set(this,&Server::on_remove_game_object);
+
 	m_max_clients = max_clients;
 	m_current_guid = max_clients;
 	
@@ -34,6 +37,36 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_net_server.start(port);
 
 	return true;
+}
+
+void Server::send_game_objects(ServerClientConnection * cl, bool sync_only_changed_props)
+{
+	clan::NetGameEvent e("gmsg");
+	MSGS_GameObjectAction cc;
+
+	for(auto it = m_gom->get_game_objects().begin(); it != m_gom->get_game_objects().end(); it++)
+	{
+		if((*it)->is_alive())
+		{
+			cc.action_type = EGOAT_CREATE;
+			cc.guid = (*it)->get_guid();
+			cc.object_type = (*it)->get_type();
+			MessageUtil::add_message(e,cc);
+		}
+	}
+
+	for(auto it = m_gom->get_tmp_game_objects().begin(); it != m_gom->get_tmp_game_objects().end(); it++)
+	{
+		if((*it)->is_alive())
+		{
+			cc.action_type = EGOAT_CREATE;
+			cc.guid = (*it)->get_guid();
+			cc.object_type = (*it)->get_type();
+			MessageUtil::add_message(e,cc);
+		}
+	}
+	
+	cl->send_event(e);
 }
 
 void Server::sync_game_objects(bool sync_only_changed_props)
@@ -55,27 +88,9 @@ void Server::sync_game_objects(bool sync_only_changed_props)
 	m_net_server.send_event(e);
 }
 
-void Server::on_update_game_object(GameObject * obj)
-{
-	if(obj->get_type()==EGOT_THROWABLE_OBJECT)
-	{
-		ThrowableObject * o = static_cast<ThrowableObject *>(obj);
-
-		if(o->get_spawn_time()+3000<m_game_time.get_current_time_ms())
-		{
-			remove_game_object(o);
-		}
-	}
-	if(obj->get_type() == EGOT_PLAYER)
-	{
-		if(obj->get_property<uint32_t>("life")==0)
-			remove_game_object(obj);
-	}
 
 
-}
-
-void Server::create_game_object(GameObject * obj)
+void Server::on_add_game_object(GameObject * obj)
 {
 	MSGS_GameObjectAction msg;
 	msg.action_type = EGOAT_CREATE;
@@ -87,7 +102,7 @@ void Server::create_game_object(GameObject * obj)
 	m_net_server.send_event(ev);
 }
 
-void Server::remove_game_object(GameObject * obj)
+void Server::on_remove_game_object(GameObject * obj)
 {
 	MSGS_GameObjectAction msg;
 	msg.action_type = EGOAT_REMOVE;
@@ -97,8 +112,24 @@ void Server::remove_game_object(GameObject * obj)
 	clan::NetGameEvent ev("gmsg");
 	MessageUtil::add_message(ev,msg);
 	m_net_server.send_event(ev);
+}
 
-	obj->set_is_alive(false);
+void Server::on_update_game_object(GameObject * obj)
+{
+	if(obj->get_type()==EGOT_THROWABLE_OBJECT)
+	{
+		ThrowableObject * o = static_cast<ThrowableObject *>(obj);
+
+		if(o->get_spawn_time()+3000<m_game_time.get_current_time_ms())
+		{
+			o->set_is_alive(false);
+		}
+	}
+	if(obj->get_type() == EGOT_PLAYER)
+	{
+		if(obj->get_property<uint32_t>("life")==0)
+			obj->set_is_alive(false);
+	}
 }
 
 bool Server::run()
@@ -151,9 +182,8 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 		con->disconnect();
 
 		int32_t id = client->get_id();
-		GameObject * obj = m_gom->find_game_object_by_guid(id);
 		
-		remove_game_object(obj);		
+		m_gom->remove_game_object(id);		
 
 		m_clients[id] = Client(); ///reset client data
 	}
@@ -242,8 +272,6 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 
 						m_current_guid ++;
 
-						create_game_object(obj);
-
 						clan::vec2f vel;
 						vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
 						vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
@@ -311,35 +339,11 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 	{
 		clan::NetGameEvent player_obj_create_ev("gmsg");
 
+		send_game_objects(con);
 		///sukuriam sio kliento zaidimo objekta
 		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
 
-		///persiunciam zinute visiem kad sukurtu toki objekta
-		MSGS_GameObjectAction cc;
-		cc.action_type = EGOAT_CREATE;
-		cc.guid = client->get_id();
-		cc.object_type = EGOT_PLAYER;
-
-		MessageUtil::add_message(player_obj_create_ev,cc);
-		m_net_server.send_event(player_obj_create_ev);
-
-		///siam klientui siunciame kitu zaideju objektu informacija
-		loopi(m_max_clients)
-		{
-			if(i != client->get_id() && m_client_cons[i].is_connected() && m_clients[i].check_flag(ECF_LOGGED_IN))
-			{
-				clan::NetGameEvent player_obj_create_ev2("gmsg");
-
-				MSGS_GameObjectAction c;
-				c.action_type = EGOAT_CREATE;
-				c.guid = i;
-				c.object_type = EGOT_PLAYER;
-					
-				MessageUtil::add_message(player_obj_create_ev2,c);
-
-				con->send_event(player_obj_create_ev2);
-			}
-		}
+		
 	}
 }
 

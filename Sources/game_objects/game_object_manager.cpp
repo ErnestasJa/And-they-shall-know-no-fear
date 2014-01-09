@@ -52,9 +52,13 @@ GameObject * GameObjectManager::add_game_object(uint32_t type, uint32_t guid)
 			break;
 		}
 	default:
-		m_game_object_list.push_back(o);
-		break;
+			m_game_object_list.push_back(o);
+			break;
 	}
+	
+	if(!m_on_add_game_object.is_null())
+		m_on_add_game_object.invoke(o);
+
 	return o;
 }
 
@@ -69,10 +73,18 @@ void GameObjectManager::remove_game_object(uint32_t guid)
 		if(it==m_tmp_object_list.end())
 			return;
 
+		if(!m_on_remove_game_object.is_null())
+			m_on_remove_game_object.invoke(*it);
+
 		m_tmp_object_list.erase(it);
 	}
 	else
+	{
+		if(!m_on_remove_game_object.is_null())
+			m_on_remove_game_object.invoke(*it);
+
 		m_game_object_list.erase(it);
+	}
 }
 
 void GameObjectManager::remove_not_alive_objects()
@@ -80,7 +92,12 @@ void GameObjectManager::remove_not_alive_objects()
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end();)
 	{
 		if(!(*it)->is_alive())
+		{
+			if(!m_on_remove_game_object.is_null())
+				m_on_remove_game_object.invoke(*it);
+
 			it = m_game_object_list.erase(it);
+		}
 		else
 			it++;
 	}
@@ -88,7 +105,12 @@ void GameObjectManager::remove_not_alive_objects()
 	for(auto it = m_tmp_object_list.begin(); it!=m_tmp_object_list.end();)
 	{
 		if(!(*it)->is_alive())
+		{
+			if(!m_on_remove_game_object.is_null())
+				m_on_remove_game_object.invoke(*it);
+
 			it = m_tmp_object_list.erase(it);
+		}
 		else
 			it++;
 	}
@@ -133,13 +155,18 @@ void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 	for(auto it = m_game_object_list.begin(); it!=m_game_object_list.end(); it++)
 	{
 		(*it)->update(game_time);
-		m_on_update_game_object.invoke(*it);
+
+		if(!m_on_update_game_object.is_null())
+			m_on_update_game_object.invoke(*it);
+
 	}
 
 	for(auto itg = m_tmp_object_list.begin(); itg!=m_tmp_object_list.end(); itg++)
 	{
 		(*itg)->update(game_time);
-		m_on_update_game_object.invoke(*itg);
+
+		if(!m_on_update_game_object.is_null())
+			m_on_update_game_object.invoke(*itg);
 	}
 }
 
@@ -186,9 +213,19 @@ void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::v
 		(*it)->render(canvas,offset);
 }
 
-clan::Signal_v1<GameObject*> & GameObjectManager::sig_on_update_game_object()
+clan::Callback_v1<GameObject*> & GameObjectManager::func_on_update_game_object()
 {
 	return m_on_update_game_object;
+}
+
+clan::Callback_v1<GameObject*> & GameObjectManager::func_on_remove_game_object()
+{
+	return m_on_remove_game_object;
+}
+
+clan::Callback_v1<GameObject*> & GameObjectManager::func_on_add_game_object()
+{
+	return m_on_add_game_object;
 }
 
 void GameObjectManager::on_net_event(const clan::NetGameEvent & e)
