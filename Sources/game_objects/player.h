@@ -20,6 +20,7 @@ protected:
 	clan::Sprite m_sprite; ///current sprite
 
 	Property<uint32_t> keys, life;
+	Property<std::string> name;
 
 	clan::CollisionOutline m_outline;
 public:

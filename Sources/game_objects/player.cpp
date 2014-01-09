@@ -16,6 +16,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
+	name=add_property<std::string>("name");
 
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(16,13));
