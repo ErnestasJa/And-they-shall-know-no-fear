@@ -170,7 +170,6 @@ void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 	}
 }
 
-
 void GameObjectManager::collide_game_objects(const clan::GameTime & game_time)
 {
 	for(uint32_t i = 0; i<m_game_object_list.size(); i++)

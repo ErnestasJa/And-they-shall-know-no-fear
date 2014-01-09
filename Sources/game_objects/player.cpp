@@ -134,6 +134,9 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 		c.fill_rect(m_pos.get().x+offset.x+10, m_pos.get().y+offset.y-1,  m_pos.get().x+offset.x+10+(44*life/100), m_pos.get().y+offset.y+8,  get_hp_bar_color());
 		m_h.draw(c,m_pos.get().x+offset.x, m_pos.get().y+offset.y-5);
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
+		
+		clan::Font title; 
+		title.draw_text(c, m_pos.get().x+offset.x,m_pos.get().y+offset.y-20, "LABS", clan::Colorf(0.0f,0.0f,1.0f));
 	}
 }
 

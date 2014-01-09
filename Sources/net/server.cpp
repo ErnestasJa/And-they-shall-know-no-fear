@@ -337,11 +337,10 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 	}
 	else if(type==MSGC_READY)
 	{
-		clan::NetGameEvent player_obj_create_ev("gmsg");
-
 		send_game_objects(con);
 		///sukuriam sio kliento zaidimo objekta
 		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
+		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%1216,std::rand()%656));
 	}
 }
 
