@@ -12,6 +12,7 @@ protected:
 public:
 	uint32_t get_next_attack_time();
 	void set_next_attack_time(uint32_t time);
+	clan::Colorf get_hp_bar_color();
 
 protected:
 	static clan::Sprite s_rw,s_lw,s_uw,s_dw, s_h; ///preloaded sprites
