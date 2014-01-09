@@ -1,6 +1,5 @@
 #pragma once
 
-
 class Player;
 class GameObjectManager;
 class ServerClientConnection;
@@ -43,10 +42,12 @@ public:
 
 public:
 	void sync_game_objects(bool sync_only_changed_props = false);
-	void on_update_game_object(GameObject * obj);
+	void send_game_objects(ServerClientConnection * cl, bool sync_only_changed_props = false);
 
-	void create_game_object(GameObject * obj);
-	void remove_game_object(GameObject * obj);
+public:
+	void on_update_game_object(GameObject * obj);
+	void on_add_game_object(GameObject * obj);
+	void on_remove_game_object(GameObject * obj);
 
 public:
 	bool init(uint32_t max_users, const std::string & port);

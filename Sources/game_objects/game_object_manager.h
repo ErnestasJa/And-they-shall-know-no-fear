@@ -11,7 +11,9 @@ protected:
 	std::vector<GameObject*> m_game_object_list;
 	std::vector<GameObject*> m_tmp_object_list;
 
-	clan::Signal_v1<GameObject*> m_on_update_game_object;
+	clan::Callback_v1<GameObject*> m_on_add_game_object;
+	clan::Callback_v1<GameObject*> m_on_remove_game_object;
+	clan::Callback_v1<GameObject*> m_on_update_game_object;
 public:
 	GameObjectManager();
 	virtual ~GameObjectManager();
@@ -34,10 +36,14 @@ public:
 	void render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset = clan::vec2(0,0));
 	void remove_not_alive_objects();
 
-	clan::Signal_v1<GameObject*> & sig_on_update_game_object();
-
 	void on_net_event(const clan::NetGameEvent & e);
 	void on_game_object_sync_event(const clan::NetGameEvent & e);
+
+///------Callbacks for server and ... --------
+public:
+	clan::Callback_v1<GameObject*> & func_on_add_game_object();
+	clan::Callback_v1<GameObject*> & func_on_remove_game_object();
+	clan::Callback_v1<GameObject*> & func_on_update_game_object();
 
 ///------Game object factory-------
 protected:
@@ -71,9 +77,6 @@ public:
 		m_go_create[T::type()]=go_funcs(&T::create,&T::preload,&T::free);
 		return true;
 	}
-
-
-
 };
 
 #endif
