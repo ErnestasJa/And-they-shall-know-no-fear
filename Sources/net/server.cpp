@@ -66,6 +66,13 @@ void Server::on_update_game_object(GameObject * obj)
 			remove_game_object(o);
 		}
 	}
+	if(obj->get_type() == EGOT_PLAYER)
+	{
+		if(obj->get_property<uint32_t>("life")==0)
+			remove_game_object(obj);
+	}
+
+
 }
 
 void Server::create_game_object(GameObject * obj)
@@ -101,9 +108,9 @@ bool Server::run()
 
 	if(m_gom)
 	{
-		m_gom->remove_not_alive_objects();
 		m_gom->update_game_objects(m_game_time);
 		m_gom->collide_game_objects(m_game_time);
+		m_gom->remove_not_alive_objects();
 
 		sync_game_objects();
 	}
@@ -220,33 +227,37 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			MessageUtil::get_message(e,m,i);
 
 			Player * p = static_cast<Player *>(m_gom->find_game_object_by_guid(client->get_id()));
-			p->on_message(m);
 
-			if(m.keys&EUIKT_ATTACK)
+			if(p!=nullptr)
 			{
-				if(p->get_next_attack_time()<=m_game_time.get_current_time_ms())
+				p->on_message(m);
+
+				if(m.keys&EUIKT_ATTACK)
 				{
-					///spawn rock, shoot rock
-					ThrowableObject * obj = static_cast<ThrowableObject *>(m_gom->add_game_object(EGOT_THROWABLE_OBJECT, m_current_guid));
-					obj->set_spawn_time(m_game_time.get_current_time_ms());
+					if(p->get_next_attack_time()<=m_game_time.get_current_time_ms())
+					{
+						///spawn rock, shoot rock
+						ThrowableObject * obj = static_cast<ThrowableObject *>(m_gom->add_game_object(EGOT_THROWABLE_OBJECT, m_current_guid));
+						obj->init(m_game_time.get_current_time_ms(),p->get_guid());
 
-					m_current_guid ++;
+						m_current_guid ++;
 
-					create_game_object(obj);
+						create_game_object(obj);
 
-					clan::vec2f vel;
-					vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
-					vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
-					vel = vel.normalize();
-					vel *= 128.0f;
+						clan::vec2f vel;
+						vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
+						vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
+						vel = vel.normalize();
+						vel *= 128.0f;
 
-					clan::vec2f off;
-					off.x = 26;
-					off.y = 28;
+						clan::vec2f off;
+						off.x = 26;
+						off.y = 28;
 
-					obj->get_vel().set(vel);
-					obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get()+off);
-					p->set_next_attack_time(m_game_time.get_current_time_ms() + 1000);
+						obj->get_vel().set(vel);
+						obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get()+off);
+						p->set_next_attack_time(m_game_time.get_current_time_ms() + 1000);
+					}
 				}
 			}
 		}

@@ -27,14 +27,20 @@ ThrowableObject::~ThrowableObject()
 
 }
 
+uint32_t ThrowableObject::get_owner_guid()
+{
+	return m_owner_guid;
+}
+
 uint32_t ThrowableObject::get_spawn_time()
 {
 	return m_time_spawned;
 }
 
-void ThrowableObject::set_spawn_time(uint32_t time)
+void ThrowableObject::init(uint32_t spawn_time, uint32_t owner_guid)
 {
-	m_time_spawned = time;
+	m_time_spawned = spawn_time;
+	m_owner_guid = owner_guid;
 }
 
 Property<clan::vec2f> ThrowableObject::get_vel()

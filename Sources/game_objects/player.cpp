@@ -3,6 +3,7 @@
 #include "game_object_manager.h"
 #include "game_object.h"
 #include "player.h"
+#include "throwable_object.h"
 #include "../net/message.h"
 
 clan::Sprite Player::s_rw, 
@@ -14,7 +15,7 @@ clan::Sprite Player::s_rw,
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
-	life=add_property<uint32_t>("life",70);
+	life=add_property<uint32_t>("life",100);
 
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(16,13));
@@ -140,7 +141,22 @@ void Player::on_message(const Message & msg)
 
 void Player::on_collide(GameObject * obj)
 {
+	if(obj->is_alive() && obj->get_type()==EGOT_THROWABLE_OBJECT)
+	{
+		if(static_cast<ThrowableObject*>(obj)->get_owner_guid()==this->get_guid())
+			return;
 
+		obj->set_is_alive(false);
+
+		if(this->life>10)
+		{
+			this->life = this->life - 10;
+		}
+		else
+		{
+			this->life=0;
+		}
+	}
 }
 
 clan::CollisionOutline & Player::get_outline()

@@ -14,10 +14,12 @@ protected:
 
 	Property<clan::vec2f> m_vel;
 
-	uint32_t m_time_spawned;
+	uint32_t m_time_spawned, m_owner_guid;
 public:
 	uint32_t get_spawn_time();
-	void set_spawn_time(uint32_t time);
+	uint32_t get_owner_guid();
+
+	void init(uint32_t spawn_time, uint32_t owner_guid);
 
 	Property<clan::vec2f>	get_vel();
 
