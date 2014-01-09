@@ -209,6 +209,7 @@
     <ClInclude Include="Sources\world.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="menu.xml" />
     <None Include="resources.xml">
       <SubType>Designer</SubType>
     </None>

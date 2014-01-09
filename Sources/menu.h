@@ -17,13 +17,13 @@ protected:
 	clan::Canvas m_canvas;
 	clan::DisplayWindow m_window;
 	clan::ResourceManager m_resources;
-	clan::Image m_background,quit_button_img,play_button_img,editor_button_img;
+	clan::Image m_background,button_exit_img,button_world_img,button_editor_img;
 	clan::GUIManager m_gui_manager;
 	clan::GUIWindowManagerDirect m_window_manager;
 	
 
 	//gui
-	clan::ImageView *button_world_top,*editor_button_top,*quit_button_top;
+	clan::ImageView *button_world_top,*button_editor_top,*button_exit_top;
 	clan::PushButton *button_world, *button_editor, *button_exit;
 	YNDialogue *m_exit_window;
 	ConDialogue *m_con_window;
