@@ -48,6 +48,8 @@ public:
 	bool pause();
 	bool resume();
 	bool exit();
+	bool b_big(clan::ImageView *image);
+	bool b_small(clan::ImageView *image);
 
 
 	void on_key_up(const clan::InputEvent & e);

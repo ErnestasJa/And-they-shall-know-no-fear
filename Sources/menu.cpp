@@ -37,6 +37,8 @@ editor_button_img = clan::Image::resource(m_canvas,"editor_button_img",m_resourc
 	button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_world_top->set_image(play_button_img);
 	button_world_top->set_scale_to_fit(true);
+	button_world_top->func_pointer_enter().set(this, &Menu::b_big,button_world_top);
+	button_world_top->func_pointer_exit().set(this, &Menu::b_small,button_world_top);
 	
 
 	button_editor = new clan::PushButton(c);
@@ -47,6 +49,8 @@ editor_button_img = clan::Image::resource(m_canvas,"editor_button_img",m_resourc
 	editor_button_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	editor_button_top->set_image(editor_button_img);
 	editor_button_top->set_scale_to_fit(true);
+	editor_button_top->func_pointer_enter().set(this, &Menu::b_big,editor_button_top);
+	editor_button_top->func_pointer_exit().set(this, &Menu::b_small,editor_button_top);
 
 	
 	button_exit = new clan::PushButton(c);
@@ -57,6 +61,8 @@ editor_button_img = clan::Image::resource(m_canvas,"editor_button_img",m_resourc
 	quit_button_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	quit_button_top->set_image(quit_button_img);
 	quit_button_top->set_scale_to_fit(true);
+	quit_button_top->func_pointer_enter().set(this, &Menu::b_big,quit_button_top);
+	quit_button_top->func_pointer_exit().set(this, &Menu::b_small,quit_button_top);
 
 	m_con_window = new ConDialogue(c);
 	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
@@ -181,4 +187,37 @@ void Menu::on_button_clicked(clan::PushButton *button)
 		m_exit_window->toggle_visibility();
 	}
 
+}
+bool Menu::b_big(clan::ImageView *image)
+{
+	if(image==button_world_top)
+	{
+		button_world_top->set_geometry(clan::Rect( -46, -19, clan::Size(172, 66)));
+	}
+	else if (image==editor_button_top)
+	{
+		editor_button_top->set_geometry(clan::Rect( -46, -19, clan::Size(172, 66)));
+	}
+	else if (image==quit_button_top)
+	{
+		quit_button_top->set_geometry(clan::Rect( -46, -19, clan::Size(172, 66)));
+	}
+	return true;	
+}
+bool Menu::b_small(clan::ImageView *image)
+{
+	if(image==button_world_top)
+	{
+		button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	}
+	else if (image==editor_button_top)
+	{
+		editor_button_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	}
+	else if (image==quit_button_top)
+	{
+		quit_button_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	}	
+	return true;
+	
 }
