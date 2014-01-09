@@ -47,9 +47,9 @@ void Player::set_next_attack_time(uint32_t time)
 
 clan::Colorf Player::get_hp_bar_color()
 {
-	float r,g, l = (float)life;
-	r = 1.0f - l/100;
-	g = l/100;
+	float r,g;
+	r = 1.0f - (float)life/100;
+	g = (float)life/100;
 	return clan::Colorf(r,g,0.0f,1.0f);
 }
 
@@ -163,7 +163,6 @@ void Player::on_collide(GameObject * obj)
 		else
 		{
 			this->life=0;
-			this->set_is_alive(false);
 		}
 	}
 }
