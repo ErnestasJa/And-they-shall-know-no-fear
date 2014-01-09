@@ -360,7 +360,6 @@ void World::on_key_down(const clan::InputEvent & e)
 {	
 	if(m_player)
 	{
-		
 		if(e.id == clan::keycode_a)
 		{
 			msg.keys=msg.keys|EUIKT_MOVE_LEFT;

@@ -342,8 +342,6 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 		send_game_objects(con);
 		///sukuriam sio kliento zaidimo objekta
 		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
-
-		
 	}
 }
 

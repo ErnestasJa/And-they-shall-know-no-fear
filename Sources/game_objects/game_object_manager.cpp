@@ -173,7 +173,7 @@ void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 
 void GameObjectManager::collide_game_objects(const clan::GameTime & game_time)
 {
-	for(uint32_t i = 0; i+1<m_game_object_list.size(); i++)
+	for(uint32_t i = 0; i<m_game_object_list.size(); i++)
 	for(uint32_t j = 0; j<m_tmp_object_list.size(); j++)
 	{
 		clan::CollisionOutline & outline = m_game_object_list[i]->get_outline();
