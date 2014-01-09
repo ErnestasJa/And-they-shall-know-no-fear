@@ -136,8 +136,8 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 		m_h.draw(c,m_pos.get().x+offset.x, m_pos.get().y+offset.y-5);
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
 		
-		clan::Font title; 
-		title.draw_text(c, m_pos.get().x+offset.x,m_pos.get().y+offset.y-20, "LABS", clan::Colorf(0.0f,0.0f,1.0f));
+		static clan::Font title(c,"Ariel",10); 
+		title.draw_text(c, m_pos.get().x+offset.x+6,m_pos.get().y+offset.y-8, name, get_hp_bar_color());
 	}
 }
 
