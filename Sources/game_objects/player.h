@@ -21,6 +21,7 @@ protected:
 
 	Property<uint32_t> keys, life;
 	Property<std::string> name;
+	Property<uint32_t> vel;
 
 	clan::CollisionOutline m_outline;
 public:

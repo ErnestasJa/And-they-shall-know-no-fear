@@ -17,6 +17,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
 	name=add_property<std::string>("name");
+	vel =add_property<float>("vel",41);
 
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(16,13));
@@ -95,33 +96,43 @@ void Player::update(const clan::GameTime & time)
 		m_sprite.update(time.get_time_elapsed_ms());
 	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
+
 	if(keys&EUIKT_MOVE_LEFT)
 	{
 		m_sprite=m_lw;
+
+		#if defined GAME_SERVER
 		clan::vec2f v=m_pos;
-		v.x-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.x-= vel * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
+		#endif
 	}
 	if(keys&EUIKT_MOVE_RIGHT)
 	{
 		m_sprite=m_rw;
+		#if defined GAME_SERVER
 		clan::vec2f v=m_pos;
-		v.x+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.x+= vel * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
+		#endif
 	}
 	if(keys&EUIKT_MOVE_UP)
 	{
 		m_sprite=m_uw;
+		#if defined GAME_SERVER
 		clan::vec2f v=m_pos;
-		v.y-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.y-= vel * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
+		#endif
 	}
 	if(keys&EUIKT_MOVE_DOWN)
 	{
 		m_sprite=m_dw;
+		#if defined GAME_SERVER
 		clan::vec2f v=m_pos;
-		v.y+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.y+= vel * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
+		#endif
 	}
 
 	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
@@ -136,7 +147,7 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 		m_h.draw(c,m_pos.get().x+offset.x, m_pos.get().y+offset.y-5);
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
 		
-		static clan::Font title(c,"Ariel",12); 
+		static clan::Font title(c,"Ariel",12);
 		title.draw_text(c, m_pos.get().x+offset.x,m_pos.get().y+offset.y-10, name, clan::Colorf(0.0f,0.0f,1.0f));
 	}
 }

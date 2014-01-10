@@ -111,6 +111,9 @@
     <ClInclude Include="..\Sources\properties\property_types.h" />
     <ClInclude Include="..\Sources\properties\property_util.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

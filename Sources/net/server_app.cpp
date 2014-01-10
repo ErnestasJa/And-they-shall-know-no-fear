@@ -10,7 +10,7 @@ ServerApp::ServerApp()
 int ServerApp::main(const std::vector<std::string> &args)
 {
 	
-	m_server.init(4,"27015");
+	m_server.init(16,"27015");
 
 	while(m_server.run())
 	{

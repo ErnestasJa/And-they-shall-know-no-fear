@@ -146,7 +146,6 @@ bool Server::run()
 		sync_game_objects();
 	}
 
-
 	return true;
 }
 
@@ -276,7 +275,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 						vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
 						vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
 						vel = vel.normalize();
-						vel *= 128.0f;
+						vel *= 192.0f;
 
 						clan::vec2f off;
 						off.x = 26;
@@ -340,7 +339,7 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 		send_game_objects(con);
 		///sukuriam sio kliento zaidimo objekta
 		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
-		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%1216,std::rand()%656));
+		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%960,std::rand()%656));
 		m_player_objects[client->get_id()]->get_property<std::string>("name").set(client->get_name());
 	}
 }
