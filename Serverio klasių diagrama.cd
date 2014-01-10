@@ -1,0 +1,439 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Client">
+    <Position X="8.75" Y="14" Width="1.5" />
+    <InheritanceLine Type="Message" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11" Y="1.812" />
+        <Point X="20.022" Y="1.812" />
+        <Point X="20.022" Y="9.75" />
+        <Point X="17.625" Y="9.75" />
+        <Point X="17.625" Y="14.75" />
+        <Point X="10.25" Y="14.75" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="m_flags" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.688" Y="14" />
+        <Point X="9.688" Y="13.625" />
+        <Point X="12.5" Y="13.625" />
+        <Point X="12.5" Y="12.088" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_id" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.25" Y="14.125" />
+        <Point X="13.125" Y="14.125" />
+        <Point X="13.125" Y="11.5" />
+        <Point X="12.75" Y="11.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_name" Type="Property&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.125" Y="14" />
+        <Point X="9.125" Y="13.625" />
+        <Point X="9.128" Y="13.625" />
+        <Point X="9.128" Y="12.595" />
+        <Point X="11.438" Y="12.595" />
+        <Point X="11.438" Y="12.088" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAEAAAAAAAAAAAAAEAAAAAAQAgAQACIAgQAQ=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_flags" />
+      <Field Name="m_id" />
+      <Field Name="m_name" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GameObject">
+    <Position X="1.75" Y="6.5" Width="1.5" />
+    <AssociationLine Name="m_pos" Type="Property&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="3.25" Y="8.938" />
+        <Point X="11.25" Y="8.938" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ABAAIAgAQAgACAAAEAAAUAAQAAAAAAQAAEAAgAIUQEA=</HashCode>
+      <FileName>D:\git\Sources\game_objects\game_object.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_id" />
+      <Field Name="m_pos" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GameObjectManager">
+    <Position X="12.25" Y="17.75" Width="1.5" />
+    <NestedTypes>
+      <Typedef Name="GameObjectManager::go_create_func" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>D:\git\Sources\game_objects\game_object_manager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="GameObjectManager::go_preload_func" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>D:\git\Sources\game_objects\game_object_manager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="GameObjectManager::go_free_func" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>D:\git\Sources\game_objects\game_object_manager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Struct Name="GameObjectManager::go_funcs" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>D:\git\Sources\game_objects\game_object_manager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ACCAAkAEYKQUAAAgRAKAABAMIAAAAQBAAAAAQQAAAAA=</HashCode>
+      <FileName>D:\git\Sources\game_objects\game_object_manager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IProperty">
+    <Position X="13.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AwAAAAAAAAAAAEAAAAQCYAAAACAAAAAAQAAgAIAAEAA=</HashCode>
+      <FileName>D:\git\Sources\properties\iproperty.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Message">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Typedef Name="Message::msg_create_func" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>D:\git\Sources\net\message.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIBAAQAAAAAABAAAAAAAAAAAAAgIAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MSG_Query">
+    <Position X="2.5" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="9.5" Y="2.688" />
+        <Point X="9.625" Y="2.702" />
+        <Point X="3.25" Y="2.702" />
+        <Point X="3.25" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MSG_QueryResponse">
+    <Position X="4.25" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.5" Y="3.213" />
+        <Point X="5.062" Y="3.213" />
+        <Point X="5.062" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MSG_Server_Info">
+    <Position X="10.5" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" FixedFromPoint="true">
+      <Path>
+        <Point X="10.562" Y="3.213" />
+        <Point X="10.562" Y="4.125" />
+        <Point X="11.25" Y="4.125" />
+        <Point X="11.25" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="max_client_count" Type="Property&lt;T&gt;">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.52" Y="0.563" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="max_client_count" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MSGC_Auth">
+    <Position X="6" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MSGC_Input">
+    <Position X="6.5" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="9.812" Y="3.213" />
+        <Point X="9.812" Y="3.742" />
+        <Point X="7.25" Y="3.742" />
+        <Point X="7.25" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="keys" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8" Y="5.116" />
+        <Point X="8.375" Y="5.116" />
+        <Point X="8.375" Y="7.375" />
+        <Point X="11.25" Y="7.375" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="keys" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MSGC_Ready">
+    <Position X="8.75" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.25" Y="3.213" />
+        <Point X="10.25" Y="4.25" />
+        <Point X="9.812" Y="4.25" />
+        <Point X="9.812" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MSGS_AuthStatus">
+    <Position X="16" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11" Y="2.688" />
+        <Point X="16.75" Y="2.688" />
+        <Point X="16.75" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="msg" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="16.344" Y="5.733" />
+        <Point X="16.344" Y="7.187" />
+        <Point X="12.75" Y="7.187" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAAAAAgA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="id" />
+      <Field Name="msg" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MSGS_ClientDisconnect">
+    <Position X="14.25" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11" Y="3" />
+        <Point X="15" Y="3" />
+        <Point X="15" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="msg" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15" Y="5.733" />
+        <Point X="15" Y="6.108" />
+        <Point X="12.562" Y="6.108" />
+        <Point X="12.562" Y="6.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="msg" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MSGS_GameObjectAction">
+    <Position X="17.75" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11" Y="2.312" />
+        <Point X="18.5" Y="2.312" />
+        <Point X="18.5" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="guid" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.703" Y="5.733" />
+        <Point X="18.703" Y="9" />
+        <Point X="12.75" Y="9" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="object_type" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.094" Y="5.733" />
+        <Point X="18.094" Y="8.688" />
+        <Point X="12.75" Y="8.688" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAgAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="guid" />
+      <Field Name="object_type" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MSGS_GameStateChange">
+    <Position X="12.25" Y="4.5" Width="1.5" />
+    <InheritanceLine Type="Message" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="10.875" Y="3.213" />
+        <Point X="10.875" Y="3.617" />
+        <Point X="13" Y="3.617" />
+        <Point X="13" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>D:\git\Sources\net\message.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player">
+    <Position X="4.75" Y="18.25" Width="1.5" />
+    <InheritanceLine Type="GameObject" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="2.125" Y="10.877" />
+        <Point X="2.125" Y="20.688" />
+        <Point X="4.75" Y="20.688" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="keys" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.75" Y="18.25" />
+        <Point X="5.75" Y="11.812" />
+        <Point X="11.25" Y="11.812" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="name" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.094" Y="18.25" />
+        <Point X="5.094" Y="10.062" />
+        <Point X="11.25" Y="10.062" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.123" Y="0.118" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAEQAgAAAIgIAAAAEAAAIAAhYIAFABAgAABCgQAUQBA=</HashCode>
+      <FileName>D:\git\Sources\game_objects\player.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="life" />
+      <Field Name="keys" />
+      <Field Name="name" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Property&lt;T&gt;">
+    <Position X="11.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AwAAAAAAAAAAAAAAAIwCYQAAAKAAAAAIQABgCYAAEAA=</HashCode>
+      <FileName>D:\git\Sources\properties\property.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PropertyContainer">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Typedef Name="PropertyContainer::prop_create_func" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>D:\git\Sources\properties\property_container.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AQAAAAAQgAAAQAIQQAAAIQAAAAAAAACQwAIgAABAAQE=</HashCode>
+      <FileName>D:\git\Sources\properties\property_container.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Server">
+    <Position X="9.5" Y="19.5" Width="1.5" />
+    <AssociationLine Name="m_clients" Type="Client" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.812" Y="19.5" />
+        <Point X="10.812" Y="19.125" />
+        <Point X="9.625" Y="19.125" />
+        <Point X="9.625" Y="16.579" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>QCQCAgFAKCEAAAAABAIIAAAAQECAQBICAAIEEKAEAEA=</HashCode>
+      <FileName>D:\git\Sources\net\server.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_client_cons" />
+      <Field Name="m_clients" />
+      <Field Name="m_player_objects" />
+      <Field Name="m_gom" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ServerApp">
+    <Position X="6.75" Y="20.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAEAAAQAAAAAAAAAAAAAAAQAQ=</HashCode>
+      <FileName>D:\git\Sources\net\server_app.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_server" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ServerClientConnection">
+    <Position X="14.75" Y="17.25" Width="1.5" />
+    <AssociationLine Name="m_client" Type="Client" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.5" Y="17.25" />
+        <Point X="15.5" Y="15.438" />
+        <Point X="10.25" Y="15.438" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAQIgAAAAABAAEAAAAIAAAAAIIAEBAA=</HashCode>
+      <FileName>D:\git\Sources\net\server_client.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_client" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ThrowableObject">
+    <Position X="2.5" Y="12" Width="1.5" />
+    <AssociationLine Name="m_vel" Type="Property&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4" Y="14.635" />
+        <Point X="4.375" Y="14.635" />
+        <Point X="4.375" Y="9.438" />
+        <Point X="11.25" Y="9.438" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAQAgAAAIgAAABAECCAAAAiIIgDQAJAAABAgAAUAAA=</HashCode>
+      <FileName>D:\git\Sources\game_objects\throwable_object.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_vel" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

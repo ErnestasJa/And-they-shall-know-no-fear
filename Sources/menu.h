@@ -48,12 +48,11 @@ public:
 	bool pause();
 	bool resume();
 	bool exit();
-	bool b_big(clan::ImageView *image);
-	bool b_small(clan::ImageView *image);
-
+	int pokitis;
 
 	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
+	void kitimas();
 };
 
 #endif // MENU_H

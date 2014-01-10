@@ -15,6 +15,8 @@ Menu::Menu(App * app, clan::DisplayWindow & wnd)
 
 bool Menu::init()
 {
+	pokitis=0;
+
 	clan::XMLResourceDocument res("menu.xml");
 	m_resources = clan::XMLResourceManager::create(res);
 	
@@ -36,8 +38,7 @@ bool Menu::init()
 	button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_world_top->set_image(button_world_img);
 	button_world_top->set_scale_to_fit(true);
-	button_world_top->func_pointer_enter().set(this, &Menu::b_big,button_world_top);
-	button_world_top->func_pointer_exit().set(this, &Menu::b_small,button_world_top);
+	
 	
 	button_editor = new clan::PushButton(c);
 	button_editor->set_geometry(clan::Rect( 472, 566, clan::Size(80, 26)));
@@ -46,8 +47,7 @@ bool Menu::init()
 	button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_editor_top->set_image(button_editor_img);
 	button_editor_top->set_scale_to_fit(true);
-	button_editor_top->func_pointer_enter().set(this, &Menu::b_big,button_editor_top);
-	button_editor_top->func_pointer_exit().set(this, &Menu::b_small,button_editor_top);
+	
 	
 	button_exit = new clan::PushButton(c);
 	button_exit->set_geometry(clan::Rect( 472, 616, clan::Size(80, 26)));
@@ -56,8 +56,7 @@ bool Menu::init()
 	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_exit_top->set_image(button_exit_img);
 	button_exit_top->set_scale_to_fit(true);
-	button_exit_top->func_pointer_enter().set(this, &Menu::b_big,button_exit_top);
-	button_exit_top->func_pointer_exit().set(this, &Menu::b_small,button_exit_top);
+	
 
 	m_con_window = new ConDialogue(c);
 	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
@@ -95,6 +94,8 @@ bool Menu::run()
 {
 	if(m_run)
 	{
+		kitimas();
+
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 
 		///render gui
@@ -184,37 +185,38 @@ void Menu::on_button_clicked(clan::PushButton *button)
 
 }
 
-bool Menu::b_big(clan::ImageView *image)
+void Menu::kitimas()
 {
-	if(image==button_world_top)
-	{
-		button_world_top->set_geometry(clan::Rect( -46, -19, clan::Size(172, 66)));
-	}
-	else if (image==button_editor_top)
-	{
-		button_editor_top->set_geometry(clan::Rect( -46, -19, clan::Size(172, 66)));
-	}
-	else if (image==button_exit_top)
-	{
-		button_exit_top->set_geometry(clan::Rect( -46, -19, clan::Size(172, 66)));
-	}
-	return true;	
-}
+	clan::Point current = m_window.get_ic().get_mouse().get_position();
 
-bool Menu::b_small(clan::ImageView *image)
-{
-	if(image==button_world_top)
+	if(	current.x >472&&current.x<552&&current.y>516&&current.y<542)
 	{
-		button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		button_world_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		pokitis=1;
 	}
-	else if (image==button_editor_top)
+	else if (current.x >472&&current.x<552&&current.y>566&&current.y<592)
 	{
-		button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		button_editor_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		pokitis=2;
 	}
-	else if (image==button_exit_top)
+	else if (current.x >472&&current.x<552&&current.y>616&&current.y<642)
 	{
-		button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-	}	
-	return true;
-	
+		button_exit_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		pokitis=3;
+	}
+	else if(pokitis>0)
+	{
+		if(pokitis==1)
+		{
+			button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		}
+			else if(pokitis==2)
+		{
+			button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		}
+		else if(pokitis==3)
+		{	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		}
+		pokitis=0;
+	}
 }
