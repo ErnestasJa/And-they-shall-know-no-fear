@@ -17,7 +17,9 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
-	name=add_property<std::string>("name","waiting for server reply");
+	kills=add_property<uint32_t>("kills",0);
+	killer=add_property<uint32_t>("killer");
+	name=add_property<std::string>("name","Sir. Waitfor Servereply");
 
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(16,13));
@@ -139,7 +141,7 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
 
 		static clan::Font title(c,"Ariel",10);
-		title.draw_text(c, m_pos.get().x+offset.x+6,m_pos.get().y+offset.y-8, name, get_hp_bar_color());
+		title.draw_text(c, m_pos.get().x+offset.x+6,m_pos.get().y+offset.y-8, name.get()+": "+clan::StringHelp::uint_to_text(kills.get()), get_hp_bar_color());
 	}
 }
 
@@ -167,6 +169,7 @@ void Player::on_collide(GameObject * obj)
 		}
 		else
 		{
+			this->killer=static_cast<ThrowableObject*>(obj)->get_owner_guid();
 			this->life=0;
 		}
 	}

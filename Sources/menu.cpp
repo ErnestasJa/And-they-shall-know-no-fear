@@ -15,7 +15,7 @@ Menu::Menu(App * app, clan::DisplayWindow & wnd)
 
 bool Menu::init()
 {
-	pokitis=0;
+	m_change=0;
 
 	clan::XMLResourceDocument res("menu.xml");
 	m_resources = clan::XMLResourceManager::create(res);
@@ -25,39 +25,37 @@ bool Menu::init()
 	button_world_img = clan::Image::resource(m_canvas,"play_button_img",m_resources);
 	button_editor_img = clan::Image::resource(m_canvas,"editor_button_img",m_resources);
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
-
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	windowClosedEventSlot = m_window.sig_window_close().connect(this, &Menu::WindowCloseEventHandler);
 
 	button_world = new clan::PushButton(c);	
-	button_world->set_geometry(clan::Rect( 472, 516, clan::Size(80, 26)));
+	button_world->set_geometry(clan::Rect( 422, 490, clan::Size(180, 28)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
 	button_world_top = new clan::ImageView(button_world);
-	button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	button_world_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 	button_world_top->set_image(button_world_img);
 	button_world_top->set_scale_to_fit(true);
 	
 	
 	button_editor = new clan::PushButton(c);
-	button_editor->set_geometry(clan::Rect( 472, 566, clan::Size(80, 26)));
+	button_editor->set_geometry(clan::Rect( 422, 540, clan::Size(180, 28)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
 	button_editor_top = new clan::ImageView(button_editor);
-	button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	button_editor_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 	button_editor_top->set_image(button_editor_img);
 	button_editor_top->set_scale_to_fit(true);
 	
 	
 	button_exit = new clan::PushButton(c);
-	button_exit->set_geometry(clan::Rect( 472, 616, clan::Size(80, 26)));
+	button_exit->set_geometry(clan::Rect( 422, 590, clan::Size(180, 28)));
 	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
 	button_exit_top = new clan::ImageView(button_exit);
-	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	button_exit_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 	button_exit_top->set_image(button_exit_img);
 	button_exit_top->set_scale_to_fit(true);
 	
-
 	m_con_window = new ConDialogue(c);
 	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
 
@@ -68,6 +66,16 @@ bool Menu::init()
 
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
+
+	//MUSIC BY Kevin MacLeod
+	clan::SoundBuffer back_sound("Angevin.ogg");
+	back_sound.set_volume(0.5f);
+	playback = back_sound.prepare();
+	playback.play();
+		//sound migtukas
+	button_sound = new clan::PushButton(c);
+	button_sound->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
+	button_sound->func_clicked().set(this, &Menu::on_button_clicked, button_sound);
 
 	return true;
 }
@@ -94,7 +102,7 @@ bool Menu::run()
 {
 	if(m_run)
 	{
-		kitimas();
+		changing();
 
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 
@@ -182,41 +190,43 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	{
 		m_exit_window->toggle_visibility();
 	}
-
+	else if(button==button_sound)
+	{
+		if(playback.is_playing())
+			playback.stop();
+		else
+			playback.play();
+	}
 }
 
-void Menu::kitimas()
+void Menu::changing()
 {
 	clan::Point current = m_window.get_ic().get_mouse().get_position();
 
-	if(	current.x >472&&current.x<552&&current.y>516&&current.y<542)
+	if(	current.x >414 && current.x<607 && current.y>490 && current.y<518)
 	{
-		button_world_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-		pokitis=1;
+		button_world_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
+		m_change=1;
 	}
-	else if (current.x >472&&current.x<552&&current.y>566&&current.y<592)
+	else if (current.x >414 && current.x<607 && current.y>540 && current.y<568)
 	{
-		button_editor_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-		pokitis=2;
+		button_editor_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
+		m_change=2;
 	}
-	else if (current.x >472&&current.x<552&&current.y>616&&current.y<642)
+	else if (current.x >414 && current.x<607 && current.y>590 && current.y<618)
 	{
-		button_exit_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-		pokitis=3;
+		button_exit_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
+		m_change=3;
 	}
-	else if(pokitis>0)
+	else if(m_change>0)
 	{
-		if(pokitis==1)
-		{
-			button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-		}
-			else if(pokitis==2)
-		{
-			button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-		}
-		else if(pokitis==3)
-		{	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-		}
-		pokitis=0;
+		if(m_change==1)
+			button_world_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
+		else if(m_change==2)
+			button_editor_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
+		else if(m_change==3)
+			button_exit_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
+
+		m_change=0;
 	}
 }

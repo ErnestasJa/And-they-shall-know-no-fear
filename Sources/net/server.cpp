@@ -41,7 +41,7 @@ bool Server::init()
 
 	m_net_server.start(m_port.get());
 
-	clan::StringFormat fmt("Server opened port: '%1' to map '%2' for '%3' players.");
+	clan::StringFormat fmt("Server opening port: '%1' to map '%2' for '%3' players.");
 	fmt.set_arg(1,m_port);
 	fmt.set_arg(2,m_map);
 	fmt.set_arg(3,m_max_clients);
@@ -177,7 +177,11 @@ void Server::on_update_game_object(GameObject * obj)
 	if(obj->get_type() == EGOT_PLAYER)
 	{
 		if(obj->get_property<uint32_t>("life")==0)
+		{	
+			Player * p = static_cast<Player *>(m_gom->find_game_object_by_guid(obj->get_property<uint32_t>("killer")));
+			p->get_property<uint32_t>("kills").set(p->get_property<uint32_t>("kills")+1);
 			obj->set_is_alive(false);
+		}
 	}
 }
 
