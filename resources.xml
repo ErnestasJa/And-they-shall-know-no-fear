@@ -53,5 +53,6 @@
   <sprite name="hp_bar">
     <image file="Gfx/player/hp_bar.png"/>
   </sprite>
-	
+
+	<sample name="throw" file="Sound/throw.wav"/>
 </resources>
