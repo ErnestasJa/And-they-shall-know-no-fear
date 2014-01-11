@@ -73,11 +73,10 @@ bool Menu::init()
 	playback = back_sound.prepare();
     //playback.set_looping(true);
 	playback.play();
-
-	//sound mygtukas
-	button_sound = new clan::PushButton(c);
-	button_sound->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
-	button_sound->func_clicked().set(this, &Menu::on_button_clicked, button_sound);
+		//sound migtukas
+	sound_button = new clan::PushButton(c);
+	sound_button->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
+	sound_button->func_clicked().set(this, &Menu::on_button_clicked, sound_button);
 
 	return true;
 }
@@ -192,12 +191,12 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	{
 		m_exit_window->toggle_visibility();
 	}
-	else if(button==button_sound)
+		else if(button==sound_button)
 	{
-		if(playback.is_playing())
-			playback.stop();
-		else
-			playback.play();
+	if(playback.is_playing())
+	playback.stop();
+	else
+	playback.play();
 	}
 }
 
@@ -226,13 +225,12 @@ void Menu::kitimas()
 		{
 			button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 		}
-		else if(pokitis==2)
+			else if(pokitis==2)
 		{
 			button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 		}
 		else if(pokitis==3)
-		{	
-			button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		{	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 		}
 		pokitis=0;
 	}
