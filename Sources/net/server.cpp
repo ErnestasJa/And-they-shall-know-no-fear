@@ -32,7 +32,7 @@ bool Server::init()
 	m_net_events.func_event ("nmsg").set(this, &Server::on_net_event);
 
 	m_tile_map = TileMap(clan::Canvas());
-	m_tile_map.load("Level/next_level.map");
+	m_tile_map.load("Level/"+m_map.get());
 
 	m_gom = new GameObjectManager(m_tile_map);
 	m_gom->func_on_add_game_object().set(this,&Server::on_add_game_object);
@@ -45,7 +45,6 @@ bool Server::init()
 	fmt.set_arg(1,m_port);
 	fmt.set_arg(2,m_map);
 	fmt.set_arg(3,m_max_clients);
-
 	clan::log_event("net_event", fmt.get_result());
 
 	return true;
@@ -57,11 +56,11 @@ void Server::init_default()
 	m_port = add_property<std::string>("port","27015");
 	m_map = add_property<std::string>("map","next_level.map");
 
-	if(!clan::FileHelp::file_exists("../Cfg/server_config.xml"))
+	if(!clan::FileHelp::file_exists("Cfg/server_config.xml"))
 	{
 		try
 		{
-			clan::File f("../Cfg/server_config.xml",clan::File::create_always,clan::File::access_write);
+			clan::File f("Cfg/server_config.xml",clan::File::create_always,clan::File::access_write);
 			clan::DomDocument d;
 			clan::DomComment c(d,"This document is for storing application settings.");
 			d.append_child(c);
@@ -78,7 +77,7 @@ void Server::init_default()
 	{
 		try
 		{
-			clan::File f("../Cfg/server_config.xml",clan::File::open_existing,clan::File::access_read);
+			clan::File f("Cfg/server_config.xml",clan::File::open_existing,clan::File::access_read);
 			clan::DomDocument d;
 			d.load(f);
 			xml_deserialize(d.get_elements_by_tag_name("property_containter").item(0).to_element());
