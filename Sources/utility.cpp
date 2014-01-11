@@ -11,7 +11,6 @@ clan::vec2 pixel_to_chunk_pos (const clan::vec2 & pos)
 	return ats;
 }
 
-
 clan::vec2 chunk_to_pixel_pos (const clan::vec2 & pos)
 {
 	clan::vec2 ats;
