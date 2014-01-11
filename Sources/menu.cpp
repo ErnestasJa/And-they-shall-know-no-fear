@@ -31,28 +31,28 @@ bool Menu::init()
 	windowClosedEventSlot = m_window.sig_window_close().connect(this, &Menu::WindowCloseEventHandler);
 
 	button_world = new clan::PushButton(c);	
-	button_world->set_geometry(clan::Rect( 472, 516, clan::Size(80, 26)));
+	button_world->set_geometry(clan::Rect( 422, 490, clan::Size(180, 28)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
 	button_world_top = new clan::ImageView(button_world);
-	button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	button_world_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 	button_world_top->set_image(button_world_img);
 	button_world_top->set_scale_to_fit(true);
 	
 	
 	button_editor = new clan::PushButton(c);
-	button_editor->set_geometry(clan::Rect( 472, 566, clan::Size(80, 26)));
+	button_editor->set_geometry(clan::Rect( 422, 540, clan::Size(180, 28)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
 	button_editor_top = new clan::ImageView(button_editor);
-	button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	button_editor_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 	button_editor_top->set_image(button_editor_img);
 	button_editor_top->set_scale_to_fit(true);
 	
 	
 	button_exit = new clan::PushButton(c);
-	button_exit->set_geometry(clan::Rect( 472, 616, clan::Size(80, 26)));
+	button_exit->set_geometry(clan::Rect( 422, 590, clan::Size(180, 28)));
 	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
 	button_exit_top = new clan::ImageView(button_exit);
-	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+	button_exit_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 	button_exit_top->set_image(button_exit_img);
 	button_exit_top->set_scale_to_fit(true);
 	
@@ -203,29 +203,29 @@ void Menu::changing()
 {
 	clan::Point current = m_window.get_ic().get_mouse().get_position();
 
-	if(	current.x >472 && current.x<552 && current.y>516 && current.y<542)
+	if(	current.x >415 && current.x<592 && current.y>490 && current.y<518)
 	{
-		button_world_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		button_world_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
 		m_change=1;
 	}
-	else if (current.x >472 && current.x<552 && current.y>566 && current.y<592)
+	else if (current.x >422 && current.x<592 && current.y>540 && current.y<568)
 	{
-		button_editor_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		button_editor_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
 		m_change=2;
 	}
-	else if (current.x >472 && current.x<552 && current.y>616 && current.y<642)
+	else if (current.x >422 && current.x<592 && current.y>590 && current.y<618)
 	{
-		button_exit_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		button_exit_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
 		m_change=3;
 	}
 	else if(m_change>0)
 	{
 		if(m_change==1)
-			button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+			button_world_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 		else if(m_change==2)
-			button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+			button_editor_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 		else if(m_change==3)
-			button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+			button_exit_top->set_geometry(clan::Rect( -92, -18, clan::Size(364, 68)));
 
 		m_change=0;
 	}
