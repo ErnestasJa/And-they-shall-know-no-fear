@@ -33,8 +33,10 @@ protected:
 	void WindowCloseEventHandler();
 	void CloseConfirmed(bool);
 	void ConnectAttempt(const ConnectionInfo&);
+	void changing(); //buves "kitimas"
 
 	bool m_run;
+	int m_change; //buves "pokitis"
 
 	clan::Slot m_key_up;
 	clan::Slot windowClosedEventSlot, confirmWindowClosedEventSlot;
@@ -49,11 +51,9 @@ public:
 	bool pause();
 	bool resume();
 	bool exit();
-	int pokitis;
 
 	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
-	void kitimas();
 };
 
 #endif // MENU_H

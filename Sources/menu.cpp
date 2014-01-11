@@ -15,7 +15,7 @@ Menu::Menu(App * app, clan::DisplayWindow & wnd)
 
 bool Menu::init()
 {
-	pokitis=0;
+	m_change=0;
 
 	clan::XMLResourceDocument res("menu.xml");
 	m_resources = clan::XMLResourceManager::create(res);
@@ -103,7 +103,7 @@ bool Menu::run()
 {
 	if(m_run)
 	{
-		kitimas();
+		changing();
 
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 
@@ -200,38 +200,34 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	}
 }
 
-void Menu::kitimas()
+void Menu::changing()
 {
 	clan::Point current = m_window.get_ic().get_mouse().get_position();
 
-	if(	current.x >472&&current.x<552&&current.y>516&&current.y<542)
+	if(	current.x >472 && current.x<552 && current.y>516 && current.y<542)
 	{
 		button_world_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-		pokitis=1;
+		m_change=1;
 	}
-	else if (current.x >472&&current.x<552&&current.y>566&&current.y<592)
+	else if (current.x >472 && current.x<552 && current.y>566 && current.y<592)
 	{
 		button_editor_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-		pokitis=2;
+		m_change=2;
 	}
-	else if (current.x >472&&current.x<552&&current.y>616&&current.y<642)
+	else if (current.x >472 && current.x<552 && current.y>616 && current.y<642)
 	{
 		button_exit_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-		pokitis=3;
+		m_change=3;
 	}
-	else if(pokitis>0)
+	else if(m_change>0)
 	{
-		if(pokitis==1)
-		{
+		if(m_change==1)
 			button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-		}
-			else if(pokitis==2)
-		{
+		else if(m_change==2)
 			button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-		}
-		else if(pokitis==3)
-		{	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-		}
-		pokitis=0;
+		else if(m_change==3)
+			button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+
+		m_change=0;
 	}
 }
