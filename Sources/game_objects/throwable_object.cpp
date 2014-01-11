@@ -4,19 +4,18 @@
 #include "game_object.h"
 #include "throwable_object.h"
 #include "../net/message.h"
+#include "world.h"
 
 clan::Sprite ThrowableObject::m_rock_sprite;
-
+clan::SoundBuffer sound;
 ThrowableObject::ThrowableObject(uint32_t guid): GameObject(type(),guid)
 {
 	m_vel = add_property("velocity", clan::vec2f(0,0));
-
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(0,0));
 	contour.get_points().push_back(clan::Pointf(0,12));
 	contour.get_points().push_back(clan::Pointf(12,12));
 	contour.get_points().push_back(clan::Pointf(12,0));
-
 	m_outline.get_contours().push_back(contour);
 	m_outline.calculate_radius();
 	m_outline.calculate_smallest_enclosing_discs();
@@ -51,7 +50,9 @@ Property<clan::vec2f> ThrowableObject::get_vel()
 bool ThrowableObject::preload(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
 	m_rock_sprite = clan::Sprite::resource(canvas, "rock", resources );
-	
+	sound = clan::SoundBuffer::resource("throw", resources);
+	sound.set_volume(1.0f);
+	sound.prepare();
 	return true;
 }
 
@@ -63,6 +64,7 @@ void ThrowableObject::free()
 void ThrowableObject::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
 	m_sprite=m_rock_sprite;
+		sound.play();
 }
 
 void ThrowableObject::update(const clan::GameTime & time)

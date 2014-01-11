@@ -2,6 +2,9 @@
 
 #include "tile_map.h"
 
+#include "properties/property_container.h"
+#include "properties/property.h"
+
 class Player;
 class GameObjectManager;
 class ServerClientConnection;
@@ -9,13 +12,16 @@ class Message;
 class Client;
 class ServerClientConnection;
 class GameObject;
-
-class Server
+class Server: public PropertyContainer
 {
 protected:
 
+	
+	Property<uint32_t>			m_max_clients;
+	Property<std::string>		m_port;
+	Property<std::string>		m_map;
+
 	uint32_t					m_current_guid;
-	uint32_t					m_max_clients;
 	ServerClientConnection*		m_client_cons;
 	Client*						m_clients;
 	Player**					m_player_objects;
@@ -55,7 +61,8 @@ public:
 	void on_remove_game_object(GameObject * obj);
 
 public:
-	bool init(uint32_t max_users, const std::string & port);
+	bool init();
+	void init_default();
 	bool run();
 	void exit();
 

@@ -10,7 +10,7 @@ ServerApp::ServerApp()
 int ServerApp::main(const std::vector<std::string> &args)
 {
 	
-	m_server.init(16,"27015");
+	m_server.init();
 
 	while(m_server.run())
 	{
@@ -28,7 +28,7 @@ int main(int argc, const char * argv[])
 	clan::SetupDisplay setup_display;
 	clan::SetupSWRender setup_swrender;
 	clan::SetupSound setup_sound;
-	clan::SoundOutput output(44100);	
+	clan::SoundOutput output(44100);
 	clan::SetupNetwork setup_network;
 	clan::ConsoleWindow console("Console", 160, 1000);
 	clan::ConsoleLogger logger;

@@ -7,18 +7,20 @@
 #include "game_objects/game_objects.h"
 
 
-bool Server::init(uint32_t max_clients, const std::string & port)
+bool Server::init()
 {
 	PropertyContainer::register_properties();
 	Message::register_messages();
 
 	m_game_time = clan::GameTime(33,33);
 
-	m_max_clients = max_clients;
-	m_current_guid = max_clients;
+	init_default();
+
+	//m_max_clients = max_clients;
+	m_current_guid = m_max_clients.get();
 	
 	m_client_cons = new ServerClientConnection[m_max_clients];
-	m_clients =		new Client[m_max_clients];
+	m_clients =	new Client[m_max_clients];
 	m_player_objects = new Player * [m_max_clients];
 
 	m_slots.connect(m_net_server.sig_client_connected(), this, &Server::on_client_connected);
@@ -37,9 +39,58 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_gom->func_on_update_game_object().set(this,&Server::on_update_game_object);
 	m_gom->func_on_remove_game_object().set(this,&Server::on_remove_game_object);
 
-	m_net_server.start(port);
+	m_net_server.start(m_port.get());
+
+	clan::StringFormat fmt("Server opened port: '%1' to map '%2' for '%3' players.");
+	fmt.set_arg(1,m_port);
+	fmt.set_arg(2,m_map);
+	fmt.set_arg(3,m_max_clients);
+
+	MSGS_AuthStatus msg;
+	msg.msg	= fmt.get_result();
+	clan::log_event("net_event",msg.msg);
 
 	return true;
+}
+
+void Server::init_default()
+{
+	m_max_clients = add_property<uint32_t>("max_clients",4);
+	m_port = add_property<std::string>("port","27015");
+	m_map = add_property<std::string>("map","next_level.map");
+
+	if(!clan::FileHelp::file_exists("../Cfg/server_config.xml"))
+	{
+		try
+		{
+			clan::File f("../Cfg/server_config.xml",clan::File::create_always,clan::File::access_write);
+			clan::DomDocument d;
+			clan::DomComment c(d,"This document is for storing application settings.");
+			d.append_child(c);
+			xml_serialize(d,d.get_first_child().to_element(),true);
+			d.save(f);
+			f.close();
+		}
+		catch(clan::Exception &)
+		{
+
+		}
+	}
+	else
+	{
+		try
+		{
+			clan::File f("../Cfg/server_config.xml",clan::File::open_existing,clan::File::access_read);
+			clan::DomDocument d;
+			d.load(f);
+			xml_deserialize(d.get_elements_by_tag_name("property_containter").item(0).to_element());
+			f.close();
+		}
+		catch(clan::Exception &)
+		{
+			
+		}
+	}
 }
 
 void Server::send_game_objects(ServerClientConnection * cl, bool sync_only_changed_props)
@@ -90,8 +141,6 @@ void Server::sync_game_objects(bool sync_only_changed_props)
 	
 	m_net_server.send_event(e);
 }
-
-
 
 void Server::on_add_game_object(GameObject * obj)
 {
@@ -190,7 +239,6 @@ void Server::on_client_disconnected(clan::NetGameConnection *connection, const s
 		m_clients[id] = Client(); ///reset client data
 	}
 }
-
 
 void Server::on_auth(const clan::NetGameEvent &e, ServerClientConnection * con)
 {
@@ -314,10 +362,10 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 			clan::NetGameEvent ci_ev("nmsg");
 			
 
-			si.map_name = "Level/next_level.map";
+			si.map_name = "Level/"+m_map.get();
 			si.max_client_count = m_max_clients;
 
-			///nusiunciam siam klientui serverio informacija
+			///nusiunciam siam klientui serverio informac0ija
 			MessageUtil::add_message(si_ev,si);
 			con->send_event(si_ev);
 
@@ -342,7 +390,7 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 		send_game_objects(con);
 		///sukuriam sio kliento zaidimo objekta
 		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
-		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%960,std::rand()%656));
+		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%1024,std::rand()%720));
 		m_player_objects[client->get_id()]->get_property<std::string>("name").set(client->get_name());
 	}
 }
