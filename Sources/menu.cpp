@@ -34,7 +34,7 @@ bool Menu::init()
 	button_world = new clan::PushButton(c);	
 	button_world->set_geometry(clan::Rect( 472, 516, clan::Size(80, 26)));
 	button_world->func_clicked().set(this, &Menu::on_button_clicked, button_world);
-	button_world_top =new clan::ImageView(button_world);
+	button_world_top = new clan::ImageView(button_world);
 	button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_world_top->set_image(button_world_img);
 	button_world_top->set_scale_to_fit(true);
@@ -43,7 +43,7 @@ bool Menu::init()
 	button_editor = new clan::PushButton(c);
 	button_editor->set_geometry(clan::Rect( 472, 566, clan::Size(80, 26)));
 	button_editor->func_clicked().set(this, &Menu::on_button_clicked, button_editor);
-	button_editor_top =new clan::ImageView(button_editor);
+	button_editor_top = new clan::ImageView(button_editor);
 	button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_editor_top->set_image(button_editor_img);
 	button_editor_top->set_scale_to_fit(true);
@@ -52,7 +52,7 @@ bool Menu::init()
 	button_exit = new clan::PushButton(c);
 	button_exit->set_geometry(clan::Rect( 472, 616, clan::Size(80, 26)));
 	button_exit->func_clicked().set(this, &Menu::on_button_clicked, button_exit);
-	button_exit_top =new clan::ImageView(button_exit);
+	button_exit_top = new clan::ImageView(button_exit);
 	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_exit_top->set_image(button_exit_img);
 	button_exit_top->set_scale_to_fit(true);

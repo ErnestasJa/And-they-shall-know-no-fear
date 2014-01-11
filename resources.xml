@@ -13,14 +13,12 @@
 		</sprite>	
 	</section>
 	
-	
 	<sprite name="rock">
 		<animation speed="100"/>
 		<image file="Gfx\player\shot.png">
 			<grid pos="0,0" size="12,12" array="10,1"/>
 		</image>
 	</sprite>
-	
 	
 	<sprite name="champ_uw">
 		<animation speed="111"/>
