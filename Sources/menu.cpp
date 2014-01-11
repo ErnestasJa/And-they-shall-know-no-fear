@@ -191,7 +191,7 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	{
 		m_exit_window->toggle_visibility();
 	}
-		else if(button==button_sound)
+	else if(button==button_sound)
 	{
 		if(playback.is_playing())
 			playback.stop();
