@@ -17,7 +17,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
-	name=add_property<std::string>("name");
+	name=add_property<std::string>("name","waiting for server reply");
 
 	clan::Contour contour;
 	contour.get_points().push_back(clan::Pointf(16,13));
@@ -137,8 +137,8 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 		c.fill_rect(m_pos.get().x+offset.x+10, m_pos.get().y+offset.y-1,  m_pos.get().x+offset.x+10+(44*life/100), m_pos.get().y+offset.y+8,  get_hp_bar_color());
 		m_h.draw(c,m_pos.get().x+offset.x, m_pos.get().y+offset.y-5);
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
-		
-		static clan::Font title(c,"Ariel",10); 
+
+		static clan::Font title(c,"Ariel",10);
 		title.draw_text(c, m_pos.get().x+offset.x+6,m_pos.get().y+offset.y-8, name, get_hp_bar_color());
 	}
 }
@@ -149,7 +149,6 @@ void Player::on_message(const Message & msg)
 	{
 		const MSGC_Input & input = static_cast<const MSGC_Input &>(msg);
 		keys = input.keys;
-		clan::log_event("input_ev","keys: %1;", keys);
 	}
 }
 

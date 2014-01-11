@@ -301,7 +301,6 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 
 		if(type==MSGC_INPUT)
 		{
-			clan::log_event("net_event", "Move event");
 			MSGC_Input m;
 			MessageUtil::get_message(e,m,i);
 
@@ -359,8 +358,7 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 		{
 			clan::NetGameEvent si_ev("nmsg");
 			clan::NetGameEvent ci_ev("nmsg");
-			
-
+		
 			si.map_name = "Level/"+m_map.get();
 			si.max_client_count = m_max_clients;
 
