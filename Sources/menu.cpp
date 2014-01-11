@@ -25,7 +25,6 @@ bool Menu::init()
 	button_world_img = clan::Image::resource(m_canvas,"play_button_img",m_resources);
 	button_editor_img = clan::Image::resource(m_canvas,"editor_button_img",m_resources);
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
-
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
@@ -56,8 +55,7 @@ bool Menu::init()
 	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_exit_top->set_image(button_exit_img);
 	button_exit_top->set_scale_to_fit(true);
-
-
+	
 	m_con_window = new ConDialogue(c);
 	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
 
@@ -72,9 +70,14 @@ bool Menu::init()
 	//MUSIC BY Kevin MacLeod
 	clan::SoundBuffer back_sound("Angevin.ogg");
 	back_sound.set_volume(0.5f);
-	clan::SoundBuffer_Session playback = back_sound.prepare();
-	playback.set_looping(true);
+	playback = back_sound.prepare();
+    //playback.set_looping(true);
 	playback.play();
+
+	//sound mygtukas
+	button_sound = new clan::PushButton(c);
+	button_sound->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
+	button_sound->func_clicked().set(this, &Menu::on_button_clicked, button_sound);
 
 	return true;
 }
@@ -189,7 +192,13 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	{
 		m_exit_window->toggle_visibility();
 	}
-
+	else if(button==button_sound)
+	{
+		if(playback.is_playing())
+			playback.stop();
+		else
+			playback.play();
+	}
 }
 
 void Menu::kitimas()
@@ -217,12 +226,13 @@ void Menu::kitimas()
 		{
 			button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 		}
-			else if(pokitis==2)
+		else if(pokitis==2)
 		{
 			button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 		}
 		else if(pokitis==3)
-		{	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		{	
+			button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 		}
 		pokitis=0;
 	}
