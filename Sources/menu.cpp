@@ -203,17 +203,17 @@ void Menu::changing()
 {
 	clan::Point current = m_window.get_ic().get_mouse().get_position();
 
-	if(	current.x >415 && current.x<592 && current.y>490 && current.y<518)
+	if(	current.x >414 && current.x<607 && current.y>490 && current.y<518)
 	{
 		button_world_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
 		m_change=1;
 	}
-	else if (current.x >422 && current.x<592 && current.y>540 && current.y<568)
+	else if (current.x >414 && current.x<607 && current.y>540 && current.y<568)
 	{
 		button_editor_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
 		m_change=2;
 	}
-	else if (current.x >422 && current.x<592 && current.y>590 && current.y<618)
+	else if (current.x >414 && current.x<607 && current.y>590 && current.y<618)
 	{
 		button_exit_top->set_geometry(clan::Rect( -94, -20, clan::Size(368, 72)));
 		m_change=3;
