@@ -52,6 +52,7 @@ public:
 
 	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
+	void kitimas();
 };
 
 #endif // MENU_H

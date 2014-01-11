@@ -95,28 +95,28 @@ void Player::update(const clan::GameTime & time)
 		m_sprite.update(time.get_time_elapsed_ms());
 	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
-	if(keys&EUIKT_MOVE_LEFT)
+	if(keys&EUIKT_MOVE_LEFT && m_pos.get().x>-20.0f)
 	{
 		m_sprite=m_lw;
 		clan::vec2f v=m_pos;
 		v.x-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
 	}
-	if(keys&EUIKT_MOVE_RIGHT)
+	if(keys&EUIKT_MOVE_RIGHT && m_pos.get().x<980.0f)
 	{
 		m_sprite=m_rw;
 		clan::vec2f v=m_pos;
 		v.x+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
 	}
-	if(keys&EUIKT_MOVE_UP)
+	if(keys&EUIKT_MOVE_UP && m_pos.get().y>0.0f)
 	{
 		m_sprite=m_uw;
 		clan::vec2f v=m_pos;
 		v.y-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
 		m_pos.set(v);
 	}
-	if(keys&EUIKT_MOVE_DOWN)
+	if(keys&EUIKT_MOVE_DOWN && m_pos.get().y<660.0f)
 	{
 		m_sprite=m_dw;
 		clan::vec2f v=m_pos;

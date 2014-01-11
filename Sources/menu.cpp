@@ -94,38 +94,7 @@ bool Menu::run()
 {
 	if(m_run)
 	{
-		clan::Point current = m_window.get_ic().get_mouse().get_position();
-
-		if(	current.x >472&&current.x<552&&current.y>516&&current.y<542)
-		{
-			button_world_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-			pokitis=1;
-		}
-		else if (current.x >472&&current.x<552&&current.y>566&&current.y<592)
-		{
-			button_editor_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-			pokitis=2;
-		}
-		else if (current.x >472&&current.x<552&&current.y>616&&current.y<642)
-		{
-			button_exit_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
-			pokitis=3;
-		}
-		else if(pokitis>0)
-		{
-			if(pokitis==1)
-			{
-				button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-			}
-			else if(pokitis==2)
-			{
-				button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-			}
-			else if(pokitis==3)
-			{	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
-			}
-			pokitis=0;
-		}
+		kitimas();
 
 		m_background.draw(m_canvas,clan::Rect(0,0,1024,720));
 
@@ -214,4 +183,40 @@ void Menu::on_button_clicked(clan::PushButton *button)
 		m_exit_window->toggle_visibility();
 	}
 
+}
+
+void Menu::kitimas()
+{
+	clan::Point current = m_window.get_ic().get_mouse().get_position();
+
+	if(	current.x >472&&current.x<552&&current.y>516&&current.y<542)
+	{
+		button_world_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		pokitis=1;
+	}
+	else if (current.x >472&&current.x<552&&current.y>566&&current.y<592)
+	{
+		button_editor_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		pokitis=2;
+	}
+	else if (current.x >472&&current.x<552&&current.y>616&&current.y<642)
+	{
+		button_exit_top->set_geometry(clan::Rect( -49, -22, clan::Size(178, 72)));
+		pokitis=3;
+	}
+	else if(pokitis>0)
+	{
+		if(pokitis==1)
+		{
+			button_world_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		}
+			else if(pokitis==2)
+		{
+			button_editor_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		}
+		else if(pokitis==3)
+		{	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
+		}
+		pokitis=0;
+	}
 }
