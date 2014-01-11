@@ -30,10 +30,10 @@ World::~World()
 
 void World::init_level(const std::string & level)
 {
-	m_gom = new GameObjectManager();
-	m_gom->preload(m_canvas,m_resources);
 	m_tile_map = TileMap(m_canvas);
 	m_tile_map.load(level);
+	m_gom = new GameObjectManager(m_tile_map);
+	m_gom->preload(m_canvas,m_resources);
 }
 
 bool World::init()

@@ -60,6 +60,15 @@
     <ClCompile Include="..\Sources\game_objects\throwable_object.cpp">
       <Filter>Source Files\game_objects</Filter>
     </ClCompile>
+    <ClCompile Include="..\Sources\tile_chunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\tile_map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Sources\properties\iproperty.h">
@@ -112,6 +121,15 @@
     </ClInclude>
     <ClInclude Include="..\Sources\game_objects\throwable_object.h">
       <Filter>Source Files\game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\tile_chunk.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\tile_map.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sources\utility.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

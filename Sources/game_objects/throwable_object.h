@@ -39,6 +39,7 @@ public:
 	virtual void on_message(const Message & msg);
 
 	virtual void on_collide(GameObject * obj);
+	virtual void on_tile_collide(const Tile & tile);
 	virtual clan::CollisionOutline & get_outline();
 };
 

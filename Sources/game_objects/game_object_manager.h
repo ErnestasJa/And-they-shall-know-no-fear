@@ -1,6 +1,8 @@
 #ifndef GAME_OBJECT_MANAGER_H
 #define GAME_OBJECT_MANAGER_H
 
+#include "tile_map.h"
+
 class GameObject;
 class Message;
 class Player;
@@ -14,8 +16,15 @@ protected:
 	clan::Callback_v1<GameObject*> m_on_add_game_object;
 	clan::Callback_v1<GameObject*> m_on_remove_game_object;
 	clan::Callback_v1<GameObject*> m_on_update_game_object;
+
+	TileMap m_tile_map;
+
+#if defined GAME_SERVER
+	clan::CollisionOutline m_tile_outline;
+#endif
+
 public:
-	GameObjectManager();
+	GameObjectManager(TileMap map);
 	virtual ~GameObjectManager();
 
 	void preload(clan::Canvas & canvas ,clan::ResourceManager & resources);

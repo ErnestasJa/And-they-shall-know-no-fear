@@ -97,6 +97,11 @@ void ThrowableObject::on_collide(GameObject * obj)
 
 }
 
+void ThrowableObject::on_tile_collide(const Tile & tile)
+{
+
+}
+
 clan::CollisionOutline & ThrowableObject::get_outline()
 {
 	return m_outline;

@@ -164,6 +164,10 @@ public:
 
     bool add_sprite(std::string resource_id, uint8_t id)
     {
+		#if defined GAME_SERVER
+			return true;
+		#endif
+
         if(m_sprites.find(id)==m_sprites.end())
         {
 			clan::Sprite spr = clan::Sprite::load(m_canvas,"sprite_sheet_list/"+resource_id,m_doc);
@@ -177,6 +181,10 @@ public:
 
     clan::Sprite get_sprite(uint8_t id)
     {
+		#if defined GAME_SERVER
+			return clan::Sprite();
+		#endif
+
         auto spr = m_sprites.find(id);
         if(spr!=m_sprites.end())
             return spr->second.second;
@@ -185,6 +193,9 @@ public:
 
 	clan::Sprite get_sprite(std::string resource_id)
     {
+		#if defined GAME_SERVER
+			return clan::Sprite();
+		#endif
 		for (auto i=m_sprites.begin(); i!=m_sprites.end(); ++i)
 		{
 			if(i->second.first==resource_id)
@@ -195,6 +206,10 @@ public:
 
     void remove_sprite(uint8_t id)
     {
+		#if defined GAME_SERVER
+			return;
+		#endif
+
         m_sprites.erase(id);
     }
 
@@ -270,6 +285,7 @@ public:
 
 	void render(const clan::vec2 & pos, const int start_layer=0, const int end_layer=LAYER_COUNT)
     {
+#if defined GAME_CLIENT
         int w = m_canvas.get_width();
         int h = m_canvas.get_height();
 
@@ -296,10 +312,12 @@ public:
 					c.draw_chunk(m_canvas,clan::vec2(x*CHUNK_EDGE_LENGTH_PIXELS,y*CHUNK_EDGE_LENGTH_PIXELS)-pos,i,false);
 			}
 		}
+#endif
     }
 
 	void write_map_data(clan::File & f)
 	{	
+#if defined GAME_CLIENT
 		f.write_uint32(m_chunks.size());
 
 		for(auto m = m_chunks.begin(); m != m_chunks.end(); m++)
@@ -320,6 +338,7 @@ public:
 				}
 			}
 		}
+#endif
 	}
 
 	void read_map_data(TileMap map, clan::File & f)
@@ -355,7 +374,10 @@ public:
 			clan::File f(file,clan::File::open_existing,clan::File::access_read);
 
 			if(f.is_null())
+			{
+				clan::log_event("map_load","Could not load map");
 				return false;
+			}
 
 			MapHeader h;
 			h.read(f);
@@ -384,6 +406,7 @@ public:
 					case EMST_MAP:
 					{
 						read_map_data(map,f);
+						clan::log_event("map_load","Loaded %1 map chunks", this->m_chunks.size());
 						break;
 					}
 					default:
@@ -403,6 +426,7 @@ public:
 		}
 		catch(clan::Exception &)
 		{
+			clan::log_event("map_load","Could not load map");
 			return false;
 		}
 
@@ -411,6 +435,7 @@ public:
 
 	bool save(const std::string & file)
 	{
+#if defined GAME_CLIENT
 		clan::File f(file,clan::File::create_always,clan::File::access_write);
 
 		MapHeader h;
@@ -435,6 +460,10 @@ public:
 		f.close();
 
 		return true;
+#endif
+#if defined GAME_SERVER
+		return false;
+#endif
 	}
 };
 

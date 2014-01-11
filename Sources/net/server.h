@@ -1,5 +1,7 @@
 #pragma once
 
+#include "tile_map.h"
+
 class Player;
 class GameObjectManager;
 class ServerClientConnection;
@@ -7,9 +9,11 @@ class Message;
 class Client;
 class ServerClientConnection;
 class GameObject;
+
 class Server
 {
 protected:
+
 	uint32_t					m_current_guid;
 	uint32_t					m_max_clients;
 	ServerClientConnection*		m_client_cons;
@@ -17,6 +21,7 @@ protected:
 	Player**					m_player_objects;
 
 	GameObjectManager*			m_gom;
+	TileMap						m_tile_map;
 
 	clan::NetGameServer			m_net_server;
 	clan::SlotContainer			m_slots;

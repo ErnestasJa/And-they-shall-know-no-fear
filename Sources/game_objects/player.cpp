@@ -3,6 +3,7 @@
 #include "game_object_manager.h"
 #include "game_object.h"
 #include "player.h"
+#include "../tile_chunk.h"
 #include "throwable_object.h"
 #include "../net/message.h"
 
@@ -95,6 +96,7 @@ void Player::update(const clan::GameTime & time)
 		m_sprite.update(time.get_time_elapsed_ms());
 	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
+	last_pos = m_pos.get();
 	if(keys&EUIKT_MOVE_LEFT)
 	{
 		m_sprite=m_lw;
@@ -169,6 +171,11 @@ void Player::on_collide(GameObject * obj)
 			this->life=0;
 		}
 	}
+}
+
+void Player::on_tile_collide(const Tile & tile)
+{
+	m_pos = last_pos;
 }
 
 clan::CollisionOutline & Player::get_outline()

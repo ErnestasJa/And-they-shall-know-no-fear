@@ -13,6 +13,7 @@ Derived classes should implement all pure virtual functions and have these funct
 
 class Message;
 class GameObjectManager;
+struct Tile;
 class GameObject: public PropertyContainer
 {
 protected:
@@ -40,8 +41,8 @@ public:
 	virtual void on_message(const Message & msg)=0;
 
 	virtual void on_collide(GameObject * obj) = 0;
+	virtual void on_tile_collide(const Tile & tile) = 0;
 	virtual clan::CollisionOutline & get_outline() = 0;
-
 
 	///server only for now?
 	virtual bool is_alive();

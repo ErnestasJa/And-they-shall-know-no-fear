@@ -28,7 +28,7 @@ int main(int argc, const char * argv[])
 	clan::SetupDisplay setup_display;
 	clan::SetupSWRender setup_swrender;
 	clan::SetupSound setup_sound;
-	clan::SoundOutput output(44100);
+	clan::SoundOutput output(44100);	
 	clan::SetupNetwork setup_network;
 	clan::ConsoleWindow console("Console", 160, 1000);
 	clan::ConsoleLogger logger;

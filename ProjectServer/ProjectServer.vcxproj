@@ -39,10 +39,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>..\Sources;..\Sources\game_objects;..\..\Libraries\Include;$(IncludePath);</IncludePath>
     <LibraryPath>..\..\Libraries\Lib\ClanLib\win32;..\..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
+    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>..\Sources;..\Sources\game_objects;..\..\Libraries\Include;$(IncludePath);</IncludePath>
     <LibraryPath>..\..\Libraries\Lib\ClanLib\Win32_Release;..\..\Libraries\Lib\gtest;$(LibraryPath)</LibraryPath>
+    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -91,6 +93,9 @@
     <ClCompile Include="..\Sources\properties\property.cpp" />
     <ClCompile Include="..\Sources\properties\property_container.cpp" />
     <ClCompile Include="..\Sources\properties\property_util.cpp" />
+    <ClCompile Include="..\Sources\tile_chunk.cpp" />
+    <ClCompile Include="..\Sources\tile_map.cpp" />
+    <ClCompile Include="..\Sources\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Sources\game_objects\game_object.h" />
@@ -110,6 +115,9 @@
     <ClInclude Include="..\Sources\properties\property_container.h" />
     <ClInclude Include="..\Sources\properties\property_types.h" />
     <ClInclude Include="..\Sources\properties\property_util.h" />
+    <ClInclude Include="..\Sources\tile_chunk.h" />
+    <ClInclude Include="..\Sources\tile_map.h" />
+    <ClInclude Include="..\Sources\utility.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />

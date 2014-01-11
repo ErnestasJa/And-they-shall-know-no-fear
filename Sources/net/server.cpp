@@ -14,11 +14,6 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 
 	m_game_time = clan::GameTime(33,33);
 
-	m_gom = new GameObjectManager();
-	m_gom->func_on_add_game_object().set(this,&Server::on_add_game_object);
-	m_gom->func_on_update_game_object().set(this,&Server::on_update_game_object);
-	m_gom->func_on_remove_game_object().set(this,&Server::on_remove_game_object);
-
 	m_max_clients = max_clients;
 	m_current_guid = max_clients;
 	
@@ -33,6 +28,14 @@ bool Server::init(uint32_t max_clients, const std::string & port)
 	m_auth_events.func_event("amsg").set(this, &Server::on_auth);
 	m_game_events.func_event("gmsg").set(this, &Server::on_game_event);
 	m_net_events.func_event ("nmsg").set(this, &Server::on_net_event);
+
+	m_tile_map = TileMap(clan::Canvas());
+	m_tile_map.load("Level/next_level.map");
+
+	m_gom = new GameObjectManager(m_tile_map);
+	m_gom->func_on_add_game_object().set(this,&Server::on_add_game_object);
+	m_gom->func_on_update_game_object().set(this,&Server::on_update_game_object);
+	m_gom->func_on_remove_game_object().set(this,&Server::on_remove_game_object);
 
 	m_net_server.start(port);
 

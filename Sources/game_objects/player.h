@@ -22,8 +22,10 @@ protected:
 	Property<uint32_t> keys, life;
 	Property<std::string> name;
 	Property<uint32_t> vel;
+	clan::vec2 last_pos;
 
 	clan::CollisionOutline m_outline;
+
 public:
 	static GameObject * create(uint32_t guid){return new Player(guid);};
 	static bool preload(clan::Canvas & canvas, clan::ResourceManager & resources);
@@ -40,6 +42,7 @@ public:
 	virtual void on_message(const Message & msg);
 
 	virtual void on_collide(GameObject * obj);
+	virtual void on_tile_collide(const Tile & tile);
 	virtual clan::CollisionOutline & get_outline();
 };
 
