@@ -71,7 +71,6 @@ bool Menu::init()
 	clan::SoundBuffer back_sound("Angevin.ogg");
 	back_sound.set_volume(0.5f);
 	playback = back_sound.prepare();
-    //playback.set_looping(true);
 	playback.play();
 		//sound migtukas
 	sound_button = new clan::PushButton(c);
