@@ -73,9 +73,9 @@ bool Menu::init()
 	playback = back_sound.prepare();
 	playback.play();
 		//sound migtukas
-	sound_button = new clan::PushButton(c);
-	sound_button->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
-	sound_button->func_clicked().set(this, &Menu::on_button_clicked, sound_button);
+	button_sound = new clan::PushButton(c);
+	button_sound->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
+	button_sound->func_clicked().set(this, &Menu::on_button_clicked, button_sound);
 
 	return true;
 }
@@ -190,12 +190,12 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	{
 		m_exit_window->toggle_visibility();
 	}
-		else if(button==sound_button)
+	else if(button==button_sound)
 	{
-	if(playback.is_playing())
-	playback.stop();
-	else
-	playback.play();
+		if(playback.is_playing())
+			playback.stop();
+		else
+			playback.play();
 	}
 }
 
