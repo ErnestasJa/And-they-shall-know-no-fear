@@ -56,7 +56,7 @@ bool Menu::init()
 	button_exit_top->set_geometry(clan::Rect( -44, -17, clan::Size(168, 62)));
 	button_exit_top->set_image(button_exit_img);
 	button_exit_top->set_scale_to_fit(true);
-	
+
 
 	m_con_window = new ConDialogue(c);
 	m_con_window->set_default_values(m_app->ip,m_app->port,m_app->username,"pass");
@@ -72,7 +72,9 @@ bool Menu::init()
 	//MUSIC BY Kevin MacLeod
 	clan::SoundBuffer back_sound("Angevin.ogg");
 	back_sound.set_volume(0.5f);
-	clan::SoundBuffer_Session playback = back_sound.play();
+	clan::SoundBuffer_Session playback = back_sound.prepare();
+	playback.set_looping(true);
+	playback.play();
 
 	return true;
 }
