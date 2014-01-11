@@ -69,8 +69,9 @@ bool Menu::init()
 	///reikalinga eilute norint sutvarkyti kai kuriu elementu matomuma. (gui posistemes bug'as?)
 	c->update_layout();
 
+	//MUSIC BY Kevin MacLeod
 	clan::SoundBuffer back_sound("Angevin.ogg");
-	back_sound.set_volume(0.7f);
+	back_sound.set_volume(0.5f);
 	clan::SoundBuffer_Session playback = back_sound.play();
 
 	return true;
