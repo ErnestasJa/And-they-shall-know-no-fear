@@ -46,9 +46,7 @@ bool Server::init()
 	fmt.set_arg(2,m_map);
 	fmt.set_arg(3,m_max_clients);
 
-	MSGS_AuthStatus msg;
-	msg.msg	= fmt.get_result();
-	clan::log_event("net_event",msg.msg);
+	clan::log_event("net_event", fmt.get_result());
 
 	return true;
 }
@@ -218,17 +216,19 @@ void Server::on_client_connected(clan::NetGameConnection *connection)
 	}
 
 	clan::log_event("net_event","User disconnected: too many clients already connected.");
+	connection->set_data("cl_ptr",nullptr);
 	connection->disconnect();
 }
 
 void Server::on_client_disconnected(clan::NetGameConnection *connection, const std::string &message)
 {
 	ServerClientConnection* con = ServerClientConnection::get_client(connection);
-	Client* client = con->get_client();
-
-	clan::log_event("net_event","Client disconnected: id '%1'.",client->get_id());
+	
 	if(con)
 	{
+		Client* client = con->get_client();
+		clan::log_event("net_event","Client disconnected: id '%1'.",client->get_id());
+
 		connection->set_data("cl_ptr",nullptr);
 		con->disconnect();
 
