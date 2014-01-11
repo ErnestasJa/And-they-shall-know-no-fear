@@ -284,7 +284,6 @@ clan::Callback_v1<GameObject*> & GameObjectManager::func_on_add_game_object()
 void GameObjectManager::on_net_event(const clan::NetGameEvent & e)
 {
 	uint32_t type = e.get_argument(0).to_uinteger();
-	clan::log_event("net_event","Got message from server type='%1' msg='%2'.",type,e.to_string());
 
 	///messages that are only handled on server
 	#if defined GAME_SERVER

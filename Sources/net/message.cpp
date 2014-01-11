@@ -52,7 +52,6 @@ void MessageUtil::add_message(clan::NetGameEvent & net_event, const Message & m,
 
 	if(serialize_only_changed && val.get_member_count() < 3)
 	{
-		clan::log_event("ev","val.get_member_count()=%1",val.get_member_count());
 		return;
 	}
 
