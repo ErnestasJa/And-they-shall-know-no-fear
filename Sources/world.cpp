@@ -148,6 +148,11 @@ void World::on_auth_event(const clan::NetGameEvent & e)
 
 void World::on_game_event(const clan::NetGameEvent & e)
 {
+	if(!m_gom)
+	{
+		throw clan::Exception("Got game event before could create game object manager");
+	}
+
 	///process every message in event
 	for(uint32_t i = 0; i < MessageUtil::get_message_count(e); i++)
 	{
