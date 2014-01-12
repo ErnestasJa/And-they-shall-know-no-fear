@@ -416,10 +416,10 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)
 {
 	ServerClientConnection * con = ServerClientConnection::get_client(connection);
-	Client* client = con->get_client();
-
+	
 	if(con)
 	{
+		Client* client = con->get_client();
 		bool handled_event = false;
 
 		if (!client->check_flag(ECF_LOGGED_IN)&&e.get_name()=="amsg")	// User has not logged in, so route events to login dispatcher
