@@ -9,6 +9,7 @@ enum EMapSectionType
 {
 	EMST_RESOURCE_FILE=1,
 	EMST_MAP,
+	EMST_SPAWN_POINTS
 };
 
 struct MS_Resource
@@ -334,6 +335,31 @@ public:
 	}
 
 
+	void write_spawn_points(clan::File & f)
+	{
+		f.write_uint32(m_spawn_list.size());
+
+		loopi(m_spawn_list.size())
+		{
+			f.write_uint32(m_spawn_list[i].object_type);
+			f.write_uint32(m_spawn_list[i].pos.x);
+			f.write_uint32(m_spawn_list[i].pos.y);
+		}
+	}
+
+	void read_spawn_points(clan::File & f)
+	{
+		uint32_t size = f.read_uint32();
+
+		spawn s;
+		loopi(size)
+		{
+			s.object_type = f.read_uint32();
+			s.pos.x = f.read_uint32();
+			s.pos.y = f.read_uint32();
+			m_spawn_list.push_back(s);
+		}
+	}
 
 	void write_map_data(clan::File & f)
 	{	
@@ -444,6 +470,12 @@ public:
 						clan::log_event("map_load","Loaded %1 map chunks", this->m_chunks.size());
 						break;
 					}
+					case EMST_SPAWN_POINTS:
+					{
+						read_spawn_points(f);
+						clan::log_event("map_load","Loaded %1 spawn points", this->m_spawn_list.size());
+						break;
+					}
 					default:
 					{
 						throw clan::Exception("Map could not be loaded.");
@@ -492,6 +524,10 @@ public:
 			write_map_data(f);
 		ms.end(f);
 
+		ms.begin(EMST_SPAWN_POINTS,f);
+			write_spawn_points(f);
+		ms.end(f);
+
 		f.close();
 
 		return true;
@@ -499,6 +535,16 @@ public:
 #if defined GAME_SERVER
 		return false;
 #endif
+	}
+
+	spawn get_spawn_point(uint32_t index)
+	{
+		return m_spawn_list[index];
+	}
+
+	uint32_t get_spawn_point_count()
+	{
+		return m_spawn_list.size();
 	}
 };
 
@@ -599,4 +645,14 @@ bool TileMap::load(const std::string & file)
 bool TileMap::save(const std::string & file)
 {
 	return impl->save(file);
+}
+
+spawn TileMap::get_spawn_point(uint32_t index)
+{
+	return impl->get_spawn_point(index);
+}
+
+uint32_t TileMap::get_spawn_point_count()
+{
+	return impl->get_spawn_point_count();
 }

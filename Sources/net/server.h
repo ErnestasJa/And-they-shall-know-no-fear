@@ -63,6 +63,9 @@ public:
 	void on_remove_game_object(GameObject * obj);
 
 public:
+	void spawn_client(Client * client);
+
+public:
 	bool init();
 	void init_default();
 	bool run();
