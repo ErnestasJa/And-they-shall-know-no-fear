@@ -94,7 +94,6 @@ void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 	m_h = s_h.clone();
 
 	m_sprite=m_dw;
-	clan::Console::write_line("is null: %1",m_sprite.is_null());
 }
 
 void Player::update(const clan::GameTime & time)
