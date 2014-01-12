@@ -136,7 +136,7 @@ void Player::update(const clan::GameTime & time)
 
 #if defined GAME_SERVER
 	if(mana>100)mana=100;
-	else mana=mana+3.0f*(float)time.get_time_elapsed_ms()/1000.0f;
+	else mana=mana+4.0f*(float)time.get_time_elapsed_ms()/1000.0f;
 #endif
 	
 }

@@ -360,7 +360,7 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 
 						obj->get_vel().set(vel);
 						obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get()+off);
-						p->set_next_attack_time(m_game_time.get_current_time_ms() + 1000);
+						p->set_next_attack_time(m_game_time.get_current_time_ms() + 600);
 					}
 				}
 			}
