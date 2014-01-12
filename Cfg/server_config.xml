@@ -2,5 +2,5 @@
 <property_containter dynamic="">
 	<property name="max_clients" flags="0" data="4"/>
 	<property name="port" flags="0" data="27015"/>
-	<property name="map" flags="0" data="next_level.map"/>
+	<property name="map" flags="0" data="level4.map"/>
 </property_containter>
