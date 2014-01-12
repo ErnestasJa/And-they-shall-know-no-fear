@@ -26,7 +26,7 @@ void editor::init_gui()
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	
 	m_editor_window = new clan::Window(m_gui_root);
-	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-150,0,clan::Size(150,300)));
+	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-100,0,clan::Size(100,320)));
 	m_editor_window->set_visible(true);
 	m_editor_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_editor_window);
 	
@@ -54,10 +54,16 @@ void editor::init_gui()
 	init_gui_save_map_button(m_editor_window, clan::Rect( 10, 210, clan::Size(80, 25)));
 
 	m_button_multi_tile=new clan::PushButton(m_editor_window);
-	m_button_multi_tile->set_geometry(clan::Rect(10, 240, clan::Size(80, 25)));
+	m_button_multi_tile->set_geometry(clan::Rect(10, 250, clan::Size(80, 25)));
 	m_button_multi_tile->set_text("Multi tile select");
 	m_button_multi_tile->set_toggle(true);
 	m_button_multi_tile->func_clicked().set(this, &editor::on_button_clicked, m_button_multi_tile);
+
+	m_button_spawn=new clan::PushButton(m_editor_window);
+	m_button_spawn->set_geometry(clan::Rect(10, 280, clan::Size(80, 25)));
+	m_button_spawn->set_text("Add spawn");
+	m_button_spawn->set_toggle(true);
+	m_button_spawn->func_clicked().set(this, &editor::on_button_clicked, m_button_spawn);
 
 	m_save_window = new YNDialogue(m_gui_root, "Do you want to save changes?");
 	m_save = m_save_window->confirmation().connect(this, &editor::on_exit);
@@ -497,6 +503,12 @@ void editor::on_button_clicked(clan::PushButton * btn)
 	{
 		m_offset = clan::vec2();
 		m_button_multi_tile->set_pushed(true);
+		m_button_spawn->set_pushed(false);
+	}
+	else if(btn == m_button_spawn)
+	{
+		m_button_spawn->set_pushed(true);
+		m_button_multi_tile->set_pushed(false);
 	}
 }
 
