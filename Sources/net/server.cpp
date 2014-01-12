@@ -203,7 +203,6 @@ void Server::on_update_game_object(GameObject * obj)
 
 bool Server::run()
 {
-	
 	m_game_time.update();
 
 	if(m_gom)
@@ -214,7 +213,6 @@ bool Server::run()
 
 		sync_game_objects();
 	}
-
 	return true;
 }
 

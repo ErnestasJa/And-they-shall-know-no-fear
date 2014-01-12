@@ -2,6 +2,12 @@
 #define TILEMAP_H
 
 struct Tile;
+struct spawn
+{
+	uint32_t object_type;
+	clan::vec2 pos;
+};
+
 class TileChunk;
 class TileMap_Impl;
 class TileMap
@@ -30,12 +36,17 @@ class TileMap
 
 	clan::Canvas &	get_canvas();
 	void		render(const clan::vec2 & pos, int start_layer=0, int end_layer=LAYER_COUNT);
-	
-	bool load(const std::string & file);
-	bool save(const std::string & file);
+	void        render_spawns(const clan::vec2 & pos);
+
+	void		add_spawn(uint32_t object_type, clan::vec2 pos);
+	void		delete_spawn(clan::vec2 pos, int32_t range = 50);
+
+	bool		load(const std::string & file);
+	bool		save(const std::string & file);
 
     protected:
     std::shared_ptr<TileMap_Impl> impl;
+	std::vector<spawn> m_spawn_list;
 };
 
 #endif // TILEMAP_H

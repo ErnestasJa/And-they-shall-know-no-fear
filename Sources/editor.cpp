@@ -2,6 +2,7 @@
 #include "editor.h"
 #include "tile_chunk.h"
 #include "sprite_frame_selection.h"
+#include "game_object_types.h"
 
 
 editor::editor(clan::DisplayWindow &display_window)
@@ -11,6 +12,7 @@ editor::editor(clan::DisplayWindow &display_window)
 	m_selected_sprites = NULL;
 	m_selected_layer = 0;
 	m_selected_sprite_sheet = -1;
+	m_selected_spawn_type = 0;
 	m_game_time = clan::GameTime(20,60);
 }
 
@@ -26,7 +28,7 @@ void editor::init_gui()
 	m_gui_root = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
 	
 	m_editor_window = new clan::Window(m_gui_root);
-	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-100,0,clan::Size(100,320)));
+	m_editor_window->set_geometry(clan::Rect(m_gui_root->get_content_box().get_width()-100,0,clan::Size(100,360)));
 	m_editor_window->set_visible(true);
 	m_editor_window->func_close().set<editor, clan::GUIComponent*>(this, &editor::on_close_wnd, (clan::GUIComponent*)m_editor_window);
 	
@@ -60,10 +62,12 @@ void editor::init_gui()
 	m_button_multi_tile->func_clicked().set(this, &editor::on_button_clicked, m_button_multi_tile);
 
 	m_button_spawn=new clan::PushButton(m_editor_window);
-	m_button_spawn->set_geometry(clan::Rect(10, 280, clan::Size(80, 25)));
+	m_button_spawn->set_geometry(clan::Rect(10, 290, clan::Size(80, 25)));
 	m_button_spawn->set_text("Add spawn");
 	m_button_spawn->set_toggle(true);
 	m_button_spawn->func_clicked().set(this, &editor::on_button_clicked, m_button_spawn);
+
+	init_gui_spawn_dropbox(m_editor_window, clan::Rect(10, 320, clan::Size(80, 25)));
 
 	m_save_window = new YNDialogue(m_gui_root, "Do you want to save changes?");
 	m_save = m_save_window->confirmation().connect(this, &editor::on_exit);
@@ -98,6 +102,17 @@ void editor::init_gui_sprite_sheet_dropbox(clan::Window * root, const clan::Rect
 	m_combo_sprite_sheet->set_popup_menu(m_combo_menu_sprite_sheet);
 	m_combo_sprite_sheet->set_text("Select sprite sheet");
 	m_combo_sprite_sheet->func_item_selected().set(this,&editor::on_sprite_sheet_select);
+}
+
+void editor::init_gui_spawn_dropbox(clan::Window * root, const clan::Rect pos)
+{
+	m_combo_spawn = new clan::ComboBox(root);
+	m_combo_spawn->set_geometry(pos);
+	m_combo_menu_spawn.insert_item("Player",EGOT_PLAYER,0);
+	m_combo_menu_spawn.insert_item("Monster",EGOT_MOB,1);
+	m_combo_spawn->set_popup_menu(m_combo_menu_spawn);
+	m_combo_spawn->set_text("Select spawn");
+	m_combo_spawn->func_item_selected().set(this,&editor::on_spawn_select);
 }
 
 void editor::init_gui_load_map_button(clan::Window * root, const clan::Rect pos)
@@ -267,8 +282,9 @@ bool editor::run()
 		m_pos=m_pos + m_pan + m_scroll;
 
 		m_tile_map.render(m_pos);
+		m_tile_map.render_spawns(m_pos);
 		draw_world_axis(m_checkbox_o->is_checked(),m_checkbox_c->is_checked(),m_checkbox_t->is_checked());
-		draw_hover_box(!m_button_multi_tile->is_pushed());
+		draw_hover_box(!(m_button_multi_tile->is_pushed()||m_button_spawn->is_pushed()));
 		draw_selection_box(m_offset, m_button_multi_tile->is_pushed() && m_offset.length()!=0);
 
 		///render gui
@@ -329,6 +345,13 @@ void editor::on_sprite_sheet_select(int32_t sprite_sheet)
 	m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(m_selected_sprite_sheet));
 	clan::Console::write_line("Selected sprite sheet:%1",sprite_sheet); //DEBUG
 }
+
+void editor::on_spawn_select(int32_t spawn)
+{
+	m_selected_spawn_type=spawn;
+	clan::Console::write_line("Selected spawn:%1",spawn);
+}
+
 
 void editor::change_tile_sprite(const clan::vec2 & pos, bool remove)
 {
@@ -414,7 +437,7 @@ void editor::on_input(const clan::InputEvent & e)
 				m_offset = e.mouse_pos;
 				clan::Console::write_line("PRESSED mouse_left"); //DEBUG
 			}
-			else if (e.id == clan::mouse_left && e.type == clan::InputEvent::released)
+			else if (e.id == clan::mouse_left && e.type == clan::InputEvent::released && m_button_multi_tile->is_pushed())
 			{
 				if(m_button_multi_tile->is_pushed())
 				{
@@ -424,6 +447,22 @@ void editor::on_input(const clan::InputEvent & e)
 					m_offset = clan::vec2();
 				}
 				clan::Console::write_line("RELEASED mouse_left"); //DEBUG
+			}
+
+			else if (e.id == clan::mouse_left && e.type == clan::InputEvent::released && m_button_spawn->is_pushed())
+			{
+				m_button_spawn->set_pushed(false);
+				if(m_selected_spawn_type != 0)
+				{
+					m_tile_map.add_spawn(m_selected_spawn_type,e.mouse_pos+m_pos);
+					clan::Console::write_line("XXX: [%1,%2]", e.mouse_pos.x+m_pos.x,e.mouse_pos.y+m_pos.y);
+				}
+			}
+			else if (e.id == clan::mouse_right && e.type == clan::InputEvent::released && m_button_spawn->is_pushed())
+			{
+				m_button_spawn->set_pushed(false);
+				m_tile_map.delete_spawn(e.mouse_pos+m_pos);
+				clan::Console::write_line("YYY: [%1,%2]", e.mouse_pos.x+m_pos.x,e.mouse_pos.y+m_pos.y);
 			}
 
 			else if (e.id == clan::mouse_left)

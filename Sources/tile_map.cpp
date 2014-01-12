@@ -2,6 +2,7 @@
 
 #include "tile_map.h"
 #include "tile_chunk.h"
+#include <algorithm>
 
 ///append enums to end
 enum EMapSectionType
@@ -154,6 +155,7 @@ protected:
 
 	std::string					m_doc_file_name;
 	clan::XMLResourceDocument	m_doc;
+	std::vector<spawn>			m_spawn_list;
 
 public:
 
@@ -315,6 +317,24 @@ public:
 #endif
     }
 
+	void render_spawns(const clan::vec2 & pos)
+	{
+#if defined GAME_CLIENT
+        int w = m_canvas.get_width();
+        int h = m_canvas.get_height();
+
+
+		for(auto it = m_spawn_list.begin(); it != m_spawn_list.end(); it++) 
+		{
+			clan::Rect(clan::Point(it->pos),clan::Size(32,51));
+			m_canvas.fill_rect(clan::Rect(clan::Point(it->pos-pos),clan::Size(32,51)), clan::Colorf((float)it->object_type-1.0f,0.0f,(float)it->object_type));
+		}
+		
+#endif
+	}
+
+
+
 	void write_map_data(clan::File & f)
 	{	
 #if defined GAME_CLIENT
@@ -363,6 +383,21 @@ public:
 				}
 			}
 		}
+	}
+
+	void add_spawn(uint32_t object_type, clan::vec2 pos)
+	{
+		spawn point;
+		point.object_type=object_type; point.pos=pos;
+		m_spawn_list.push_back(point);
+	}
+
+	void delete_spawn(clan::vec2 in_pos, int32_t range)
+	{
+		std::remove_if (
+			m_spawn_list.begin(), m_spawn_list.end(), [&in_pos, &range](spawn list_pos)
+			{return(list_pos.pos.x-range>in_pos.x || list_pos.pos.x+range>in_pos.x)&&(list_pos.pos.y-range>in_pos.y || list_pos.pos.y+range<in_pos.y);}
+		);
 	}
 
 	bool load(TileMap map, const std::string & file)
@@ -539,6 +574,21 @@ clan::Canvas & TileMap::get_canvas()
 void TileMap::render(const clan::vec2 & pos, const int start_layer, const int end_layer)
 {
     impl->render(pos,start_layer,end_layer);
+}
+
+void TileMap::render_spawns(const clan::vec2 & pos)
+{
+    impl->render_spawns(pos);
+}
+
+void TileMap::add_spawn(const uint32_t object_type, const clan::vec2 pos)
+{
+	impl->add_spawn(object_type, pos);
+}
+
+void TileMap::delete_spawn(const clan::vec2 pos, const int32_t range)
+{
+	impl->delete_spawn(pos, range);
 }
 
 bool TileMap::load(const std::string & file)

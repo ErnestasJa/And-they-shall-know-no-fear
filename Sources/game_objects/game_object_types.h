@@ -5,7 +5,8 @@ enum EGameObjectType
 {
 	EGOT_PLAYER = 1,
 	EGOT_THROWABLE_OBJECT,
-	EGOT_COUNT
+	EGOT_COUNT,
+	EGOT_MOB
 };
 
 #endif

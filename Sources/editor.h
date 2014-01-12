@@ -27,6 +27,7 @@ protected:
 	void on_frame_select(clan::Rect frame);
 	void on_layer_select(int32_t layer);
 	void on_sprite_sheet_select(int32_t sprite_sheet);
+	void on_spawn_select(int32_t spawn);
 	bool on_close_wnd(clan::GUIComponent * wnd);
 	void on_exit(bool confirm);
 
@@ -35,6 +36,7 @@ protected:
 	void init_gui();
 	void init_gui_layer_dropbox(clan::Window * root, const clan::Rect pos);
 	void init_gui_sprite_sheet_dropbox(clan::Window * root, const clan::Rect pos);
+	void init_gui_spawn_dropbox(clan::Window * root, const clan::Rect pos);
 	void init_gui_load_map_button(clan::Window * root, const clan::Rect pos);
 	void init_gui_save_map_button(clan::Window * root, const clan::Rect pos);
 	void update_gui_sprite_sheet_dropbox();
@@ -84,9 +86,11 @@ protected:
 								*m_button_load_map, 
 								*m_button_save_map;
 	clan::ComboBox				*m_combo_layer, 
-								*m_combo_sprite_sheet;
+								*m_combo_sprite_sheet,
+								*m_combo_spawn;
 	clan::PopupMenu				m_combo_menu_layer, 
-								m_combo_menu_sprite_sheet;
+								m_combo_menu_sprite_sheet,
+								m_combo_menu_spawn;
 	clan::CheckBox				*m_checkbox_t, 
 								*m_checkbox_c, 
 								*m_checkbox_o;
@@ -96,7 +100,7 @@ protected:
 
 
 	clan::Slot m_frame_select, m_save;
-	int32_t m_selected_layer, m_selected_sprite_sheet;
+	int32_t m_selected_layer, m_selected_sprite_sheet, m_selected_spawn_type;
 	SelectedSprites *m_selected_sprites;
 
 };
