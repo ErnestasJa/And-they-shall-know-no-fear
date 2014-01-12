@@ -390,14 +390,19 @@ public:
 		spawn point;
 		point.object_type=object_type; point.pos=pos;
 		m_spawn_list.push_back(point);
+
+		for (auto entry = m_spawn_list.begin(); entry != m_spawn_list.end(); entry++)
+		{  
+			entry->pos.x;
+			clan::log_event("spawn","%1 %2",entry->pos.x,entry->pos.y);
+		}
 	}
 
 	void delete_spawn(clan::vec2 in_pos, int32_t range)
 	{
-		std::remove_if (
-			m_spawn_list.begin(), m_spawn_list.end(), [&in_pos, &range](spawn list_pos)
-			{return(list_pos.pos.x-range>in_pos.x || list_pos.pos.x+range>in_pos.x)&&(list_pos.pos.y-range>in_pos.y || list_pos.pos.y+range<in_pos.y);}
-		);
+		m_spawn_list.erase(std::remove_if(m_spawn_list.begin(), m_spawn_list.end(), [&in_pos, &range](spawn list_pos)
+			{return((list_pos.pos.x-range<in_pos.x && list_pos.pos.x+range>in_pos.x)&&(list_pos.pos.y-range>in_pos.y && list_pos.pos.y+range<in_pos.y));}
+		),m_spawn_list.end());
 	}
 
 	bool load(TileMap map, const std::string & file)
@@ -430,24 +435,24 @@ public:
 
 					switch(ms.type)
 					{
-					case EMST_RESOURCE_FILE:
-					{
-						MS_Resource s;
-						s.read(f);
-						clan::Console::write_line("Loading resource document: %1", s.res_file);
-						this->load_resource_document(s.res_file);
-						break;
-					}
-					case EMST_MAP:
-					{
-						read_map_data(map,f);
-						clan::log_event("map_load","Loaded %1 map chunks", this->m_chunks.size());
-						break;
-					}
-					default:
-					{
-						throw clan::Exception("Map could not be loaded.");
-					}
+						case EMST_RESOURCE_FILE:
+						{
+							MS_Resource s;
+							s.read(f);
+							clan::Console::write_line("Loading resource document: %1", s.res_file);
+							this->load_resource_document(s.res_file);
+							break;
+						}
+						case EMST_MAP:
+						{
+							read_map_data(map,f);
+							clan::log_event("map_load","Loaded %1 map chunks", this->m_chunks.size());
+							break;
+						}
+						default:
+						{
+							throw clan::Exception("Map could not be loaded.");
+						}
 					}
 				}
 			}
@@ -517,7 +522,6 @@ TileMap::~TileMap(){}
 bool TileMap::add_sprite(std::string path, uint8_t id)
 {
     impl->add_sprite(path,id);
-
     return false;
 }
 
