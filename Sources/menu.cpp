@@ -74,7 +74,7 @@ bool Menu::init()
 	back_sound.set_volume(0.5f);
 	playback = back_sound.prepare();
 	//playback.play();
-	play = true;
+	play = false;
 	playback.set_looping(true);
 
 		//sound migtukas
@@ -142,7 +142,7 @@ bool Menu::pause()
 	State::pause();
 
 	playback.stop();
-
+	button_sound_top->set_image(button_sound_on_img);
 	c->set_visible(false);
 
 	m_key_up.disable();
@@ -156,8 +156,12 @@ bool Menu::resume()
 {
 	State::resume();
 	if(play)
+	{
+	button_sound_top->set_image(button_sound_off_img);
 	playback.play();
-
+	}
+	else 
+	button_sound_top->set_image(button_sound_on_img);
 	c->set_visible(true);
 
 	m_key_up.enable();
