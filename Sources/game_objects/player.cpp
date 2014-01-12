@@ -19,7 +19,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
-	mana=add_property<uint32_t>("mana",50);
+	mana=add_property<float>("mana",50);
 	kills=add_property<uint32_t>("kills",0);
 	killer=add_property<uint32_t>("killer");
 	name=add_property<std::string>("name","Sir. Waitfor Servereply");
@@ -136,7 +136,7 @@ void Player::update(const clan::GameTime & time)
 
 #if defined GAME_SERVER
 	if(mana>100)mana=100;
-	else mana=mana+1.5*(float)time.get_time_elapsed_ms()/1000.0f;
+	else mana=mana+3.0f*(float)time.get_time_elapsed_ms()/1000.0f;
 #endif
 	
 }
@@ -196,7 +196,7 @@ clan::CollisionOutline & Player::get_outline()
 	return m_outline;
 }
 
-Property<uint32_t> Player::get_mana()
+Property<float> Player::get_mana()
 {
 	return mana;
 }

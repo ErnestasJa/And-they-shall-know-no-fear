@@ -13,14 +13,15 @@ public:
 	uint32_t get_next_attack_time();
 	void set_next_attack_time(uint32_t time);
 	clan::Colorf get_hp_bar_color();
-	Property<uint32_t> get_mana();
+	Property<float> get_mana();
 
 protected:
 	static clan::Sprite s_rw,s_lw,s_uw,s_dw, s_h; ///preloaded sprites
 	clan::Sprite m_rw,m_lw,m_uw,m_dw, m_h; ///instanced sprites
 	clan::Sprite m_sprite; ///current sprite
 
-	Property<uint32_t> keys, life, kills, killer, mana;
+	Property<uint32_t> keys, life, kills, killer;
+	Property<float> mana;
 	Property<std::string> name;
 
 	clan::vec2 last_pos;
