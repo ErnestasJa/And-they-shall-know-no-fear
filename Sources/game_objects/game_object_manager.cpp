@@ -212,7 +212,7 @@ void GameObjectManager::collide_game_objects(const clan::GameTime & game_time)
 		pos = m_game_object_list[i]->get_pos().get();
 		uint32_t w = m_game_object_list[i]->get_outline().get_width(), h = m_game_object_list[i]->get_outline().get_height();
 		tl = pos+clan::vec2(16,13);
-		br = pos+clan::vec2(31,50);
+		br = pos+clan::vec2(47,63);
 
 		tl=pixel_to_chunk_pos(tl);
 		br=pixel_to_chunk_pos(br);
