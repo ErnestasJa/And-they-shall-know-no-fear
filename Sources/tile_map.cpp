@@ -420,10 +420,13 @@ public:
 
 	void delete_spawn(clan::vec2 in_pos, int32_t range)
 	{
-		std::remove_if (
+		auto it = std::find_if(
 			m_spawn_list.begin(), m_spawn_list.end(), [&in_pos, &range](spawn list_pos)
-			{return(list_pos.pos.x-range>in_pos.x || list_pos.pos.x+range>in_pos.x)&&(list_pos.pos.y-range>in_pos.y || list_pos.pos.y+range<in_pos.y);}
+		{return abs(list_pos.pos.distance(in_pos)) <= range;}
 		);
+
+		if(it!=m_spawn_list.end())
+			m_spawn_list.erase(it);
 	}
 
 	bool load(TileMap map, const std::string & file)
