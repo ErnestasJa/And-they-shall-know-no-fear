@@ -78,6 +78,7 @@ protected:
 	///gui elements
 	clan::GUIComponent			*m_gui_root;
 	clan::PushButton			*m_button_multi_tile, 
+								*m_button_spawn,
 								*m_button_sprite_frame, 
 								*m_button_select_resource_file, 
 								*m_button_load_map, 

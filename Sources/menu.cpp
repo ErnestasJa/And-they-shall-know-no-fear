@@ -71,9 +71,10 @@ bool Menu::init()
 	clan::SoundBuffer back_sound("Angevin.ogg");
 	back_sound.set_volume(0.5f);
 	playback = back_sound.prepare();
-	playback.play();
+	//playback.play();
 	play = true;
 	playback.set_looping(true);
+
 		//sound migtukas
 	button_sound = new clan::PushButton(c);
 	button_sound->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
