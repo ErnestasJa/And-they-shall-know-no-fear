@@ -15,4 +15,12 @@
   <image name="editor_button_img">
     <image file="Gfx/button/editor_button.png"/>
   </image>
+  
+  <image name="sound_button_on_img">
+    <image file="Gfx/button/sound_on.png"/>
+  </image>
+  
+  <image name="sound_button_off_img">
+    <image file="Gfx/button/sound_off.png"/>
+  </image>
 </resources>
