@@ -19,6 +19,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
+	mana=add_property<float>("mana",50);
 	kills=add_property<uint32_t>("kills",0);
 	killer=add_property<uint32_t>("killer");
 	name=add_property<std::string>("name","Sir. Waitfor Servereply");
@@ -34,6 +35,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 	m_outline.calculate_smallest_enclosing_discs();
 	
 	m_next_attack_time = 0;
+	m_vel = 32.0f;
 }
 
 Player::~Player()
@@ -100,39 +102,43 @@ void Player::update(const clan::GameTime & time)
 {
 	if(!m_sprite.is_null())
 		m_sprite.update(time.get_time_elapsed_ms());
-	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
 	last_pos = m_pos.get();
 	if(keys&EUIKT_MOVE_LEFT && m_pos.get().x>-20.0f)
 	{
 		m_sprite=m_lw;
 		clan::vec2f v=m_pos;
-		v.x-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.x-= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_RIGHT && m_pos.get().x<980.0f)
 	{
 		m_sprite=m_rw;
 		clan::vec2f v=m_pos;
-		v.x+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.x+= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_UP && m_pos.get().y>0.0f)
 	{
 		m_sprite=m_uw;
 		clan::vec2f v=m_pos;
-		v.y-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.y-= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_DOWN && m_pos.get().y<660.0f)
 	{
 		m_sprite=m_dw;
 		clan::vec2f v=m_pos;
-		v.y+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.y+= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
-
 	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
+
+#if defined GAME_SERVER
+	if(mana>100)mana=100;
+	else mana=mana+4.0f*(float)time.get_time_elapsed_ms()/1000.0f;
+#endif
+	
 }
 
 void Player::render(clan::Canvas & c, const clan::vec2 & offset)
@@ -188,4 +194,9 @@ void Player::on_tile_collide(const Tile & tile)
 clan::CollisionOutline & Player::get_outline()
 {
 	return m_outline;
+}
+
+Property<float> Player::get_mana()
+{
+	return mana;
 }

@@ -24,6 +24,8 @@ bool Menu::init()
 	button_exit_img = clan::Image::resource(m_canvas,"quit_button_img",m_resources);
 	button_world_img = clan::Image::resource(m_canvas,"play_button_img",m_resources);
 	button_editor_img = clan::Image::resource(m_canvas,"editor_button_img",m_resources);
+	button_sound_on_img = clan::Image::resource(m_canvas,"sound_button_on_img",m_resources);
+	button_sound_off_img = clan::Image::resource(m_canvas,"sound_button_off_img",m_resources);
 	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
@@ -79,6 +81,10 @@ bool Menu::init()
 	button_sound = new clan::PushButton(c);
 	button_sound->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
 	button_sound->func_clicked().set(this, &Menu::on_button_clicked, button_sound);
+	button_sound_top = new clan::ImageView(button_sound);
+	button_sound_top->set_geometry(clan::Rect(0, 0, clan::Size(20, 20)));
+	button_sound_top->set_image(button_sound_on_img);
+	button_sound_top->set_scale_to_fit(true);
 
 	return true;
 }
@@ -201,9 +207,11 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	{
 		if(playback.is_playing())
 			{playback.stop();
+		button_sound_top->set_image(button_sound_on_img);
 		play = false;}
 		else
 			{playback.play();
+		button_sound_top->set_image(button_sound_off_img);
 		play = true;}
 	}
 }

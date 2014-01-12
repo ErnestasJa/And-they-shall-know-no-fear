@@ -41,7 +41,12 @@ public:
 	std::vector<GameObject*> & get_tmp_game_objects();
 
 	void update_game_objects(const clan::GameTime & game_time);
+
+	#if defined GAME_SERVER
 	void collide_game_objects(const clan::GameTime & game_time);
+	void collide_game_object_with_map(GameObject * obj);
+	#endif
+
 	void render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset = clan::vec2(0,0));
 	void remove_not_alive_objects();
 
