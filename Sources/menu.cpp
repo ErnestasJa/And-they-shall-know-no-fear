@@ -132,6 +132,8 @@ bool Menu::pause()
 {
 	State::pause();
 
+	playback.stop();
+
 	c->set_visible(false);
 
 	m_key_up.disable();
@@ -144,6 +146,8 @@ bool Menu::pause()
 bool Menu::resume()
 {
 	State::resume();
+
+	playback.play();
 
 	c->set_visible(true);
 
