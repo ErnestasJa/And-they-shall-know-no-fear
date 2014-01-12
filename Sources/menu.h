@@ -25,10 +25,13 @@ protected:
 	//gui
 	clan::ImageView *button_world_top,*button_editor_top,*button_exit_top,*button_sound_top;
 	clan::PushButton *button_world, *button_editor, *button_exit, *button_sound;
-	clan::SoundBuffer_Session playback;
 	YNDialogue *m_exit_window;
 	ConDialogue *m_con_window;
 	clan::GUIComponent *c;
+
+	///sound
+	clan::SoundBuffer_Session playback;
+	clan::SoundBuffer back_sound;
 
 	void WindowCloseEventHandler();
 	void CloseConfirmed(bool);

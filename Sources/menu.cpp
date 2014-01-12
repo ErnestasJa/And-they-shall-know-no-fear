@@ -70,7 +70,7 @@ bool Menu::init()
 	c->update_layout();
 
 	//MUSIC BY Kevin MacLeod
-	clan::SoundBuffer back_sound("Angevin.ogg");
+	back_sound = clan::SoundBuffer::resource("bg_music", m_resources);
 	back_sound.set_volume(0.5f);
 	playback = back_sound.prepare();
 	//playback.play();

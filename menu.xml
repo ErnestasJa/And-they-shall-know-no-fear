@@ -23,4 +23,6 @@
   <image name="sound_button_off_img">
     <image file="Gfx/button/sound_off.png"/>
   </image>
+  
+  <sample name="bg_music" file="Sound/Angevin.ogg"/>
 </resources>
