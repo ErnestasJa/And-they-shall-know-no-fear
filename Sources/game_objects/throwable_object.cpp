@@ -8,6 +8,7 @@
 
 clan::Sprite ThrowableObject::m_rock_sprite;
 clan::SoundBuffer sound;
+
 ThrowableObject::ThrowableObject(uint32_t guid): GameObject(type(),guid)
 {
 	m_vel = add_property("velocity", clan::vec2f(0,0));
