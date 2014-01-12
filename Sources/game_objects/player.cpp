@@ -128,40 +128,41 @@ void Player::update(const clan::GameTime & time)
 
 #if defined GAME_SERVER
 
+	float delta_time = (float)time.get_time_elapsed_ms()/1000.0f;
+
+	float mana_degen = -10.0f;
+
+	float speed = m_vel + ((100-life)/10.0f)*2.0f;
+
+	if((keys&EUIKT_RUN) && (mana > -1.0f * (mana_degen * delta_time)))
+		speed += 20.0f;
+
+	speed *= delta_time;
+
+	clan::vec2f mvel;
+
 	if(keys&EUIKT_MOVE_LEFT && m_pos.get().x>-20.0f)
 	{
-		clan::vec2f v=m_pos;
-		v.x-= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
-		m_pos.set(v);
+		mvel.x-= 1;
 	}
 	if(keys&EUIKT_MOVE_RIGHT && m_pos.get().x<980.0f)
 	{
-		clan::vec2f v=m_pos;
-		v.x+= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
-		m_pos.set(v);
+		mvel.x+= 1;
 	}
 	if(keys&EUIKT_MOVE_UP && m_pos.get().y>0.0f)
 	{
-		clan::vec2f v=m_pos;
-		v.y-= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
-		m_pos.set(v);
+		mvel.y-= 1;
 	}
 	if(keys&EUIKT_MOVE_DOWN && m_pos.get().y<660.0f)
 	{
-		clan::vec2f v=m_pos;
-		v.y+= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
-		m_pos.set(v);
+		mvel.y+= 1;
 	}
 
 	if(keys&EUIKT_MOVE_LEFT || keys&EUIKT_MOVE_RIGHT || keys&EUIKT_MOVE_UP || keys&EUIKT_MOVE_DOWN)
 	{
-		if(mana>100)mana=100;
-		else mana=mana+4.0f*(float)time.get_time_elapsed_ms()/1000.0f;
-	}
-	else
-	{
-		if(mana>100)mana=100;
-		else mana=mana+8.0f*(float)time.get_time_elapsed_ms()/1000.0f;
+		mvel = mvel.normalize();
+		mvel *= speed;
+		m_pos.set(m_pos.get() + mvel);
 	}
 
 	if(keys&EUIKT_ATTACK)
@@ -193,6 +194,23 @@ void Player::update(const clan::GameTime & time)
 			set_next_attack_time(time.get_current_time_ms() + 600);
 		}
 	}
+
+	float mana_regen = 0.0f;
+
+	if(keys&EUIKT_MOVE_LEFT || keys&EUIKT_MOVE_RIGHT || keys&EUIKT_MOVE_UP || keys&EUIKT_MOVE_DOWN)
+	{
+		if(keys&EUIKT_RUN)
+			mana_regen = mana_degen;
+		else
+			mana_regen = 10.0f;
+	}
+	else
+		mana_regen = 16.0f;
+
+	mana = mana + (mana_regen*delta_time);
+	
+	if(mana>100.0f)mana=100.0f;
+	else if(mana<0.0f) mana=0.0f;
 
 #endif
 

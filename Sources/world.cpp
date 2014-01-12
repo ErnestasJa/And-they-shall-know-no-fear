@@ -357,6 +357,11 @@ void World::on_key_up(const clan::InputEvent & e)
 			msg.keys = msg.keys& (~EUIKT_ATTACK);
 			MessageUtil::add_message(*m_game_event,msg,true);
 		}
+		else if(e.id == clan::keycode_shift)
+		{
+			msg.keys = msg.keys& (~EUIKT_RUN);
+			MessageUtil::add_message(*m_game_event,msg,true);
+		}
 
 	}else
 	{
@@ -395,6 +400,11 @@ void World::on_key_down(const clan::InputEvent & e)
 		else if(e.id == clan::keycode_space)
 		{
 			msg.keys=msg.keys|EUIKT_ATTACK;
+			MessageUtil::add_message(*m_game_event,msg,true);
+		}
+		else if(e.id == clan::keycode_shift)
+		{
+			msg.keys=msg.keys|EUIKT_RUN;
 			MessageUtil::add_message(*m_game_event,msg,true);
 		}
 	}
