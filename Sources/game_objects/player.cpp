@@ -80,6 +80,8 @@ void Player::free()
 	s_dw = clan::Sprite();
 
 	s_h = clan::Sprite();
+
+	title = clan::Font();
 }
 
 void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)

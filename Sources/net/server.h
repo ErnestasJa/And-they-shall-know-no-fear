@@ -51,6 +51,8 @@ public:
 	void on_game_object_sync_event(const clan::NetGameEvent &e, ServerClientConnection * user);
 	void on_net_event	(const clan::NetGameEvent &e, ServerClientConnection * user);
 
+	void send_events(const clan::NetGameEvent &e, uint32_t client_flag);
+
 public:
 	void sync_game_objects(bool sync_only_changed_props = false);
 	void send_game_objects(ServerClientConnection * cl, bool sync_only_changed_props = false);
@@ -67,6 +69,7 @@ public:
 	void exit();
 
 public:
+	
 	ServerClientConnection & get_client(uint32_t id);
 	uint32_t get_max_clients();
 };

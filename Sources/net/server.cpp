@@ -6,7 +6,6 @@
 #include "game_objects/game_object_manager.h"
 #include "game_objects/game_objects.h"
 
-
 bool Server::init()
 {
 	PropertyContainer::register_properties();
@@ -90,6 +89,18 @@ void Server::init_default()
 	}
 }
 
+void Server::send_events(const clan::NetGameEvent &e, uint32_t client_flag)
+{
+	loopi(m_max_clients)
+	{
+		if(m_client_cons[i].is_connected())
+		{
+			if(m_clients[i].check_flag(ECF_IN_GAME))
+				m_client_cons[i].send_event(e);
+		}
+	}
+}
+
 void Server::send_game_objects(ServerClientConnection * cl, bool sync_only_changed_props)
 {
 	clan::NetGameEvent e("gmsg");
@@ -136,7 +147,7 @@ void Server::sync_game_objects(bool sync_only_changed_props)
 		MessageUtil::add_game_object(e,(*it),false);
 	}
 	
-	m_net_server.send_event(e);
+	send_events(e,ECF_IN_GAME);
 }
 
 void Server::on_add_game_object(GameObject * obj)
@@ -146,9 +157,9 @@ void Server::on_add_game_object(GameObject * obj)
 	msg.guid = obj->get_guid();
 	msg.object_type = obj->get_type(); /// realiai tipas nereikalingas
 
-	clan::NetGameEvent ev("gmsg");
-	MessageUtil::add_message(ev,msg);
-	m_net_server.send_event(ev);
+	clan::NetGameEvent e("gmsg");
+	MessageUtil::add_message(e,msg);
+	send_events(e,ECF_IN_GAME);
 }
 
 void Server::on_remove_game_object(GameObject * obj)
@@ -158,9 +169,9 @@ void Server::on_remove_game_object(GameObject * obj)
 	msg.guid = obj->get_guid();
 	msg.object_type = obj->get_type(); /// realiai tipas nereikalingas
 
-	clan::NetGameEvent ev("gmsg");
-	MessageUtil::add_message(ev,msg);
-	m_net_server.send_event(ev);
+	clan::NetGameEvent e("gmsg");
+	MessageUtil::add_message(e,msg);
+	send_events(e,ECF_IN_GAME);
 }
 
 void Server::on_update_game_object(GameObject * obj)
@@ -388,6 +399,7 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 	}
 	else if(type==MSGC_READY)
 	{
+		client->set_flag(ECF_IN_GAME);
 		send_game_objects(con);
 		///sukuriam sio kliento zaidimo objekta
 		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
