@@ -344,7 +344,10 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 						vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
 						vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
 						vel = vel.normalize();
-						vel *= 192.0f;
+
+						int mana=p->get_mana();
+						p->change_mana(-20);
+						vel *= 50.0f+mana*2;
 
 						clan::vec2f off;
 						off.x = 26;

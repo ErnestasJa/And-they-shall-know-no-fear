@@ -19,6 +19,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
+	mana=add_property<uint32_t>("mana",50);
 	kills=add_property<uint32_t>("kills",0);
 	killer=add_property<uint32_t>("killer");
 	name=add_property<std::string>("name","Sir. Waitfor Servereply");
@@ -131,8 +132,13 @@ void Player::update(const clan::GameTime & time)
 		v.y+= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
-
 	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
+
+#if defined GAME_SERVER
+	if(mana>100)mana=100;
+	else mana=mana+1.5*(float)time.get_time_elapsed_ms()/1000.0f;
+#endif
+	
 }
 
 void Player::render(clan::Canvas & c, const clan::vec2 & offset)
@@ -188,4 +194,17 @@ void Player::on_tile_collide(const Tile & tile)
 clan::CollisionOutline & Player::get_outline()
 {
 	return m_outline;
+}
+
+Property<uint32_t> Player::get_mana()
+{
+	return mana;
+}
+
+void Player::change_mana(uint32_t m)
+{
+	if(mana+m<0)mana=0;
+	else mana=mana+m;
+	if(mana+m>100)mana=100;
+	else mana=mana+m;
 }
