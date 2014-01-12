@@ -34,6 +34,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 	m_outline.calculate_smallest_enclosing_discs();
 	
 	m_next_attack_time = 0;
+	m_vel = 32.0f;
 }
 
 Player::~Player()
@@ -100,35 +101,34 @@ void Player::update(const clan::GameTime & time)
 {
 	if(!m_sprite.is_null())
 		m_sprite.update(time.get_time_elapsed_ms());
-	//m_pos.data().x += 16.0f * (float)time.get_time_elapsed_ms()/1000.0f;
 
 	last_pos = m_pos.get();
 	if(keys&EUIKT_MOVE_LEFT && m_pos.get().x>-20.0f)
 	{
 		m_sprite=m_lw;
 		clan::vec2f v=m_pos;
-		v.x-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.x-= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_RIGHT && m_pos.get().x<980.0f)
 	{
 		m_sprite=m_rw;
 		clan::vec2f v=m_pos;
-		v.x+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.x+= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_UP && m_pos.get().y>0.0f)
 	{
 		m_sprite=m_uw;
 		clan::vec2f v=m_pos;
-		v.y-= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.y-= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_DOWN && m_pos.get().y<660.0f)
 	{
 		m_sprite=m_dw;
 		clan::vec2f v=m_pos;
-		v.y+= 32.0f * (float)time.get_time_elapsed_ms()/900.0f;
+		v.y+= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 

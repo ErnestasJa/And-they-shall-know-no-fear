@@ -19,9 +19,11 @@ protected:
 	clan::Sprite m_rw,m_lw,m_uw,m_dw, m_h; ///instanced sprites
 	clan::Sprite m_sprite; ///current sprite
 
-	Property<uint32_t> keys, vel, life, kills, killer;
+	Property<uint32_t> keys, life, kills, killer;
 	Property<std::string> name;
+
 	clan::vec2 last_pos;
+	float m_vel;
 
 	clan::CollisionOutline m_outline;
 
