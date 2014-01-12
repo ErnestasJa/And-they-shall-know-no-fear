@@ -144,8 +144,7 @@ bool Menu::pause()
 	button_sound_top->set_image(button_sound_on_img);
 	c->set_visible(false);
 
-	m_key_up.disable();
-
+	
 	confirmWindowClosedEventSlot.disable();
 
 	return true;
@@ -163,8 +162,7 @@ bool Menu::resume()
 	button_sound_top->set_image(button_sound_on_img);
 	c->set_visible(true);
 
-	m_key_up.enable();
-
+	
 	confirmWindowClosedEventSlot.enable();
 
 	return true;
@@ -172,7 +170,6 @@ bool Menu::resume()
 
 bool Menu::exit()
 {
-	m_key_up.destroy();
 	return true;
 }
 
