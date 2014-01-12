@@ -21,6 +21,7 @@ protected:
 
 #if defined GAME_SERVER
 	clan::CollisionOutline m_tile_outline;
+	uint32_t m_current_guid;
 #endif
 
 public:
@@ -29,6 +30,11 @@ public:
 
 	void preload(clan::Canvas & canvas ,clan::ResourceManager & resources);
 	void free();
+
+	#if defined GAME_SERVER
+	uint32_t generate_guid();
+	void set_start_guid(uint32_t guid);
+	#endif
 
 	///Creates game object and also adds it to internal list
 	GameObject * add_game_object(uint32_t type, uint32_t guid);

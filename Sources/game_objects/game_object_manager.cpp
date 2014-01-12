@@ -60,6 +60,19 @@ std::vector<GameObject*> & GameObjectManager::get_tmp_game_objects()
 	return m_tmp_object_list;
 }
 
+#if defined GAME_SERVER
+uint32_t GameObjectManager::generate_guid()
+{
+	m_current_guid++;
+	return m_current_guid;
+}
+
+void GameObjectManager::set_start_guid(uint32_t guid)
+{
+	m_current_guid = guid;
+}
+#endif
+
 GameObject * GameObjectManager::add_game_object(uint32_t type, uint32_t guid)
 {
 	GameObject * o = create_game_object(type,guid);

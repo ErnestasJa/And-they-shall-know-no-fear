@@ -14,9 +14,6 @@ bool Server::init()
 	m_game_time = clan::GameTime(33,33);
 
 	init_default();
-
-	//m_max_clients = max_clients;
-	m_current_guid = m_max_clients.get();
 	
 	m_client_cons = new ServerClientConnection[m_max_clients];
 	m_clients =	new Client[m_max_clients];
@@ -34,6 +31,7 @@ bool Server::init()
 	m_tile_map.load("Level/"+m_map.get());
 
 	m_gom = new GameObjectManager(m_tile_map);
+	m_gom->set_start_guid(m_max_clients.get());
 	m_gom->func_on_add_game_object().set(this,&Server::on_add_game_object);
 	m_gom->func_on_update_game_object().set(this,&Server::on_update_game_object);
 	m_gom->func_on_remove_game_object().set(this,&Server::on_remove_game_object);
@@ -327,40 +325,6 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 			if(p!=nullptr)
 			{
 				p->on_message(m);
-
-				if(m.keys&EUIKT_ATTACK)
-				{
-					if(p->get_next_attack_time()<=m_game_time.get_current_time_ms())
-					{
-						///spawn rock, shoot rock
-						ThrowableObject * obj = static_cast<ThrowableObject *>(m_gom->add_game_object(EGOT_THROWABLE_OBJECT, m_current_guid));
-						obj->init(m_game_time.get_current_time_ms(),p->get_guid());
-
-						m_current_guid ++;
-
-						clan::vec2f vel;
-						vel.x = (m.keys & EUIKT_MOVE_LEFT ? - 1 : (m.keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
-						vel.y = (m.keys & EUIKT_MOVE_UP ? - 1 : (m.keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
-						vel = vel.normalize();
-
-						int mana=p->get_mana();
-
-						if(p->get_mana()>=20)
-							p->get_mana() = p->get_mana() - 20;
-						else
-							p->get_mana() = 0;
-						
-						vel *= mana*2.5f;
-
-						clan::vec2f off;
-						off.x = 26;
-						off.y = 28;
-
-						obj->get_vel().set(vel);
-						obj->get_pos().set(m_gom->find_game_object_by_guid(client->get_id())->get_pos().get()+off);
-						p->set_next_attack_time(m_game_time.get_current_time_ms() + 600);
-					}
-				}
 			}
 			else
 			{
@@ -427,13 +391,15 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 void Server::spawn_client(Client * client)
 {
 	m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
-	
+	m_player_objects[client->get_id()]->init_server(m_gom);
+
 	if(m_tile_map.get_spawn_point_count()==0)
 		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%1024,std::rand()%720));
 	else
 		m_player_objects[client->get_id()]->get_pos().set(m_tile_map.get_spawn_point(std::rand()%m_tile_map.get_spawn_point_count()).pos);
 
 	m_player_objects[client->get_id()]->get_property<std::string>("name").set(client->get_name());
+	
 }
 
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)

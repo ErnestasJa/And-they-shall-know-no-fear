@@ -17,6 +17,10 @@ static clan::Font title;
 
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
+	#if defined GAME_SERVER
+		m_gom = nullptr;
+	#endif
+
 	keys=add_property<uint32_t>("keys",0);
 	life=add_property<uint32_t>("life",100);
 	mana=add_property<float>("mana",50);
@@ -86,7 +90,7 @@ void Player::free()
 	title = clan::Font();
 }
 
-void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
+void Player::init()
 {
 	m_rw = s_rw.clone();
 	m_lw = s_lw.clone();
@@ -98,48 +102,101 @@ void Player::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 	m_sprite=m_dw;
 }
 
+#if defined GAME_SERVER
+void Player::init_server(GameObjectManager * gom)
+{
+	m_gom = gom;
+}
+#endif
+
 void Player::update(const clan::GameTime & time)
 {
-	if(!m_sprite.is_null())
-		m_sprite.update(time.get_time_elapsed_ms());
-
 	last_pos = m_pos.get();
+
+#if defined GAME_CLIENT
+	m_sprite.update(time.get_time_elapsed_ms());
+
+	if(keys&EUIKT_MOVE_LEFT)
+		m_sprite=m_lw;
+	else if(keys&EUIKT_MOVE_RIGHT)
+		m_sprite=m_rw;
+	else if(keys&EUIKT_MOVE_UP)
+		m_sprite=m_uw;
+	if(keys&EUIKT_MOVE_DOWN)
+		m_sprite=m_dw;
+#endif
+
+#if defined GAME_SERVER
+
 	if(keys&EUIKT_MOVE_LEFT && m_pos.get().x>-20.0f)
 	{
-		m_sprite=m_lw;
 		clan::vec2f v=m_pos;
 		v.x-= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_RIGHT && m_pos.get().x<980.0f)
 	{
-		m_sprite=m_rw;
 		clan::vec2f v=m_pos;
 		v.x+= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_UP && m_pos.get().y>0.0f)
 	{
-		m_sprite=m_uw;
 		clan::vec2f v=m_pos;
 		v.y-= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_DOWN && m_pos.get().y<660.0f)
 	{
-		m_sprite=m_dw;
 		clan::vec2f v=m_pos;
 		v.y+= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 
-	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
+	if(keys&EUIKT_MOVE_LEFT || keys&EUIKT_MOVE_RIGHT || keys&EUIKT_MOVE_UP || keys&EUIKT_MOVE_DOWN)
+	{
+		if(mana>100)mana=100;
+		else mana=mana+4.0f*(float)time.get_time_elapsed_ms()/1000.0f;
+	}
+	else
+	{
+		if(mana>100)mana=100;
+		else mana=mana+8.0f*(float)time.get_time_elapsed_ms()/1000.0f;
+	}
 
-#if defined GAME_SERVER
-	if(mana>100)mana=100;
-	else mana=mana+5.0f*(float)time.get_time_elapsed_ms()/1000.0f;
+	if(keys&EUIKT_ATTACK)
+	{
+		if(get_next_attack_time()<=time.get_current_time_ms())
+		{
+			///spawn rock, shoot rock
+			ThrowableObject * obj = static_cast<ThrowableObject *>(m_gom->add_game_object(EGOT_THROWABLE_OBJECT, m_gom->generate_guid()));
+			obj->init(time.get_current_time_ms(),get_guid());
+
+			clan::vec2f vel;
+			vel.x = (keys & EUIKT_MOVE_LEFT ? - 1 : (keys & EUIKT_MOVE_RIGHT ? 1 : 0 ) );
+			vel.y = (keys & EUIKT_MOVE_UP ? - 1 : (keys & EUIKT_MOVE_DOWN ? 1 : 0 ) );
+			vel = vel.normalize();
+
+			vel *= mana*2.5f;
+
+			if(mana>=20)
+				mana = mana - 20;
+			else
+				mana = 0;	
+
+			clan::vec2f off;
+			off.x = 26;
+			off.y = 28;
+
+			obj->get_vel().set(vel);
+			obj->get_pos().set(get_pos().get()+off);
+			set_next_attack_time(time.get_current_time_ms() + 600);
+		}
+	}
+
 #endif
-	
+
+	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
 }
 
 void Player::render(clan::Canvas & c, const clan::vec2 & offset)

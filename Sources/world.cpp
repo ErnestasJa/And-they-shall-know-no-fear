@@ -170,7 +170,7 @@ void World::on_game_event(const clan::NetGameEvent & e)
 				if(m.object_type==EGOT_PLAYER)
 				{
 					Player * pobj = static_cast<Player*>(obj);
-					pobj->load(m_canvas,m_resources);
+					pobj->init();
 
 					if( m.guid == m_client->get_id() )
 						m_player = pobj;

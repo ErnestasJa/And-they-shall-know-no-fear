@@ -4,10 +4,15 @@
 #include "game_object.h"
 #include "game_object_types.h"
 
+class GameObjectManager;
 class Player: public GameObject
 {
 protected:
 	uint32_t m_next_attack_time;
+
+#if defined GAME_SERVER
+	GameObjectManager * m_gom;
+#endif
 
 public:
 	uint32_t get_next_attack_time();
@@ -38,7 +43,12 @@ public:
 	Player(uint32_t guid);
 	virtual ~Player();
 
-	void load(clan::Canvas & canvas, clan::ResourceManager & resources);
+	void init();
+
+	#if defined GAME_SERVER
+	void init_server(GameObjectManager * gom);
+	#endif
+	
 
 	virtual void update(const clan::GameTime & time);
 	virtual void render(clan::Canvas & c, const clan::vec2 & offset);

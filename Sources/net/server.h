@@ -21,7 +21,6 @@ protected:
 	Property<std::string>		m_port;
 	Property<std::string>		m_map;
 
-	uint32_t					m_current_guid;
 	ServerClientConnection*		m_client_cons;
 	Client*						m_clients;
 	Player**					m_player_objects;
