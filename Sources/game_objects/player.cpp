@@ -35,7 +35,7 @@ Player::Player(uint32_t guid): GameObject(type(),guid)
 	m_outline.calculate_smallest_enclosing_discs();
 	
 	m_next_attack_time = 0;
-	m_vel = 32.0f;
+	m_vel = 48.0f;
 }
 
 Player::~Player()
@@ -108,35 +108,36 @@ void Player::update(const clan::GameTime & time)
 	{
 		m_sprite=m_lw;
 		clan::vec2f v=m_pos;
-		v.x-= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
+		v.x-= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_RIGHT && m_pos.get().x<980.0f)
 	{
 		m_sprite=m_rw;
 		clan::vec2f v=m_pos;
-		v.x+= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
+		v.x+= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_UP && m_pos.get().y>0.0f)
 	{
 		m_sprite=m_uw;
 		clan::vec2f v=m_pos;
-		v.y-= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
+		v.y-= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
 	if(keys&EUIKT_MOVE_DOWN && m_pos.get().y<660.0f)
 	{
 		m_sprite=m_dw;
 		clan::vec2f v=m_pos;
-		v.y+= (m_vel + ((100-life)/10)*3) * (float)time.get_time_elapsed_ms()/1000.0f;
+		v.y+= (m_vel + ((100-life)/10)*2) * (float)time.get_time_elapsed_ms()/1000.0f;
 		m_pos.set(v);
 	}
+
 	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
 
 #if defined GAME_SERVER
 	if(mana>100)mana=100;
-	else mana=mana+4.0f*(float)time.get_time_elapsed_ms()/1000.0f;
+	else mana=mana+5.0f*(float)time.get_time_elapsed_ms()/1000.0f;
 #endif
 	
 }

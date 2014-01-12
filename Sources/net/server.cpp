@@ -53,7 +53,7 @@ void Server::init_default()
 {
 	m_max_clients = add_property<uint32_t>("max_clients",4);
 	m_port = add_property<std::string>("port","27015");
-	m_map = add_property<std::string>("map","next_level.map");
+	m_map = add_property<std::string>("map","level2.map");
 
 	if(!clan::FileHelp::file_exists("Cfg/server_config.xml"))
 	{
@@ -422,10 +422,20 @@ void Server::on_net_event(const clan::NetGameEvent &e, ServerClientConnection * 
 		client->set_flag(ECF_IN_GAME);
 		send_game_objects(con);
 		///sukuriam sio kliento zaidimo objekta
-		m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
-		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%1024,std::rand()%720));
-		m_player_objects[client->get_id()]->get_property<std::string>("name").set(client->get_name());
+		spawn_client(client);
 	}
+}
+
+void Server::spawn_client(Client * client)
+{
+	m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
+	
+	if(m_tile_map.get_spawn_point_count()==0)
+		m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%1024,std::rand()%720));
+	else
+		m_player_objects[client->get_id()]->get_pos().set(m_tile_map.get_spawn_point(std::rand()%m_tile_map.get_spawn_point_count()).pos);
+
+	m_player_objects[client->get_id()]->get_property<std::string>("name").set(client->get_name());
 }
 
 void Server::on_event(clan::NetGameConnection *connection, const clan::NetGameEvent &e)

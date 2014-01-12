@@ -40,11 +40,13 @@ class TileMap
 
 	void		add_spawn(uint32_t object_type, clan::vec2 pos);
 	void		delete_spawn(clan::vec2 pos, int32_t range = 50);
+	spawn		get_spawn_point(uint32_t index);
+	uint32_t	get_spawn_point_count();
 
 	bool		load(const std::string & file);
 	bool		save(const std::string & file);
 
-    protected:
+protected:
     std::shared_ptr<TileMap_Impl> impl;
 	std::vector<spawn> m_spawn_list;
 };
