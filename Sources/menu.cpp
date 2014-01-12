@@ -74,7 +74,7 @@ bool Menu::init()
 	back_sound.set_volume(0.5f);
 	playback = back_sound.prepare();
 	//playback.play();
-	play = true;
+	play = false;
 	playback.set_looping(true);
 
 		//sound migtukas
