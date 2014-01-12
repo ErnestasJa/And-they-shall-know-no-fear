@@ -13,6 +13,8 @@ clan::Sprite Player::s_rw,
 			 Player::s_dw,
 			 Player::s_h;
 
+static clan::Font title;
+
 Player::Player(uint32_t guid): GameObject(type(),guid)
 {
 	keys=add_property<uint32_t>("keys",0);
@@ -59,6 +61,7 @@ clan::Colorf Player::get_hp_bar_color()
 
 bool Player::preload(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
+	title = clan::Font(canvas,"Arial",12); ///DON'T CHANGE EVEN AGAIN
 	s_rw = clan::Sprite::resource(canvas, "champ_rw", resources );
 	s_lw = clan::Sprite::resource(canvas, "champ_lw", resources );
 	s_uw = clan::Sprite::resource(canvas, "champ_uw", resources );
@@ -133,6 +136,7 @@ void Player::update(const clan::GameTime & time)
 
 void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 {
+#if defined GAME_CLIENT
 	if(!m_sprite.is_null())
 	{
 		m_sprite.draw(c, m_pos.get().x+offset.x, m_pos.get().y+offset.y);
@@ -140,9 +144,9 @@ void Player::render(clan::Canvas & c, const clan::vec2 & offset)
 		m_h.draw(c,m_pos.get().x+offset.x, m_pos.get().y+offset.y-5);
 		m_outline.draw(offset.x,offset.y,clan::Colorf(1,0,0,1),c);
 
-		static clan::Font title(c,"Ariel",10);
 		title.draw_text(c, m_pos.get().x+offset.x+6,m_pos.get().y+offset.y-8, name.get()+": "+clan::StringHelp::uint_to_text(kills.get()), get_hp_bar_color());
 	}
+#endif
 }
 
 void Player::on_message(const Message & msg)
