@@ -36,6 +36,7 @@ protected:
 	void changing(); //buves "kitimas"
 
 	bool m_run;
+	bool play;
 	int m_change; //buves "pokitis"
 
 	clan::Slot m_key_up;
