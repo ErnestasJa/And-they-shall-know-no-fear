@@ -356,6 +356,15 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 					}
 				}
 			}
+			else
+			{
+				if(m.keys&EUIKT_ATTACK)
+				{
+					m_player_objects[client->get_id()]=static_cast<Player*>(m_gom->add_game_object(EGOT_PLAYER,client->get_id()));
+					m_player_objects[client->get_id()]->get_pos().set(clan::vec2(std::rand()%1024,std::rand()%720));
+					m_player_objects[client->get_id()]->get_property<std::string>("name").set(client->get_name());
+				}
+			}
 		}
 		else ///maybe game object manager might handle this message
 			m_gom->on_net_event(e);
