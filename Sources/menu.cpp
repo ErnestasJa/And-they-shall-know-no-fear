@@ -26,7 +26,6 @@ bool Menu::init()
 	button_editor_img = clan::Image::resource(m_canvas,"editor_button_img",m_resources);
 	button_sound_on_img = clan::Image::resource(m_canvas,"sound_button_on_img",m_resources);
 	button_sound_off_img = clan::Image::resource(m_canvas,"sound_button_off_img",m_resources);
-	m_key_up = m_window.get_ic().get_keyboard().sig_key_up().connect(this, &Menu::on_key_up);
 	m_window_manager = clan::GUIWindowManagerDirect(m_window, m_canvas);	
 	m_gui_manager = clan::GUIManager(m_window_manager, "Gfx/gui/aero");
 	c = new clan::GUIComponent(&m_gui_manager, clan::GUITopLevelDescription(clan::Rect(0,0,1024,720),true),"rootx");
@@ -175,12 +174,6 @@ bool Menu::exit()
 {
 	m_key_up.destroy();
 	return true;
-}
-
-void Menu::on_key_up(const clan::InputEvent & e)
-{
-	if(e.id == clan::keycode_q)
-		m_run = false;
 }
 
 void Menu::on_button_clicked(clan::PushButton *button)

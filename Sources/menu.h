@@ -39,7 +39,7 @@ protected:
 	bool play;
 	int m_change; //buves "pokitis"
 
-	clan::Slot m_key_up;
+	
 	clan::Slot windowClosedEventSlot, confirmWindowClosedEventSlot;
 	clan::Slot connectAttemptEventSlot;
 
@@ -53,7 +53,6 @@ public:
 	bool resume();
 	bool exit();
 
-	void on_key_up(const clan::InputEvent & e);
 	void on_button_clicked(clan::PushButton *button);
 };
 
