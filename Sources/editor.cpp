@@ -336,20 +336,20 @@ void editor::on_frame_select(clan::Rect frame)
 void editor::on_layer_select(int32_t layer)
 {
 	m_selected_layer = layer;
-	clan::Console::write_line("Selected layer:%1",layer); //DEBUG
+	clan::Console::write_line("Select layer:%1",layer); //DEBUG
 }
 
 void editor::on_sprite_sheet_select(int32_t sprite_sheet)
 {
 	m_selected_sprite_sheet = sprite_sheet;
 	m_sprite_frame_selection->set_sprite(m_tile_map.get_sprite(m_selected_sprite_sheet));
-	clan::Console::write_line("Selected sprite sheet:%1",sprite_sheet); //DEBUG
+	clan::Console::write_line("Select sprite sheet:%1",sprite_sheet); //DEBUG
 }
 
 void editor::on_spawn_select(int32_t spawn)
 {
 	m_selected_spawn_type=spawn;
-	clan::Console::write_line("Selected spawn:%1",spawn);
+	clan::Console::write_line("Select spawn:%1",spawn);
 }
 
 
@@ -465,12 +465,12 @@ void editor::on_input(const clan::InputEvent & e)
 				clan::Console::write_line("YYY: [%1,%2]", e.mouse_pos.x+m_pos.x,e.mouse_pos.y+m_pos.y);
 			}
 
-			else if (e.id == clan::mouse_left)
+			else if (e.id == clan::mouse_left && !m_button_spawn->is_pushed())
 			{
 				if(!m_button_multi_tile->is_pushed())
 					change_tile_sprite(e.mouse_pos);
 			}
-			else if (e.id == clan::mouse_right)
+			else if (e.id == clan::mouse_right && !m_button_spawn->is_pushed())
 			{
 				if(!m_button_multi_tile->is_pushed())
 					change_tile_sprite(e.mouse_pos,true);
