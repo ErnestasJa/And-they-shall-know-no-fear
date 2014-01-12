@@ -421,11 +421,22 @@ void editor::on_input(const clan::InputEvent & e)
 			if(e.id == clan::keycode_escape)
 				m_save_window->toggle_visibility();
 			else if (e.id == clan::keycode_d)
-				clan::Console::write_line("x:%1 y:%2", m_pos.x,m_pos.y); //DEBUG
+				clan::Console::write_line("TOP LEFT: x:%1 y:%2 \nMOUSE: x:%3 y:%4", m_pos.x,m_pos.y,e.mouse_pos.x,e.mouse_pos.y); //DEBUG
 			else if (e.id == clan::keycode_e)
 				m_editor_window->set_visible(!m_editor_window->is_visible());
 			else if (e.id == clan::keycode_c)
 				m_pos=clan::vec2();
+			else if (e.id == clan::keycode_s)
+			{
+				m_button_spawn->set_pushed(true);
+				m_button_multi_tile->set_pushed(false);
+			}
+			else if (e.id == clan::keycode_a)
+			{
+				m_offset = clan::vec2();
+				m_button_multi_tile->set_pushed(true);
+				m_button_spawn->set_pushed(false);
+			}
 			break;
 		}
 		case clan::InputDevice::pointer:
