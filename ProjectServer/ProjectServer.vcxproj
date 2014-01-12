@@ -77,6 +77,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Sources\game_objects\enemy.cpp" />
     <ClCompile Include="..\Sources\game_objects\game_object.cpp" />
     <ClCompile Include="..\Sources\game_objects\game_object_manager.cpp" />
     <ClCompile Include="..\Sources\game_objects\player.cpp" />
@@ -98,6 +99,7 @@
     <ClCompile Include="..\Sources\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Sources\game_objects\enemy.h" />
     <ClInclude Include="..\Sources\game_objects\game_object.h" />
     <ClInclude Include="..\Sources\game_objects\game_objects.h" />
     <ClInclude Include="..\Sources\game_objects\game_object_manager.h" />

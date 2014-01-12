@@ -42,6 +42,9 @@
     <ClCompile Include="Sources\game_objects\throwable_object.cpp">
       <Filter>game_objects</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\game_objects\enemy.cpp">
+      <Filter>game_objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\app.h" />
@@ -99,6 +102,9 @@
     </ClInclude>
     <ClInclude Include="Sources\selected_sprites.h" />
     <ClInclude Include="Sources\game_objects\throwable_object.h">
+      <Filter>game_objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\game_objects\enemy.h">
       <Filter>game_objects</Filter>
     </ClInclude>
   </ItemGroup>
