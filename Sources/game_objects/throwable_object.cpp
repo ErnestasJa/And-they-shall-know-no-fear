@@ -101,7 +101,8 @@ void ThrowableObject::on_collide(GameObject * obj)
 
 void ThrowableObject::on_tile_collide(const Tile & tile)
 {
-
+	clan::log_event("collision_ev","rock hit wall, not ded tho.");
+	set_is_alive(false);
 }
 
 clan::CollisionOutline & ThrowableObject::get_outline()
