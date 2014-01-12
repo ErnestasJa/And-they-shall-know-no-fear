@@ -346,8 +346,13 @@ void Server::on_game_event(const clan::NetGameEvent &e, ServerClientConnection *
 						vel = vel.normalize();
 
 						int mana=p->get_mana();
-						p->change_mana(-20);
-						vel *= 50.0f+mana*2;
+
+						if(p->get_mana()>=20)
+							p->get_mana() = p->get_mana() - 20;
+						else
+							p->get_mana() = 0;
+						
+						vel *= mana*2.5f;
 
 						clan::vec2f off;
 						off.x = 26;

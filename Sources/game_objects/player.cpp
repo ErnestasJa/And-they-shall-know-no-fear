@@ -200,11 +200,3 @@ Property<uint32_t> Player::get_mana()
 {
 	return mana;
 }
-
-void Player::change_mana(uint32_t m)
-{
-	if(mana+m<0)mana=0;
-	else mana=mana+m;
-	if(mana+m>100)mana=100;
-	else mana=mana+m;
-}
