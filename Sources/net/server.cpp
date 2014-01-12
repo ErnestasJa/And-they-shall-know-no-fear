@@ -192,7 +192,7 @@ void Server::on_update_game_object(GameObject * obj)
 			Player * p = static_cast<Player *>(m_gom->find_game_object_by_guid(obj->get_property<uint32_t>("killer")));
 			p->get_property<uint32_t>("kills").set(p->get_property<uint32_t>("kills")+1);
 
-			uint32_t new_life = p->get_property<uint32_t>("life")+20+p->get_property<uint32_t>("kills")*10;
+			uint32_t new_life = p->get_property<uint32_t>("life") + 20 + p->get_property<uint32_t>("kills")*5 + obj->get_property<uint32_t>("kills")*10;
 			if(new_life > 100) new_life = 100;
 
 			p->get_property<uint32_t>("life").set(new_life);
