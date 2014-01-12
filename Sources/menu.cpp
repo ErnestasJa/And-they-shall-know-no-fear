@@ -72,6 +72,8 @@ bool Menu::init()
 	back_sound.set_volume(0.5f);
 	playback = back_sound.prepare();
 	playback.play();
+	play = true;
+	playback.set_looping(true);
 		//sound migtukas
 	button_sound = new clan::PushButton(c);
 	button_sound->set_geometry(clan::Rect( 0, 0, clan::Size(20, 20)));
@@ -146,7 +148,7 @@ bool Menu::pause()
 bool Menu::resume()
 {
 	State::resume();
-
+	if(play)
 	playback.play();
 
 	c->set_visible(true);
@@ -197,9 +199,11 @@ void Menu::on_button_clicked(clan::PushButton *button)
 	else if(button==button_sound)
 	{
 		if(playback.is_playing())
-			playback.stop();
+			{playback.stop();
+		play = false;}
 		else
-			playback.play();
+			{playback.play();
+		play = true;}
 	}
 }
 

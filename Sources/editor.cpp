@@ -395,6 +395,8 @@ void editor::on_input(const clan::InputEvent & e)
 				clan::Console::write_line("x:%1 y:%2", m_pos.x,m_pos.y); //DEBUG
 			else if (e.id == clan::keycode_e)
 				m_editor_window->set_visible(!m_editor_window->is_visible());
+			else if (e.id == clan::keycode_c)
+				m_pos=clan::vec2();
 			break;
 		}
 		case clan::InputDevice::pointer:
