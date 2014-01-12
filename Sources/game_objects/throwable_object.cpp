@@ -6,8 +6,8 @@
 #include "../net/message.h"
 #include "world.h"
 
+clan::SoundBuffer ThrowableObject::sound;
 clan::Sprite ThrowableObject::m_rock_sprite;
-clan::SoundBuffer sound;
 
 ThrowableObject::ThrowableObject(uint32_t guid): GameObject(type(),guid)
 {

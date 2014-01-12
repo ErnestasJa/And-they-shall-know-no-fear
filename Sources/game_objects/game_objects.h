@@ -5,5 +5,6 @@
 #include "game_object.h"
 #include "player.h"
 #include "throwable_object.h"
+#include "enemy.h"
 
 #endif

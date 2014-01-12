@@ -7,6 +7,7 @@
 class ThrowableObject: public GameObject
 {
 protected:
+	static clan::SoundBuffer sound;
 	static clan::Sprite m_rock_sprite; ///preloaded sprites
 	clan::Sprite m_sprite;
 

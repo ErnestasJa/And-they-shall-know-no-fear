@@ -14,20 +14,15 @@ protected:
 
 	Property<clan::vec2f> m_vel;
 
-	uint32_t m_time_spawned, m_owner_guid;
 public:
-	uint32_t get_spawn_time();
-	uint32_t get_owner_guid();
-
-	void init(uint32_t spawn_time, uint32_t owner_guid);
-
+	void init();
 	Property<clan::vec2f>	get_vel();
 
 public:
 	static GameObject * create(uint32_t guid){return new Enemy(guid);};
 	static bool preload(clan::Canvas & canvas, clan::ResourceManager & resources);
 	static void free();
-	static uint32_t type(){return EGOT_THROWABLE_OBJECT;}
+	static uint32_t type(){return EGOT_ENEMY;}
 
 	Enemy(uint32_t guid);
 	virtual ~Enemy();

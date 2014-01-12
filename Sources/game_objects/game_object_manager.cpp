@@ -12,6 +12,7 @@ GameObjectManager::GameObjectManager(TileMap map)
 	m_tile_map = map;
 	register_game_object<Player>();
 	register_game_object<ThrowableObject>();
+	register_game_object<Enemy>();
 
 	#if defined GAME_SERVER
 	clan::Contour contour;

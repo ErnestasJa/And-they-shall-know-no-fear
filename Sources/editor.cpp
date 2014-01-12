@@ -109,7 +109,7 @@ void editor::init_gui_spawn_dropbox(clan::Window * root, const clan::Rect pos)
 	m_combo_spawn = new clan::ComboBox(root);
 	m_combo_spawn->set_geometry(pos);
 	m_combo_menu_spawn.insert_item("Player",EGOT_PLAYER,0);
-	m_combo_menu_spawn.insert_item("Monster",EGOT_MOB,1);
+	m_combo_menu_spawn.insert_item("Monster",EGOT_ENEMY,1);
 	m_combo_spawn->set_popup_menu(m_combo_menu_spawn);
 	m_combo_spawn->set_text("Select spawn");
 	m_combo_spawn->func_item_selected().set(this,&editor::on_spawn_select);

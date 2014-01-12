@@ -27,20 +27,9 @@ Enemy::~Enemy()
 
 }
 
-uint32_t Enemy::get_owner_guid()
+void Enemy::init()
 {
-	return m_owner_guid;
-}
 
-uint32_t Enemy::get_spawn_time()
-{
-	return m_time_spawned;
-}
-
-void Enemy::init(uint32_t spawn_time, uint32_t owner_guid)
-{
-	m_time_spawned = spawn_time;
-	m_owner_guid = owner_guid;
 }
 
 Property<clan::vec2f> Enemy::get_vel()
@@ -51,9 +40,7 @@ Property<clan::vec2f> Enemy::get_vel()
 bool Enemy::preload(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
 	m_bat_sprite = clan::Sprite::resource(canvas, "rock", resources );
-	sound = clan::SoundBuffer::resource("throw", resources);
-	sound.set_volume(1.0f);
-	sound.prepare();
+
 	return true;
 }
 
@@ -65,7 +52,6 @@ void Enemy::free()
 void Enemy::load(clan::Canvas & canvas, clan::ResourceManager & resources)
 {
 	m_sprite=m_bat_sprite;
-		sound.play();
 }
 
 void Enemy::update(const clan::GameTime & time)
@@ -74,8 +60,8 @@ void Enemy::update(const clan::GameTime & time)
 		m_sprite.update(time.get_time_elapsed_ms());
 
 	#if defined GAME_SERVER
-	clan::vec2f v = m_vel.get() * clan::vec2f((float)time.get_time_elapsed_ms()/1000.0f,(float)time.get_time_elapsed_ms()/1000.0f);
-	m_pos.set(m_pos.get()+v);
+	//clan::vec2f v = m_vel.get() * clan::vec2f((float)time.get_time_elapsed_ms()/1000.0f,(float)time.get_time_elapsed_ms()/1000.0f);
+	//m_pos.set(m_pos.get()+v);
 	#endif
 
 	m_outline.set_translation(m_pos.get().x,m_pos.get().y);
@@ -102,8 +88,7 @@ void Enemy::on_collide(GameObject * obj)
 
 void Enemy::on_tile_collide(const Tile & tile)
 {
-	clan::log_event("collision_ev","rock hit wall, not ded tho.");
-	set_is_alive(false);
+
 }
 
 clan::CollisionOutline & Enemy::get_outline()
