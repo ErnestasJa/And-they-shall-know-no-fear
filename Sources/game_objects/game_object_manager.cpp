@@ -188,9 +188,59 @@ void GameObjectManager::update_game_objects(const clan::GameTime & game_time)
 	}
 }
 
+#if defined GAME_SERVER
+void GameObjectManager::collide_game_object_with_map(GameObject * obj)
+{
+	clan::vec2 tl, br, tl2, br2;
+	//pos = obj->get_pos().get();
+
+	clan::vec2f bb1 = obj->get_outline().get_contours()[0].get_points()[0];
+	clan::vec2f bb2 = obj->get_outline().get_contours()[0].get_points()[2];
+
+	tl = bb1;
+	br = bb2;
+
+	tl=pixel_to_chunk_pos(tl);
+	br=pixel_to_chunk_pos(br);
+
+    TileChunk c;
+
+	for(int y = tl.y; y <= br.y; y++)
+	for(int x = tl.x; x <= br.x; x++)
+	{
+		c = m_tile_map.get_chunk(clan::vec2(x,y));
+
+		if(!c.is_null())
+		{
+			tl2=bb1; ///FIX ME: skaiciai paimti is player constructor
+			br2=bb2;
+
+			tl2=pixel_to_tile_pos(tl2);
+			br2=pixel_to_tile_pos(br2);
+
+			for(int j = tl2.y; j <= br2.y; j++)
+			for(int k = tl2.x; k <= br2.x; k++)
+			{
+				Tile t = c.get_tile(clan::vec2(k,j),GROUND_LAYER_COUNT);
+				clan::vec2 tile_pos = chunk_to_pixel_pos(clan::vec2(x,y))+clan::vec2(k*32,j*32);
+
+				if(t.type != ETT_NO_TILE)
+				{
+					m_tile_outline.set_translation(tile_pos.x,tile_pos.y);
+					if(obj->get_outline().collide(m_tile_outline))
+					{
+						obj->on_tile_collide(t);
+					}
+				}
+			}
+		}
+	}
+
+}
+
+
 void GameObjectManager::collide_game_objects(const clan::GameTime & game_time)
 {
-#if defined GAME_SERVER
 	for(uint32_t i = 0; i<m_game_object_list.size(); i++)
 	{
 		for(uint32_t j = 0; j<m_tmp_object_list.size(); j++)
@@ -207,55 +257,15 @@ void GameObjectManager::collide_game_objects(const clan::GameTime & game_time)
 			}
 		}
 
-
-		clan::vec2 tl, br, tl2, br2, pos;
-		pos = m_game_object_list[i]->get_pos().get();
-		uint32_t w = m_game_object_list[i]->get_outline().get_width(), h = m_game_object_list[i]->get_outline().get_height();
-		tl = pos+clan::vec2(16,13);
-		br = pos+clan::vec2(47,63);
-
-		tl=pixel_to_chunk_pos(tl);
-		br=pixel_to_chunk_pos(br);
-
-        TileChunk c;
-
-		for(int y = tl.y; y <= br.y; y++)
-		for(int x = tl.x; x <= br.x; x++)
-		{
-			c = m_tile_map.get_chunk(clan::vec2(x,y));
-
-			if(!c.is_null())
-			{
-				tl2=pos+clan::vec2(16,13); ///FIX ME: skaiciai paimti is player constructor
-				br2=pos+clan::vec2(47,63);
-
-				tl2=pixel_to_tile_pos(tl2);
-				br2=pixel_to_tile_pos(br2);
-
-				for(int j = tl2.y; j <= br2.y; j++)
-				for(int k = tl2.x; k <= br2.x; k++)
-				{
-					Tile t = c.get_tile(clan::vec2(k,j),GROUND_LAYER_COUNT);
-					clan::vec2 tile_pos = chunk_to_pixel_pos(clan::vec2(x,y))+clan::vec2(k*32,j*32);
-
-					if(t.type != ETT_NO_TILE)
-					{
-						m_tile_outline.set_translation(tile_pos.x,tile_pos.y);
-						if(m_game_object_list[i]->get_outline().collide(m_tile_outline))
-						{
-							m_game_object_list[i]->on_tile_collide(t);
-						}
-					}
-				}
-			}
-		}
-
-		
-
+		collide_game_object_with_map(m_game_object_list[i]);
 	}
-#endif
-}
 
+	for(uint32_t j = 0; j<m_tmp_object_list.size(); j++)
+	{
+		collide_game_object_with_map(m_tmp_object_list[j]);
+	}
+}
+#endif
 
 void GameObjectManager::render_game_objects(clan::Canvas & canvas, const clan::vec2 & offset)
 {
